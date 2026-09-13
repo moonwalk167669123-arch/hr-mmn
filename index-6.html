@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<title>ระบบบริหารงานบุคคล | โรงเรียนศึกษานารีอนุสรณ์ 1</title>
+<style>
+*{box-sizing:border-box}:root{--p:#0f766e;--p2:#115e59;--bg:#f4f7f8;--card:#fff;--text:#18323a;--muted:#6b7d83;--border:#e5eaec;--danger:#c84a4a;--ok:#17734f}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}button{cursor:pointer}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#e8f5f3,#f7fafb)}
+.login-card{width:min(420px,100%);background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:0 8px 30px rgba(30,60,70,.08)}
+.login-logo,.logo{background:var(--p);color:#fff;display:grid;place-items:center}.login-logo{width:58px;height:58px;border-radius:16px;font-size:28px;margin:auto auto 14px}
+.login h1{text-align:center;font-size:21px;margin:0 0 5px}.login p{text-align:center;color:var(--muted);font-size:13px;margin:0 0 22px}
+.field{margin:12px 0}.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}.field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;outline:0;background:#fff}.field input:focus,.field select:focus{border-color:#75bdb6}
+.login-btn{width:100%;padding:12px;border:0;border-radius:10px;background:var(--p);color:#fff;font-weight:700;margin-top:8px}.error{color:var(--danger);font-size:12px;margin-top:10px;text-align:center;min-height:18px}
+.app{display:none;min-height:100vh}.sidebar{width:250px;background:#fff;border-right:1px solid var(--border);padding:20px 14px;position:fixed;inset:0 auto 0 0;z-index:20}
+.brand{display:flex;gap:12px;align-items:center;padding:8px 10px 22px}.logo{width:46px;height:46px;border-radius:14px;font-size:24px}.brand h1{font-size:17px;margin:0 0 2px}.brand p{font-size:11px;color:var(--muted);margin:0}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#53666c;text-align:left;padding:12px 13px;border-radius:11px;font-weight:600}.nav button:hover,.nav button.active{background:#e8f5f3;color:var(--p2)}.nav .icon{display:inline-block;width:28px;font-size:18px}
+.sidebar-bottom{position:absolute;left:14px;right:14px;bottom:18px}.user-mini{padding:12px;background:#f5f8f8;border-radius:12px;font-size:12px}.user-mini strong{display:block;font-size:13px;margin-bottom:3px}.logout{width:100%;margin-top:8px;padding:8px;border:1px solid var(--border);background:#fff;border-radius:9px;font-size:12px}
+.main{margin-left:250px;width:calc(100% - 250px);padding:24px 28px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.mobile-menu{display:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 11px}
+.title h2{margin:0;font-size:25px}.title p{margin:5px 0 0;color:var(--muted);font-size:13px}.actions{display:flex;gap:8px}.btn{border:1px solid var(--border);background:#fff;border-radius:10px;padding:9px 13px}.btn.primary{background:var(--p);color:#fff;border-color:var(--p)}
+.page{display:none}.page.active{display:block}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 2px 8px rgba(30,60,70,.035)}
+.stat{display:flex;justify-content:space-between;align-items:center}.stat .label{font-size:13px;color:var(--muted)}.stat .value{font-size:29px;font-weight:750;margin-top:4px}.stat-icon{width:45px;height:45px;border-radius:13px;background:#e8f5f3;display:grid;place-items:center;font-size:21px}
+.content{grid-template-columns:1.35fr .9fr}.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.card-head h3{margin:0;font-size:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px 7px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:600}
+.badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700}.working{background:#e5f5ed;color:#17734f}.inactive{background:#f1f3f4;color:#68777c}.pending{background:#fff2d9;color:#9b6415}
+.notice{display:grid;gap:10px}.notice-item{padding:12px;border:1px solid var(--border);border-radius:11px}.notice-item strong{display:block;font-size:13px}.notice-item span{font-size:11px;color:var(--muted)}
+.quick{grid-template-columns:repeat(4,1fr);margin-top:18px}.quick button{border:1px solid var(--border);background:#fff;border-radius:14px;padding:16px;text-align:left}.quick b{display:block;margin-top:7px;font-size:13px}.quick small{color:var(--muted)}
+.toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:16px}.search{flex:1;max-width:420px;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:#fff}.primary{border:1px solid var(--p);background:var(--p);color:#fff;border-radius:10px;padding:10px 14px;font-weight:700}.secondary{border:1px solid var(--border);background:#fff;border-radius:9px;padding:7px 10px}.danger{color:var(--danger)}
+.table-wrap{overflow:auto}.empty,.loading{text-align:center;color:var(--muted);padding:30px}
+.footer{text-align:center;color:#8a999d;font-size:11px;margin:22px 0 5px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
+.overlay{display:none}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}.main{margin-left:0;width:100%;padding:16px}.mobile-menu{display:block}.stats{grid-template-columns:repeat(2,1fr)}.content{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}.overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:10}.topbar{align-items:flex-start}.actions .btn:not(.primary){display:none}.toolbar{align-items:stretch;flex-direction:column}.search{max-width:none}}
+@media(max-width:520px){.stats{gap:10px}.card{padding:14px}.stat .value{font-size:24px}.quick{grid-template-columns:1fr 1fr}.title h2{font-size:20px}.form-grid{grid-template-columns:1fr}table{font-size:12px}}
+</style>
+</head>
+<body>
+<section class="login" id="loginScreen"><div class="login-card">
+<div class="login-logo">🏫</div><h1>ระบบบริหารงานบุคคล</h1><p>โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย</p>
+<div class="field"><label>อีเมล</label><input id="email" type="email" autocomplete="username" placeholder="กรอกอีเมล"></div>
+<div class="field"><label>รหัสผ่าน</label><input id="password" type="password" autocomplete="current-password" placeholder="กรอกรหัสผ่าน"></div>
+<button class="login-btn" onclick="login()">เข้าสู่ระบบ</button><div class="error" id="loginError"></div>
+</div></section>
+
+<div class="app" id="app">
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<aside class="sidebar" id="sidebar">
+<div class="brand"><div class="logo">🏫</div><div><h1>ระบบบริหารงานบุคคล</h1><p>โรงเรียนศึกษานารีอนุสรณ์ 1</p></div></div>
+<nav class="nav">
+<button class="active" onclick="selectMenu(this,'Dashboard')"><span class="icon">🏠</span>Dashboard</button>
+<button onclick="selectMenu(this,'บุคลากร')"><span class="icon">👥</span>บุคลากร</button>
+<button onclick="selectMenu(this,'การลา')"><span class="icon">📅</span>การลา</button>
+<button onclick="selectMenu(this,'การอบรม')"><span class="icon">🎓</span>การอบรม</button>
+<button onclick="selectMenu(this,'เอกสาร')"><span class="icon">📄</span>เอกสาร</button>
+<button onclick="selectMenu(this,'ตั้งค่าระบบ')"><span class="icon">⚙️</span>ตั้งค่าระบบ</button>
+</nav>
+<div class="sidebar-bottom"><div class="user-mini"><strong>👤 <span id="userName">กำลังโหลด...</span></strong><span id="userRole">กำลังตรวจสอบสิทธิ์...</span></div><button class="logout" onclick="logout()">ออกจากระบบ</button></div>
+</aside>
+
+<main class="main">
+<div class="topbar"><div style="display:flex;gap:10px;align-items:flex-start"><button class="mobile-menu" onclick="toggleMenu()">☰</button><div class="title"><h2 id="pageTitle">Dashboard</h2><p id="pageDesc">ภาพรวมระบบบริหารงานบุคคล</p></div></div><div class="actions"><button class="btn">🔔</button><button class="btn primary" id="topUser">👤 ผู้ใช้งาน</button></div></div>
+
+<section id="dashboardPage" class="page active">
+<section class="grid stats">
+<div class="card stat"><div><div class="label">บุคลากรทั้งหมด</div><div class="value" id="employeeCount">—</div></div><div class="stat-icon">👥</div></div>
+<div class="card stat"><div><div class="label">กำลังปฏิบัติงาน</div><div class="value" id="workingCount">—</div></div><div class="stat-icon">✅</div></div>
+<div class="card stat"><div><div class="label">รออนุมัติการลา</div><div class="value" id="pendingLeave">—</div></div><div class="stat-icon">📅</div></div>
+<div class="card stat"><div><div class="label">อบรมปีนี้</div><div class="value" id="trainingCount">—</div></div><div class="stat-icon">🎓</div></div>
+</section>
+<section class="grid content"><div class="card"><div class="card-head"><h3>บุคลากรล่าสุด</h3></div><div id="latestEmployees" class="loading">กำลังโหลดข้อมูล...</div></div>
+<div class="card"><div class="card-head"><h3>สถานะระบบ</h3></div><div class="notice">
+<div class="notice-item"><strong>🔐 ระบบเข้าสู่ระบบ</strong><span>เชื่อมต่อ Supabase แล้ว</span></div>
+<div class="notice-item"><strong>🗄️ ฐานข้อมูล</strong><span id="dbStatus">กำลังตรวจสอบ...</span></div>
+<div class="notice-item"><strong>👤 สิทธิ์ผู้ใช้</strong><span id="roleStatus">กำลังตรวจสอบ...</span></div>
+</div></div></section>
+<section class="grid quick"><button onclick="selectMenu(null,'บุคลากร')">👥<b>จัดการบุคลากร</b><small>ดูและแก้ไขข้อมูล</small></button><button onclick="selectMenu(null,'การลา')">📅<b>จัดการการลา</b><small>ตรวจสอบและอนุมัติ</small></button><button onclick="selectMenu(null,'การอบรม')">🎓<b>บันทึกการอบรม</b><small>ประวัติการพัฒนา</small></button><button onclick="selectMenu(null,'เอกสาร')">📄<b>เอกสารบุคลากร</b><small>จัดเก็บและค้นหา</small></button></section>
+</section>
+
+<section id="employeesPage" class="page">
+<div class="toolbar"><input class="search" id="employeeSearch" oninput="renderEmployees()" placeholder="🔎 ค้นหาชื่อ นามสกุล รหัส หรือ ตำแหน่ง"><button class="primary" id="addEmployeeBtn" onclick="openEmployeeModal()">＋ เพิ่มบุคลากร</button></div>
+<div class="card"><div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>หน่วยงาน</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="employeeTable"><tr><td colspan="6" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
+</section>
+
+<section id="placeholderPage" class="page"><div class="card"><div class="empty">หน้านี้จะเชื่อมต่อฐานข้อมูลในขั้นถัดไปครับ</div></div></section>
+<div class="footer">ระบบบริหารงานบุคคล • โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>เชื่อมต่อ Supabase</div>
+</main></div>
+
+<div class="modal" id="employeeModal"><div class="modal-card">
+<div class="modal-head"><h3 id="modalTitle">เพิ่มบุคลากร</h3><button class="close" onclick="closeEmployeeModal()">×</button></div>
+<div class="msg" id="formMsg"></div>
+<input type="hidden" id="editId">
+<div class="form-grid">
+<div class="field"><label>คำนำหน้า</label><select id="prefix"><option value="">-- เลือก --</option><option>นาย</option><option>นาง</option><option>นางสาว</option><option>ดร.</option></select></div>
+<div class="field"><label>รหัสบุคลากร</label><input id="employee_code" placeholder="เช่น 001"></div>
+<div class="field"><label>ชื่อ *</label><input id="first_name"></div>
+<div class="field"><label>นามสกุล *</label><input id="last_name"></div>
+<div class="field"><label>ตำแหน่ง</label><input id="position" placeholder="เช่น ครู"></div>
+<div class="field"><label>วิทยฐานะ</label><input id="academic_position" placeholder="เช่น ครูชำนาญการ"></div>
+<div class="field"><label>หน่วยงาน/กลุ่มสาระ</label><input id="department"></div>
+<div class="field"><label>เบอร์โทรศัพท์</label><input id="phone"></div>
+<div class="field"><label>อีเมล</label><input id="employee_email" type="email"></div>
+<div class="field"><label>วันเริ่มปฏิบัติงาน</label><input id="start_date" type="date"></div>
+<div class="field"><label>สถานะ *</label><select id="status"><option value="active">ปฏิบัติงาน</option><option value="inactive">ไม่ปฏิบัติงาน</option></select></div>
+</div>
+<div class="modal-actions"><button class="secondary" onclick="closeEmployeeModal()">ยกเลิก</button><button class="primary" onclick="saveEmployee()">บันทึก</button></div>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://mswtxisekyfmqvurlftg.supabase.co";
+const SUPABASE_KEY="sb_publishable_v1NGMnxOthQQXOK-oYzKYQ_jLKWgD0J";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let currentProfile=null, employees=[];
+
+async function login(){
+ const email=$('email').value.trim(),password=$('password').value;$('loginError').textContent='';
+ if(!email||!password){$('loginError').textContent='กรุณากรอกอีเมลและรหัสผ่าน';return}
+ const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+ if(error){$('loginError').textContent='เข้าสู่ระบบไม่สำเร็จ: '+error.message;return}
+ await checkSession();
+}
+async function logout(){await supabaseClient.auth.signOut();showLogin()}
+function showLogin(){$('app').style.display='none';$('loginScreen').style.display='grid'}
+function showApp(){$('loginScreen').style.display='none';$('app').style.display='flex'}
+async function checkSession(){
+ const {data:{session}}=await supabaseClient.auth.getSession();if(!session){showLogin();return}
+ const {data:profile,error}=await supabaseClient.from('profiles').select('full_name,role').eq('id',session.user.id).maybeSingle();
+ if(error){showLogin();$('loginError').textContent='อ่านสิทธิ์ผู้ใช้ไม่สำเร็จ: '+error.message;return}
+ if(!profile||!['admin','staff','teacher'].includes(profile.role)){await supabaseClient.auth.signOut();showLogin();$('loginError').textContent=profile?'บัญชีนี้ไม่มีสิทธิ์ใช้งานระบบ':'ยังไม่มีข้อมูลสิทธิ์ของผู้ใช้นี้';return}
+ currentProfile=profile;showApp();$('userName').textContent=profile.full_name||session.user.email;$('userRole').textContent='สิทธิ์: '+profile.role;$('topUser').textContent='👤 '+(profile.full_name||'ผู้ใช้งาน');$('roleStatus').textContent='เข้าสู่ระบบในสิทธิ์ '+profile.role;
+ if(profile.role==='teacher')$('addEmployeeBtn').style.display='none';loadDashboard();
+}
+async function loadDashboard(){
+ const year=new Date().getFullYear();
+ const [e,l,t]=await Promise.all([supabaseClient.from('employees').select('*'),supabaseClient.from('leave_requests').select('*'),supabaseClient.from('trainings').select('*')]);
+ if(e.error||l.error||t.error)$('dbStatus').textContent='มีบางตารางอ่านข้อมูลไม่ได้';else $('dbStatus').textContent='เชื่อมต่อและอ่านข้อมูลได้';
+ $('employeeCount').textContent=e.error?'!':e.data.length;
+ $('workingCount').textContent=e.error?'!':e.data.filter(x=>String(x.status||'').toLowerCase()==='active').length;
+ $('pendingLeave').textContent=l.error?'!':l.data.filter(x=>{let s=String(x.status||x.leave_status||'').toLowerCase();return s.includes('รอ')||s.includes('pending')}).length;
+ $('trainingCount').textContent=t.error?'!':t.data.filter(x=>{let d=x.start_date||x.created_at;return d&&new Date(d).getFullYear()===year}).length;
+ if(!e.error){employees=e.data;renderLatestEmployees()}
+}
+function renderLatestEmployees(){
+ const list=employees.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,5);
+ $('latestEmployees').innerHTML=list.length?`<table><thead><tr><th>ชื่อ</th><th>ตำแหน่ง</th><th>สถานะ</th></tr></thead><tbody>${list.map(x=>`<tr><td>${x.prefix||''}${x.first_name} ${x.last_name}</td><td>${x.position||'-'}</td><td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td></tr>`).join('')}</tbody></table>`:'ยังไม่มีข้อมูลบุคลากร';
+}
+async function loadEmployees(){
+ const {data,error}=await supabaseClient.from('employees').select('*').order('first_name',{ascending:true});
+ if(error){$('employeeTable').innerHTML=`<tr><td colspan="6" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`;return}
+ employees=data;renderEmployees();
+}
+function renderEmployees(){
+ const q=($('employeeSearch').value||'').toLowerCase();
+ const list=employees.filter(x=>[x.employee_code,x.first_name,x.last_name,x.position,x.department].some(v=>String(v||'').toLowerCase().includes(q)));
+ $('employeeTable').innerHTML=list.length?list.map(x=>`<tr><td>${x.employee_code||'-'}</td><td><b>${x.prefix||''}${x.first_name} ${x.last_name}</b></td><td>${x.position||'-'}${x.academic_position?'<br><small>'+x.academic_position+'</small>':''}</td><td>${x.department||'-'}</td><td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td><td>${currentProfile&&['admin','staff'].includes(currentProfile.role)?`<button class="secondary" onclick="editEmployee('${x.id}')">แก้ไข</button> <button class="secondary danger" onclick="deleteEmployee('${x.id}')">ลบ</button>`:'ดูได้'}</td></tr>`).join(''):`<tr><td colspan="6" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
+}
+function selectMenu(btn,name){
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');
+ $('pageTitle').textContent=name;
+ if(name==='Dashboard'){$('dashboardPage').classList.add('active');$('employeesPage').classList.remove('active');$('placeholderPage').classList.remove('active');loadDashboard()}
+ else if(name==='บุคลากร'){$('dashboardPage').classList.remove('active');$('employeesPage').classList.add('active');$('placeholderPage').classList.remove('active');loadEmployees()}
+ else{$('dashboardPage').classList.remove('active');$('employeesPage').classList.remove('active');$('placeholderPage').classList.add('active')}
+ if(window.innerWidth<=900)toggleMenu();
+}
+function toggleMenu(){$('sidebar').classList.toggle('open');$('overlay').classList.toggle('show')}
+function openEmployeeModal(id){
+ if(currentProfile&&!['admin','staff'].includes(currentProfile.role))return;
+ $('editId').value=id||'';$('modalTitle').textContent=id?'แก้ไขข้อมูลบุคลากร':'เพิ่มบุคลากร';$('formMsg').textContent='';
+ ['prefix','employee_code','first_name','last_name','position','academic_position','department','phone','employee_email','start_date'].forEach(id=>$(id).value='');$('status').value='active';
+ if(id){const x=employees.find(e=>e.id===id);if(x){$('prefix').value=x.prefix||'';$('employee_code').value=x.employee_code||'';$('first_name').value=x.first_name||'';$('last_name').value=x.last_name||'';$('position').value=x.position||'';$('academic_position').value=x.academic_position||'';$('department').value=x.department||'';$('phone').value=x.phone||'';$('employee_email').value=x.email||'';$('start_date').value=x.start_date||'';$('status').value=x.status||'active'}}
+ $('employeeModal').classList.add('show');
+}
+function closeEmployeeModal(){$('employeeModal').classList.remove('show')}
+async function saveEmployee(){
+ const first=$('first_name').value.trim(),last=$('last_name').value.trim();$('formMsg').textContent='';
+ if(!first||!last){$('formMsg').textContent='กรุณากรอกชื่อและนามสกุล';return}
+ const payload={prefix:$('prefix').value||null,employee_code:$('employee_code').value.trim()||null,first_name:first,last_name:last,position:$('position').value.trim()||null,academic_position:$('academic_position').value.trim()||null,department:$('department').value.trim()||null,phone:$('phone').value.trim()||null,email:$('employee_email').value.trim()||null,start_date:$('start_date').value||null,status:$('status').value};
+ const id=$('editId').value;
+ const result=id?await supabaseClient.from('employees').update(payload).eq('id',id):await supabaseClient.from('employees').insert(payload);
+ if(result.error){$('formMsg').textContent='บันทึกไม่สำเร็จ: '+result.error.message;return}
+ closeEmployeeModal();await loadEmployees();await loadDashboard();
+}
+async function editEmployee(id){openEmployeeModal(id)}
+async function deleteEmployee(id){
+ if(!confirm('ยืนยันการลบบุคลากรคนนี้?'))return;
+ const {error}=await supabaseClient.from('employees').delete().eq('id',id);
+ if(error){alert('ลบไม่สำเร็จ: '+error.message);return}
+ await loadEmployees();await loadDashboard();
+}
+supabaseClient.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')showLogin()});
+checkSession();
+</script>
+</body></html>

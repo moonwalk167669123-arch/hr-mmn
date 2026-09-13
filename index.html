@@ -1,17 +1,145 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบบริหารงานบุคคล</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f766e">
+<title>ระบบบริหารงานบุคคล | โรงเรียนศึกษานารีอนุสรณ์ 1</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --primary:#0f766e;--primary2:#115e59;--bg:#f4f7f8;--card:#fff;
+  --text:#18323a;--muted:#6b7d83;--border:#e5eaec;
+  --success:#16845b;--warning:#c67a16;--danger:#c84a4a;
+}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text)}
+button{font:inherit;cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:#fff;border-right:1px solid var(--border);padding:20px 14px;position:fixed;inset:0 auto 0 0;z-index:20}
+.brand{display:flex;gap:12px;align-items:center;padding:8px 10px 22px}
+.logo{width:46px;height:46px;border-radius:14px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:24px}
+.brand h1{font-size:17px;margin:0 0 2px}.brand p{font-size:11px;color:var(--muted);margin:0}
+.nav{display:grid;gap:5px}
+.nav button{border:0;background:transparent;color:#53666c;text-align:left;padding:12px 13px;border-radius:11px;font-weight:600}
+.nav button:hover,.nav button.active{background:#e8f5f3;color:var(--primary2)}
+.nav .icon{display:inline-block;width:28px;font-size:18px}
+.sidebar-bottom{position:absolute;left:14px;right:14px;bottom:18px}
+.user-mini{padding:12px;background:#f5f8f8;border-radius:12px;font-size:12px}.user-mini strong{display:block;font-size:13px;margin-bottom:3px}
+.main{margin-left:250px;width:calc(100% - 250px);padding:24px 28px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.mobile-menu{display:none;border:0;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 11px}
+.title h2{margin:0;font-size:25px}.title p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.actions{display:flex;gap:8px}.btn{border:1px solid var(--border);background:#fff;border-radius:10px;padding:9px 13px}.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.grid{display:grid;gap:16px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 2px 8px rgba(30,60,70,.035)}
+.stat{display:flex;justify-content:space-between;align-items:center}.stat .label{font-size:13px;color:var(--muted)}.stat .value{font-size:29px;font-weight:750;margin-top:4px}.stat-icon{width:45px;height:45px;border-radius:13px;background:#e8f5f3;display:grid;place-items:center;font-size:21px}
+.content{grid-template-columns:1.35fr .9fr}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.card-head h3{margin:0;font-size:16px}.link{color:var(--primary);font-size:13px;background:none;border:0}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:12px 7px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:600}
+.badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700}.pending{background:#fff2d9;color:#9b6415}.approved{background:#e5f5ed;color:#17734f}.rejected{background:#fdeaea;color:#a43c3c}
+.notice{display:grid;gap:10px}.notice-item{padding:12px;border:1px solid var(--border);border-radius:11px}.notice-item strong{display:block;font-size:13px}.notice-item span{font-size:11px;color:var(--muted)}
+.quick{grid-template-columns:repeat(4,1fr);margin-top:18px}.quick button{border:1px solid var(--border);background:#fff;border-radius:14px;padding:16px;text-align:left}.quick button:hover{border-color:#a8d8d2;background:#fbfefe}.quick b{display:block;margin-top:7px;font-size:13px}.quick small{color:var(--muted)}
+.footer{text-align:center;color:#8a999d;font-size:11px;margin:22px 0 5px}
+.overlay{display:none}
+@media(max-width:900px){
+ .sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}
+ .main{margin-left:0;width:100%;padding:16px}.mobile-menu{display:block}
+ .stats{grid-template-columns:repeat(2,1fr)}.content{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}
+ .overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:10}
+ .topbar{align-items:flex-start}.actions .btn:not(.primary){display:none}
+}
+@media(max-width:520px){
+ .stats{grid-template-columns:1fr 1fr;gap:10px}.card{padding:14px}.stat .value{font-size:24px}
+ .quick{grid-template-columns:1fr 1fr}.title h2{font-size:20px}
+ table{font-size:12px}th:nth-child(3),td:nth-child(3){display:none}
+}
+</style>
 </head>
-
 <body>
+<div class="app">
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-  <h1>ระบบบริหารงานบุคคล</h1>
-  <p>โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย</p>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">🏫</div>
+      <div><h1>ระบบบริหารงานบุคคล</h1><p>โรงเรียนศึกษานารีอนุสรณ์ 1</p></div>
+    </div>
+    <nav class="nav">
+      <button class="active" onclick="selectMenu(this,'Dashboard')"><span class="icon">🏠</span>Dashboard</button>
+      <button onclick="selectMenu(this,'บุคลากร')"><span class="icon">👥</span>บุคลากร</button>
+      <button onclick="selectMenu(this,'การลา')"><span class="icon">📅</span>การลา</button>
+      <button onclick="selectMenu(this,'การอบรม')"><span class="icon">🎓</span>การอบรม</button>
+      <button onclick="selectMenu(this,'เอกสาร')"><span class="icon">📄</span>เอกสาร</button>
+      <button onclick="selectMenu(this,'ตั้งค่าระบบ')"><span class="icon">⚙️</span>ตั้งค่าระบบ</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-mini"><strong>👤 ผู้ดูแลระบบ</strong>สถานะ: ยังไม่ได้เชื่อมต่อฐานข้อมูล</div>
+    </div>
+  </aside>
 
-  <p>ระบบกำลังอยู่ระหว่างการพัฒนา</p>
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+        <div class="title"><h2 id="pageTitle">Dashboard</h2><p>ภาพรวมระบบบริหารงานบุคคล</p></div>
+      </div>
+      <div class="actions"><button class="btn">🔔</button><button class="btn primary">👤 ผู้ดูแลระบบ</button></div>
+    </div>
 
+    <section class="grid stats">
+      <div class="card stat"><div><div class="label">บุคลากรทั้งหมด</div><div class="value">15</div></div><div class="stat-icon">👥</div></div>
+      <div class="card stat"><div><div class="label">กำลังปฏิบัติงาน</div><div class="value">14</div></div><div class="stat-icon">✅</div></div>
+      <div class="card stat"><div><div class="label">รออนุมัติการลา</div><div class="value">2</div></div><div class="stat-icon">📅</div></div>
+      <div class="card stat"><div><div class="label">อบรมปีนี้</div><div class="value">8</div></div><div class="stat-icon">🎓</div></div>
+    </section>
+
+    <section class="grid content">
+      <div class="card">
+        <div class="card-head"><h3>รายการล่าสุด</h3><button class="link">ดูทั้งหมด →</button></div>
+        <table>
+          <thead><tr><th>รายการ</th><th>ผู้ดำเนินการ</th><th>วันที่</th><th>สถานะ</th></tr></thead>
+          <tbody>
+            <tr><td>ขอลากิจ</td><td>บุคลากร</td><td>13 ก.ย. 69</td><td><span class="badge pending">รออนุมัติ</span></td></tr>
+            <tr><td>ส่งหลักฐานการอบรม</td><td>บุคลากร</td><td>12 ก.ย. 69</td><td><span class="badge approved">เรียบร้อย</span></td></tr>
+            <tr><td>แก้ไขข้อมูลส่วนตัว</td><td>บุคลากร</td><td>11 ก.ย. 69</td><td><span class="badge approved">เรียบร้อย</span></td></tr>
+            <tr><td>ขอลาป่วย</td><td>บุคลากร</td><td>10 ก.ย. 69</td><td><span class="badge pending">รออนุมัติ</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>ประกาศ / แจ้งเตือน</h3><button class="link">ดูทั้งหมด</button></div>
+        <div class="notice">
+          <div class="notice-item"><strong>📌 กรุณาตรวจสอบข้อมูลประวัติบุคลากร</strong><span>แจ้งเตือนจากผู้ดูแลระบบ</span></div>
+          <div class="notice-item"><strong>📅 มีรายการลารอการอนุมัติ 2 รายการ</strong><span>ควรดำเนินการภายในวันนี้</span></div>
+          <div class="notice-item"><strong>🎓 อย่าลืมบันทึกข้อมูลการอบรม</strong><span>สำหรับใช้จัดทำรายงานประจำปี</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid quick">
+      <button onclick="selectMenu(null,'บุคลากร')">👥<b>จัดการบุคลากร</b><small>ดูและแก้ไขข้อมูล</small></button>
+      <button onclick="selectMenu(null,'การลา')">📅<b>จัดการการลา</b><small>ตรวจสอบและอนุมัติ</small></button>
+      <button onclick="selectMenu(null,'การอบรม')">🎓<b>บันทึกการอบรม</b><small>ประวัติการพัฒนา</small></button>
+      <button onclick="selectMenu(null,'เอกสาร')">📄<b>เอกสารบุคลากร</b><small>จัดเก็บและค้นหา</small></button>
+    </section>
+
+    <div class="footer">ระบบบริหารงานบุคคล • โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>เวอร์ชันเริ่มต้น — พร้อมเชื่อม Supabase ในขั้นต่อไป</div>
+  </main>
+</div>
+
+<script>
+function toggleMenu(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function selectMenu(btn,name){
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('pageTitle').textContent=name;
+  if(window.innerWidth<=900) toggleMenu();
+}
+</script>
 </body>
 </html>

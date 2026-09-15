@@ -145,7 +145,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   <th>วันบรรจุ</th>
   <th>วันมา รร.นี้</th>
   <th>วันได้วิทยฐานะ</th>
-  <th>วันครบประเมิน (+3ปี)</th>
+  <th>วันครบประเมิน </th>
   <th>สถานะ</th>
   <th>จัดการ</th>
 </tr></thead><tbody id="employeeTable"><tr><td colspan="10" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
@@ -165,7 +165,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </tr></thead><tbody id="leaveTable"><tr><td colspan="7" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
-<!-- Training Page -->
+<!-- Training Page (ไม่มีคอลัมน์ชั่วโมง) -->
 <section id="trainingPage" class="page">
 <div class="toolbar"><input class="search" id="trainingSearch" oninput="renderTrainings()" placeholder="🔎 ค้นหาหลักสูตร หน่วยงาน หรือชื่อผู้เข้ารับการอบรม"><button class="primary" onclick="openTrainingModal()">＋ บันทึกการอบรม</button></div>
 <div class="card"><div class="table-wrap"><table><thead><tr>
@@ -345,7 +345,6 @@ let currentProfile=null, employees=[], leaveRequests=[], trainings=[];
 
 const THAI_FULL_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 
-// แสดงผลแบบ: 15 กันยายน 2569 (ไม่มี พ.ศ.)
 function formatThaiDateCustom(dStr){
   if(!dStr) return '-';
   const d=new Date(dStr);
@@ -353,7 +352,6 @@ function formatThaiDateCustom(dStr){
   return `${d.getDate()} ${THAI_FULL_MONTHS[d.getMonth()]} ${d.getFullYear()+543}`;
 }
 
-// วันที่แบบสั้นในตารางทั่วไป dd/mm/yyyy
 function formatThaiDate(dStr){
   if(!dStr) return '-';
   const d=new Date(dStr);
@@ -456,10 +454,6 @@ function renderLeaveRequests(){
 
  $('leaveTable').innerHTML=list.length?list.map(x=>{
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'ไม่พบข้อมูล';
-   let statusBadge = '<span class="badge pending">รออนุมัติ</span>';
-   if(x.status==='approved') statusBadge = '<span class="badge approved">อนุมัติแล้ว</span>';
-   if(x.status==='rejected') statusBadge = '<span class="badge rejected">ไม่อนุมัติ</span>';
-
    const canApprove = currentProfile && ['admin','staff'].includes(currentProfile.role);
    return `<tr>
     <td>${formatThaiDate(x.created_at)}</td>
@@ -467,7 +461,7 @@ function renderLeaveRequests(){
     <td>ลา${x.leave_type}</td>
     <td>${formatThaiDate(x.start_date)} - ${formatThaiDate(x.end_date)}</td>
     <td>${x.reason||'-'}</td>
-    <td>${statusBadge}</td>
+    <td><span class="badge ${x.status==='approved'?'approved':(x.status==='rejected'?'rejected':'pending')}">${x.status==='approved'?'อนุมัติแล้ว':(x.status==='rejected'?'ไม่อนุมัติ':'รออนุมัติ')}</span></td>
     <td style="white-space:nowrap">
       <button class="secondary" title="พิมพ์ใบลา" onclick="printLeave('${x.id}')">🖨️ พิมพ์</button>
       ${canApprove && x.status==='pending'?`
@@ -631,16 +625,18 @@ function renderTrainings(){
  const q=($('trainingSearch').value||'').toLowerCase();
  const list=trainings.filter(x=>{
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : '';
-   return empName.toLowerCase().includes(q) || String(x.course_name||'').toLowerCase().includes(q) || String(x.organizer||'').toLowerCase().includes(q);
+   const title = x.course_name || x.title || '';
+   return empName.toLowerCase().includes(q) || String(title).toLowerCase().includes(q) || String(x.organizer||'').toLowerCase().includes(q);
  });
 
  $('trainingTable').innerHTML=list.length?list.map(x=>{
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'ไม่พบข้อมูล';
+   const courseTitle = x.course_name || x.title || '-';
    const canManage = currentProfile && ['admin','staff'].includes(currentProfile.role);
    return `<tr>
     <td>${formatThaiDate(x.start_date)}<br><small style="color:var(--muted)">${x.training_time||'08.30 - 16.30 น.'}</small></td>
     <td><b>${empName}</b></td>
-    <td><b>${x.course_name}</b>${x.certificate_url?`<br><a href="${x.certificate_url}" target="_blank" style="color:var(--p);font-size:12px;font-weight:600">📎 ดูเกียรติบัตรแนบ</a>`:''}</td>
+    <td><b>${courseTitle}</b>${x.certificate_url?`<br><a href="${x.certificate_url}" target="_blank" style="color:var(--p);font-size:12px;font-weight:600">📎 ดูเกียรติบัตรแนบ</a>`:''}</td>
     <td>${x.organizer||'-'}</td>
     <td>${x.location||'-'}</td>
     <td style="white-space:nowrap">
@@ -666,7 +662,7 @@ function openTrainingModal(id){
    const t = trainings.find(x=>x.id===id);
    if(t){
      select.value=t.employee_id||'';
-     $('course_name').value=t.course_name||'';
+     $('course_name').value=t.course_name||t.title||'';
      $('organizer').value=t.organizer||'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
      $('training_date').value=t.start_date||'';
      $('training_time').value=t.training_time||'08.30 - 16.30 น.';
@@ -692,6 +688,7 @@ async function saveTraining(){
  const empId=$('training_employee_id').value;
  const course=$('course_name').value.trim();
  const tDate=$('training_date').value;
+ const tTime=$('training_time').value.trim();
  $('trainingFormMsg').textContent='';
 
  if(!empId||!course||!tDate){$('trainingFormMsg').textContent='กรุณาระบุผู้เข้ารับการอบรม หัวข้อ และวันที่อบรมให้ครบถ้วน';return}
@@ -720,9 +717,10 @@ async function saveTraining(){
  const payload={
    employee_id: empId,
    course_name: course,
+   title: course,
    organizer: $('organizer').value.trim()||null,
    start_date: tDate,
-   end_date: tDate,
+   training_time: tTime||null,
    location: $('training_location').value.trim()||null,
    certificate_url: certUrl
  };

@@ -24,14 +24,14 @@ button,input,select{font:inherit}button{cursor:pointer}
 .page{display:none}.page.active{display:block}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 2px 8px rgba(30,60,70,.035)}
 .stat{display:flex;justify-content:space-between;align-items:center}.stat .label{font-size:13px;color:var(--muted)}.stat .value{font-size:29px;font-weight:750;margin-top:4px}.stat-icon{width:45px;height:45px;border-radius:13px;background:#e8f5f3;display:grid;place-items:center;font-size:21px}
 .content{grid-template-columns:1.35fr .9fr}.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.card-head h3{margin:0;font-size:16px}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px 7px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px 7px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:600;white-space:nowrap}
 .badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700}.working{background:#e5f5ed;color:#17734f}.inactive{background:#f1f3f4;color:#68777c}.pending{background:#fff2d9;color:#9b6415}
 .notice{display:grid;gap:10px}.notice-item{padding:12px;border:1px solid var(--border);border-radius:11px}.notice-item strong{display:block;font-size:13px}.notice-item span{font-size:11px;color:var(--muted)}
 .quick{grid-template-columns:repeat(4,1fr);margin-top:18px}.quick button{border:1px solid var(--border);background:#fff;border-radius:14px;padding:16px;text-align:left}.quick b{display:block;margin-top:7px;font-size:13px}.quick small{color:var(--muted)}
 .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:16px}.search{flex:1;max-width:420px;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:#fff}.primary{border:1px solid var(--p);background:var(--p);color:#fff;border-radius:10px;padding:10px 14px;font-weight:700}.secondary{border:1px solid var(--border);background:#fff;border-radius:9px;padding:7px 10px}.danger{color:var(--danger)}
-.table-wrap{overflow:auto}.empty,.loading{text-align:center;color:var(--muted);padding:30px}
+.table-wrap{overflow-x:auto}.empty,.loading{text-align:center;color:var(--muted);padding:30px}
 .footer{text-align:center;color:#8a999d;font-size:11px;margin:22px 0 5px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
 @media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}.main{margin-left:0;width:100%;padding:16px}.mobile-menu{display:block}.stats{grid-template-columns:repeat(2,1fr)}.content{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}.overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:10}.topbar{align-items:flex-start}.actions .btn:not(.primary){display:none}.toolbar{align-items:stretch;flex-direction:column}.search{max-width:none}}
 @media(max-width:520px){.stats{gap:10px}.card{padding:14px}.stat .value{font-size:24px}.quick{grid-template-columns:1fr 1fr}.title h2{font-size:20px}.form-grid{grid-template-columns:1fr}table{font-size:12px}}
@@ -81,7 +81,18 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 
 <section id="employeesPage" class="page">
 <div class="toolbar"><input class="search" id="employeeSearch" oninput="renderEmployees()" placeholder="🔎 ค้นหาชื่อ นามสกุล รหัส หรือ ตำแหน่ง"><button class="primary" id="addEmployeeBtn" onclick="openEmployeeModal()">＋ เพิ่มบุคลากร</button></div>
-<div class="card"><div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>หน่วยงาน</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="employeeTable"><tr><td colspan="6" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
+<div class="card"><div class="table-wrap"><table><thead><tr>
+  <th>รหัส</th>
+  <th>ชื่อ-นามสกุล</th>
+  <th>ตำแหน่ง / วิทยฐานะ</th>
+  <th>วุฒิ / วิชาเอก</th>
+  <th>วันบรรจุ</th>
+  <th>วันมา รร.นี้</th>
+  <th>วันได้วิทยฐานะ</th>
+  <th>วันครบประเมิน (+3ปี)</th>
+  <th>สถานะ</th>
+  <th>จัดการ</th>
+</tr></thead><tbody id="employeeTable"><tr><td colspan="10" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
 <section id="placeholderPage" class="page"><div class="card"><div class="empty">หน้านี้จะเชื่อมต่อฐานข้อมูลในขั้นถัดไปครับ</div></div></section>
@@ -94,15 +105,19 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <input type="hidden" id="editId">
 <div class="form-grid">
 <div class="field"><label>คำนำหน้า</label><select id="prefix"><option value="">-- เลือก --</option><option>นาย</option><option>นาง</option><option>นางสาว</option><option>ดร.</option></select></div>
-<div class="field"><label>รหัสบุคลากร</label><input id="employee_code" placeholder="เช่น 001"></div>
+<div class="field"><label>รหัสบุคลากร</label><input id="employee_code" placeholder="เช่น 4321"></div>
 <div class="field"><label>ชื่อ *</label><input id="first_name"></div>
 <div class="field"><label>นามสกุล *</label><input id="last_name"></div>
-<div class="field"><label>ตำแหน่ง</label><input id="position" placeholder="เช่น ครู"></div>
-<div class="field"><label>วิทยฐานะ</label><input id="academic_position" placeholder="เช่น ครูชำนาญการ"></div>
-<div class="field"><label>หน่วยงาน/กลุ่มสาระ</label><input id="department"></div>
+<div class="field"><label>ตำแหน่ง</label><input id="position" placeholder="เช่น ครู, ผู้อำนวยการ"></div>
+<div class="field"><label>วิทยฐานะ</label><input id="academic_position" placeholder="เช่น ชำนาญการพิเศษ"></div>
+<div class="field"><label>วุฒิการศึกษา</label><input id="education_level" placeholder="เช่น ศษ.ม., คบ., วท.บ."></div>
+<div class="field"><label>สาขาวิชาเอก</label><input id="major" placeholder="เช่น บริหารการศึกษา, คณิตศาสตร์"></div>
+<div class="field"><label>วันที่บรรจุราชการ</label><input id="entry_date" type="date"></div>
+<div class="field"><label>วันที่ปฏิบัติงาน รร.นี้</label><input id="school_entry_date" type="date"></div>
+<div class="field"><label>วันที่ได้รับวิทยฐานะ</label><input id="academic_date" type="date" onchange="autoCalculateNextEval()"></div>
+<div class="field"><label>วันครบรอบส่งประเมิน (+3 ปี)</label><input id="next_evaluation_date" type="date"></div>
 <div class="field"><label>เบอร์โทรศัพท์</label><input id="phone"></div>
 <div class="field"><label>อีเมล</label><input id="employee_email" type="email"></div>
-<div class="field"><label>วันเริ่มปฏิบัติงาน</label><input id="start_date" type="date"></div>
 <div class="field"><label>สถานะ *</label><select id="status"><option value="active">ปฏิบัติงาน</option><option value="inactive">ไม่ปฏิบัติงาน</option></select></div>
 </div>
 <div class="modal-actions"><button class="secondary" onclick="closeEmployeeModal()">ยกเลิก</button><button class="primary" onclick="saveEmployee()">บันทึก</button></div>
@@ -115,6 +130,23 @@ const SUPABASE_KEY="sb_publishable_v1NGMnxOthQQXOK-oYzKYQ_jLKWgD0J";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 let currentProfile=null, employees=[];
+
+const THAI_MONTHS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function formatThaiDate(dStr){
+  if(!dStr) return '-';
+  const d=new Date(dStr);
+  if(isNaN(d.getTime())) return '-';
+  return `${d.getDate()} ${THAI_MONTHS[d.getMonth()]} ${d.getFullYear()+543}`;
+}
+
+function autoCalculateNextEval(){
+  const acad=$('academic_date').value;
+  if(acad){
+    const d=new Date(acad);
+    d.setFullYear(d.getFullYear()+3);
+    $('next_evaluation_date').value=d.toISOString().split('T')[0];
+  }
+}
 
 async function login(){
  const email=$('email').value.trim(),password=$('password').value;$('loginError').textContent='';
@@ -149,14 +181,25 @@ function renderLatestEmployees(){
  $('latestEmployees').innerHTML=list.length?`<table><thead><tr><th>ชื่อ</th><th>ตำแหน่ง</th><th>สถานะ</th></tr></thead><tbody>${list.map(x=>`<tr><td>${x.prefix||''}${x.first_name} ${x.last_name}</td><td>${x.position||'-'}</td><td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td></tr>`).join('')}</tbody></table>`:'ยังไม่มีข้อมูลบุคลากร';
 }
 async function loadEmployees(){
- const {data,error}=await supabaseClient.from('employees').select('*').order('first_name',{ascending:true});
- if(error){$('employeeTable').innerHTML=`<tr><td colspan="6" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`;return}
+ const {data,error}=await supabaseClient.from('employees').select('*').order('employee_code',{ascending:true});
+ if(error){$('employeeTable').innerHTML=`<tr><td colspan="10" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`;return}
  employees=data;renderEmployees();
 }
 function renderEmployees(){
  const q=($('employeeSearch').value||'').toLowerCase();
- const list=employees.filter(x=>[x.employee_code,x.first_name,x.last_name,x.position,x.department].some(v=>String(v||'').toLowerCase().includes(q)));
- $('employeeTable').innerHTML=list.length?list.map(x=>`<tr><td>${x.employee_code||'-'}</td><td><b>${x.prefix||''}${x.first_name} ${x.last_name}</b></td><td>${x.position||'-'}${x.academic_position?'<br><small>'+x.academic_position+'</small>':''}</td><td>${x.department||'-'}</td><td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td><td>${currentProfile&&['admin','staff'].includes(currentProfile.role)?`<button class="secondary" onclick="editEmployee('${x.id}')">แก้ไข</button> <button class="secondary danger" onclick="deleteEmployee('${x.id}')">ลบ</button>`:'ดูได้'}</td></tr>`).join(''):`<tr><td colspan="6" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
+ const list=employees.filter(x=>[x.employee_code,x.first_name,x.last_name,x.position,x.academic_position,x.major].some(v=>String(v||'').toLowerCase().includes(q)));
+ $('employeeTable').innerHTML=list.length?list.map(x=>`<tr>
+  <td>${x.employee_code||'-'}</td>
+  <td><b>${x.prefix||''}${x.first_name} ${x.last_name}</b></td>
+  <td>${x.position||'-'}${x.academic_position?'<br><small style="color:var(--p)">'+x.academic_position+'</small>':''}</td>
+  <td>${x.education_level||'-'}${x.major?'<br><small>'+x.major+'</small>':''}</td>
+  <td>${formatThaiDate(x.entry_date)}</td>
+  <td>${formatThaiDate(x.school_entry_date)}</td>
+  <td>${formatThaiDate(x.academic_date)}</td>
+  <td><b>${formatThaiDate(x.next_evaluation_date)}</b></td>
+  <td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td>
+  <td>${currentProfile&&['admin','staff'].includes(currentProfile.role)?`<button class="secondary" onclick="editEmployee('${x.id}')">แก้ไข</button> <button class="secondary danger" onclick="deleteEmployee('${x.id}')">ลบ</button>`:'ดูได้'}</td>
+ </tr>`).join(''):`<tr><td colspan="10" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
 }
 function selectMenu(btn,name){
  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');
@@ -170,15 +213,42 @@ function toggleMenu(){$('sidebar').classList.toggle('open');$('overlay').classLi
 function openEmployeeModal(id){
  if(currentProfile&&!['admin','staff'].includes(currentProfile.role))return;
  $('editId').value=id||'';$('modalTitle').textContent=id?'แก้ไขข้อมูลบุคลากร':'เพิ่มบุคลากร';$('formMsg').textContent='';
- ['prefix','employee_code','first_name','last_name','position','academic_position','department','phone','employee_email','start_date'].forEach(id=>$(id).value='');$('status').value='active';
- if(id){const x=employees.find(e=>e.id===id);if(x){$('prefix').value=x.prefix||'';$('employee_code').value=x.employee_code||'';$('first_name').value=x.first_name||'';$('last_name').value=x.last_name||'';$('position').value=x.position||'';$('academic_position').value=x.academic_position||'';$('department').value=x.department||'';$('phone').value=x.phone||'';$('employee_email').value=x.email||'';$('start_date').value=x.start_date||'';$('status').value=x.status||'active'}}
+ ['prefix','employee_code','first_name','last_name','position','academic_position','education_level','major','entry_date','school_entry_date','academic_date','next_evaluation_date','phone','employee_email'].forEach(id=>$(id).value='');$('status').value='active';
+ if(id){
+   const x=employees.find(e=>e.id===id);
+   if(x){
+     $('prefix').value=x.prefix||'';$('employee_code').value=x.employee_code||'';
+     $('first_name').value=x.first_name||'';$('last_name').value=x.last_name||'';
+     $('position').value=x.position||'';$('academic_position').value=x.academic_position||'';
+     $('education_level').value=x.education_level||'';$('major').value=x.major||'';
+     $('entry_date').value=x.entry_date||'';$('school_entry_date').value=x.school_entry_date||'';
+     $('academic_date').value=x.academic_date||'';$('next_evaluation_date').value=x.next_evaluation_date||'';
+     $('phone').value=x.phone||'';$('employee_email').value=x.email||'';$('status').value=x.status||'active';
+   }
+ }
  $('employeeModal').classList.add('show');
 }
 function closeEmployeeModal(){$('employeeModal').classList.remove('show')}
 async function saveEmployee(){
  const first=$('first_name').value.trim(),last=$('last_name').value.trim();$('formMsg').textContent='';
  if(!first||!last){$('formMsg').textContent='กรุณากรอกชื่อและนามสกุล';return}
- const payload={prefix:$('prefix').value||null,employee_code:$('employee_code').value.trim()||null,first_name:first,last_name:last,position:$('position').value.trim()||null,academic_position:$('academic_position').value.trim()||null,department:$('department').value.trim()||null,phone:$('phone').value.trim()||null,email:$('employee_email').value.trim()||null,start_date:$('start_date').value||null,status:$('status').value};
+ const payload={
+   prefix:$('prefix').value||null,
+   employee_code:$('employee_code').value.trim()||null,
+   first_name:first,
+   last_name:last,
+   position:$('position').value.trim()||null,
+   academic_position:$('academic_position').value.trim()||null,
+   education_level:$('education_level').value.trim()||null,
+   major:$('major').value.trim()||null,
+   entry_date:$('entry_date').value||null,
+   school_entry_date:$('school_entry_date').value||null,
+   academic_date:$('academic_date').value||null,
+   next_evaluation_date:$('next_evaluation_date').value||null,
+   phone:$('phone').value.trim()||null,
+   email:$('employee_email').value.trim()||null,
+   status:$('status').value
+ };
  const id=$('editId').value;
  const result=id?await supabaseClient.from('employees').update(payload).eq('id',id):await supabaseClient.from('employees').insert(payload);
  if(result.error){$('formMsg').textContent='บันทึกไม่สำเร็จ: '+result.error.message;return}
@@ -194,4 +264,5 @@ async function deleteEmployee(id){
 supabaseClient.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')showLogin()});
 checkSession();
 </script>
-</body></html>
+</body>
+</html>

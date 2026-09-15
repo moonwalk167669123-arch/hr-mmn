@@ -33,6 +33,21 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .footer{text-align:center;color:#8a999d;font-size:11px;margin:22px 0 5px}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
+
+/* จัดสไตล์เอกสารสำหรับพิมพ์ใบลา */
+#printSection{display:none}
+@media print{
+  body *{visibility:hidden}
+  #printSection, #printSection *{visibility:visible}
+  #printSection{display:block;position:absolute;left:0;top:0;width:100%;padding:20px 40px;font-family:"TH Sarabun New","Sarabun",sans-serif;font-size:16pt;line-height:1.6;color:#000;background:#fff}
+  .print-head{text-align:center;font-weight:bold;font-size:20pt;margin-bottom:20px}
+  .print-row{display:flex;justify-content:space-between;margin:8px 0}
+  .print-dotted{border-bottom:1px dotted #000;display:inline-block;padding:0 5px}
+  .print-sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
+  .print-sign-box{border:1px solid #999;padding:15px;border-radius:8px;font-size:14pt}
+  .print-sign{text-align:center;margin-top:20px}
+}
+
 @media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}.main{margin-left:0;width:100%;padding:16px}.mobile-menu{display:block}.stats{grid-template-columns:repeat(2,1fr)}.content{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}.overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:10}.topbar{align-items:flex-start}.actions .btn:not(.primary){display:none}.toolbar{align-items:stretch;flex-direction:column}.search{max-width:none}}
 @media(max-width:520px){.stats{gap:10px}.card{padding:14px}.stat .value{font-size:24px}.quick{grid-template-columns:1fr 1fr}.title h2{font-size:20px}.form-grid{grid-template-columns:1fr}table{font-size:12px}}
 </style>
@@ -155,6 +170,61 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeLeaveModal()">ยกเลิก</button><button class="primary" onclick="saveLeaveRequest()">ยื่นใบลา</button></div>
 </div></div>
 
+<!-- Print Section (แบบฟอร์มเอกสารขอลา สำหรับสั่งพิมพ์ / PDF) -->
+<div id="printSection">
+  <div class="print-head">แบบใบลาของข้าราชการครูและบุคลากรทางการศึกษา<br>โรงเรียนศึกษานารีอนุสรณ์ 1</div>
+  <div style="text-align:right;margin-bottom:15px">
+    เขียนที่ โรงเรียนศึกษานารีอนุสรณ์ 1<br>
+    วันที่ <span class="print-dotted" id="p_created_date" style="min-width:140px"></span>
+  </div>
+  <div style="margin-bottom:15px">
+    <b>เรื่อง</b> ขออนุญาต<span id="p_leave_type_title"></span><br>
+    <b>เรียน</b> ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1
+  </div>
+  <div style="text-indent:40px;margin-bottom:10px">
+    ข้าพเจ้า <span class="print-dotted" id="p_name" style="min-width:220px"></span>
+    ตำแหน่ง <span class="print-dotted" id="p_position" style="min-width:180px"></span>
+    สังกัด โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย
+  </div>
+  <div style="text-indent:40px;margin-bottom:10px">
+    มีความประสงค์ขอ <span class="print-dotted" id="p_leave_type" style="min-width:150px"></span>
+    เนื่องจาก <span class="print-dotted" id="p_reason" style="min-width:320px"></span>
+  </div>
+  <div style="text-indent:40px;margin-bottom:20px">
+    ตั้งแต่วันที่ <span class="print-dotted" id="p_start_date" style="min-width:140px"></span>
+    ถึงวันที่ <span class="print-dotted" id="p_end_date" style="min-width:140px"></span>
+    กำหนด <span class="print-dotted" id="p_days" style="min-width:50px;text-align:center"></span> วัน
+  </div>
+  <div style="text-indent:40px;margin-bottom:30px">
+    จึงเรียนมาเพื่อโปรดพิจารณาอนุญาต
+  </div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:30px">
+    <div style="text-align:center;width:300px">
+      ขอแสดงความนับถือ<br><br><br>
+      (<span id="p_sign_name">...................................................</span>)<br>
+      ผู้ขอลา
+    </div>
+  </div>
+
+  <div class="print-sign-grid">
+    <div class="print-sign-box">
+      <b>ความเห็นของเจ้าหน้าที่งานบุคคล</b><br>
+      - ได้ตรวจสอบวันลาถูกต้องตามระเบียบ<br><br>
+      ลงชื่อ ...........................................................<br>
+      (...........................................................)<br>
+      วันที่ ....../....../......
+    </div>
+    <div class="print-sign-box">
+      <b>คำสั่ง / การพิจารณา</b><br>
+      ( &nbsp; ) อนุญาต &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( &nbsp; ) ไม่อนุญาต<br><br>
+      ลงชื่อ ...........................................................<br>
+      ( นายประเสริฐ พอนา )<br>
+      ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1<br>
+      วันที่ ....../....../......
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL="https://mswtxisekyfmqvurlftg.supabase.co";
@@ -237,8 +307,8 @@ function renderEmployees(){
 // ระบบจัดการการลา
 async function loadLeaveRequests(){
  const [lRes, eRes]=await Promise.all([
-   supabaseClient.from('leave_requests').select('*, employees(prefix, first_name, last_name)').order('created_at',{ascending:false}),
-   supabaseClient.from('employees').select('id, prefix, first_name, last_name').order('employee_code',{ascending:true})
+   supabaseClient.from('leave_requests').select('*, employees(prefix, first_name, last_name, position)').order('created_at',{ascending:false}),
+   supabaseClient.from('employees').select('id, prefix, first_name, last_name, position').order('employee_code',{ascending:true})
  ]);
  if(lRes.error){$('leaveTable').innerHTML=`<tr><td colspan="7" class="empty">โหลดข้อมูลไม่ได้: ${lRes.error.message}</td></tr>`;return}
  leaveRequests=lRes.data;
@@ -267,10 +337,14 @@ function renderLeaveRequests(){
     <td>${formatThaiDate(x.start_date)} - ${formatThaiDate(x.end_date)}</td>
     <td>${x.reason||'-'}</td>
     <td>${statusBadge}</td>
-    <td>${canApprove && x.status==='pending'?`
-      <button class="secondary" style="color:var(--ok)" onclick="updateLeaveStatus('${x.id}','approved')">อนุมัติ</button> 
-      <button class="secondary danger" onclick="updateLeaveStatus('${x.id}','rejected')">ไม่อนุมัติ</button>
-    `:(canApprove?`<button class="secondary danger" onclick="deleteLeaveRequest('${x.id}')">ลบ</button>`:'-')}</td>
+    <td style="white-space:nowrap">
+      <button class="secondary" title="พิมพ์ใบลา" onclick="printLeave('${x.id}')">🖨️ พิมพ์</button>
+      ${canApprove && x.status==='pending'?`
+        <button class="secondary" style="color:var(--ok)" onclick="updateLeaveStatus('${x.id}','approved')">อนุมัติ</button> 
+        <button class="secondary danger" onclick="updateLeaveStatus('${x.id}','rejected')">ไม่อนุมัติ</button>
+      `:''}
+      ${canApprove?`<button class="secondary danger" onclick="deleteLeaveRequest('${x.id}')">ลบ</button>`:''}
+    </td>
    </tr>`;
  }).join(''):`<tr><td colspan="7" class="empty">ยังไม่มีประวัติการขอลา</td></tr>`;
 }
@@ -320,6 +394,31 @@ async function deleteLeaveRequest(id){
  if(error){alert('ลบไม่สำเร็จ: '+error.message);return}
  await loadLeaveRequests();
  await loadDashboard();
+}
+
+// ฟังก์ชันพิมพ์ใบลา
+function printLeave(id){
+  const leave = leaveRequests.find(x => x.id === id);
+  if(!leave) return alert('ไม่พบข้อมูลการลา');
+  
+  const emp = leave.employees || {};
+  const fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
+  const dStart = new Date(leave.start_date);
+  const dEnd = new Date(leave.end_date);
+  const diffDays = Math.ceil(Math.abs(dEnd - dStart) / (1000 * 60 * 60 * 24)) + 1;
+
+  $('p_created_date').textContent = formatThaiDate(leave.created_at);
+  $('p_leave_type_title').textContent = leave.leave_type;
+  $('p_leave_type').textContent = leave.leave_type;
+  $('p_name').textContent = fullName || '-';
+  $('p_position').textContent = emp.position || 'ครู';
+  $('p_reason').textContent = leave.reason || 'มีความจำเป็นส่วนตัว';
+  $('p_start_date').textContent = formatThaiDate(leave.start_date);
+  $('p_end_date').textContent = formatThaiDate(leave.end_date);
+  $('p_days').textContent = diffDays;
+  $('p_sign_name').textContent = fullName || '...................................................';
+
+  window.print();
 }
 
 function selectMenu(btn,name){

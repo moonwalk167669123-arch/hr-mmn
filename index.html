@@ -37,7 +37,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
 
-/* จัดสไตล์เอกสารพิมพ์ใบลา (บังคับฟอนต์ SarabunPSK / Sarabun 100%) */
+/* จัดสไตล์เอกสารพิมพ์ใบลา */
 #printSection{display:none}
 @page {
   size: A4 portrait;
@@ -165,7 +165,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </tr></thead><tbody id="leaveTable"><tr><td colspan="7" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
-<!-- Training Page (บันทึกการอบรม) -->
+<!-- Training Page (ไม่มีคอลัมน์ชั่วโมง) -->
 <section id="trainingPage" class="page">
 <div class="toolbar"><input class="search" id="trainingSearch" oninput="renderTrainings()" placeholder="🔎 ค้นหาหลักสูตร หน่วยงาน หรือชื่อผู้เข้ารับการอบรม"><button class="primary" onclick="openTrainingModal()">＋ บันทึกการอบรม</button></div>
 <div class="card"><div class="table-wrap"><table><thead><tr>
@@ -173,10 +173,9 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   <th>ผู้เข้ารับการอบรม</th>
   <th>หลักสูตร / หัวข้อการอบรม</th>
   <th>หน่วยงานที่จัด</th>
-  <th>ชั่วโมง</th>
   <th>สถานที่ / ช่องทาง</th>
   <th>จัดการ</th>
-</tr></thead><tbody id="trainingTable"><tr><td colspan="7" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
+</tr></thead><tbody id="trainingTable"><tr><td colspan="6" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
 <section id="placeholderPage" class="page"><div class="card"><div class="empty">หน้านี้จะเชื่อมต่อฐานข้อมูลในขั้นถัดไปครับ</div></div></section>
@@ -208,7 +207,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeEmployeeModal()">ยกเลิก</button><button class="primary" onclick="saveEmployee()">บันทึก</button></div>
 </div></div>
 
-<!-- Leave Modal (ช่องปฏิทินเลือกวันที่) -->
+<!-- Leave Modal -->
 <div class="modal" id="leaveModal"><div class="modal-card">
 <div class="modal-head"><h3>บันทึกการขอลา</h3><button class="close" onclick="closeLeaveModal()">×</button></div>
 <div class="msg" id="leaveFormMsg"></div>
@@ -227,7 +226,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeLeaveModal()">ยกเลิก</button><button class="primary" onclick="saveLeaveRequest()">ยื่นใบลา</button></div>
 </div></div>
 
-<!-- Training Modal (อัปโหลดไฟล์เกียรติบัตร / PDF) -->
+<!-- Training Modal (ตัดช่องชั่วโมงออก, Default สพป.เชียงใหม่ เขต 3) -->
 <div class="modal" id="trainingModal"><div class="modal-card">
 <div class="modal-head"><h3 id="trainingModalTitle">บันทึกประวัติการอบรม</h3><button class="close" onclick="closeTrainingModal()">×</button></div>
 <div class="msg" id="trainingFormMsg"></div>
@@ -238,9 +237,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="form-grid">
 <div class="field"><label>เริ่มวันที่ *</label><input id="training_start_date" type="date"></div>
 <div class="field"><label>ถึงวันที่ *</label><input id="training_end_date" type="date"></div>
-<div class="field"><label>จำนวนชั่วโมง (ชั่วโมง)</label><input id="training_hours" type="number" step="0.5" placeholder="เช่น 6 หรือ 12"></div>
-<div class="field"><label>สถานที่ / ช่องทางการอบรม</label><input id="training_location" placeholder="เช่น ออนไลน์ผ่าน Zoom, โรงแรม..."></div>
 </div>
+<div class="field"><label>สถานที่ / ช่องทางการอบรม</label><input id="training_location" placeholder="เช่น ออนไลน์ผ่าน Zoom, สพป.เชียงใหม่ เขต 3"></div>
 <div class="field">
   <label>แนบไฟล์เกียรติบัตร (PDF หรือ รูปภาพ)</label>
   <input type="file" id="cert_file" accept=".pdf,image/*">
@@ -250,12 +248,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeTrainingModal()">ยกเลิก</button><button class="primary" id="saveTrainingBtn" onclick="saveTraining()">บันทึกข้อมูล</button></div>
 </div></div>
 
-<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (วันที่แสดงผลแบบเต็ม) -->
+<!-- แบบฟอร์มใบลา (วันที่แสดงผลแบบ: 15 กันยายน 2569) -->
 <div id="printSection">
   <div class="p-title">แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว</div>
   <div class="p-right">
     เขียนที่ โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>
-    วันที่ <span class="p-dotted" id="p_doc_date" style="min-width:180px;text-align:center"></span>
+    วันที่ <span class="p-dotted" id="p_doc_date" style="min-width:160px;text-align:center"></span>
   </div>
   <div style="margin-bottom:4px">
     <b>เรื่อง</b> ขออนุญาตลา<span id="p_subject_type"></span><br>
@@ -276,8 +274,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     เนื่องจาก <span class="p-dotted" id="p_reason" style="min-width:300px"></span>
   </div>
   <div class="p-line">
-    ตั้งแต่วันที่ <span class="p-dotted" id="p_start_date" style="min-width:160px;text-align:center"></span>
-    ถึงวันที่ <span class="p-dotted" id="p_end_date" style="min-width:160px;text-align:center"></span>
+    ตั้งแต่วันที่ <span class="p-dotted" id="p_start_date" style="min-width:140px;text-align:center"></span>
+    ถึงวันที่ <span class="p-dotted" id="p_end_date" style="min-width:140px;text-align:center"></span>
     มีกำหนด <span class="p-dotted" id="p_days" style="min-width:35px;text-align:center"></span> วัน
   </div>
   <div class="p-line">
@@ -285,8 +283,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     <span class="p-circle" id="chk_last_sick"></span> ป่วย &nbsp;&nbsp;
     <span class="p-circle" id="chk_last_personal"></span> กิจส่วนตัว &nbsp;&nbsp;
     <span class="p-circle" id="chk_last_maternity"></span> คลอดบุตร &nbsp;&nbsp;
-    ครั้งสุดท้ายตั้งแต่วันที่ <span class="p-dotted" id="p_last_start" style="min-width:140px;text-align:center">-</span>
-    ถึงวันที่ <span class="p-dotted" id="p_last_end" style="min-width:140px;text-align:center">-</span>
+    ครั้งสุดท้ายตั้งแต่วันที่ <span class="p-dotted" id="p_last_start" style="min-width:130px;text-align:center">-</span>
+    ถึงวันที่ <span class="p-dotted" id="p_last_end" style="min-width:130px;text-align:center">-</span>
     มีกำหนด <span class="p-dotted" id="p_last_days" style="min-width:30px;text-align:center">-</span> วัน
   </div>
   <div class="p-line">
@@ -347,12 +345,12 @@ let currentProfile=null, employees=[], leaveRequests=[], trainings=[];
 
 const THAI_FULL_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 
-// วันที่แบบเต็ม เช่น 15 กันยายน พ.ศ. 2569
-function formatThaiDateFull(dStr){
+// แสดงผลแบบ: 15 กันยายน 2569 (ไม่มีคำว่า พ.ศ.)
+function formatThaiDateCustom(dStr){
   if(!dStr) return '-';
   const d=new Date(dStr);
   if(isNaN(d.getTime())) return '-';
-  return `${d.getDate()} ${THAI_FULL_MONTHS[d.getMonth()]} พ.ศ. ${d.getFullYear()+543}`;
+  return `${d.getDate()} ${THAI_FULL_MONTHS[d.getMonth()]} ${d.getFullYear()+543}`;
 }
 
 // วันที่แบบสั้นในตารางทั่วไป dd/mm/yyyy
@@ -553,14 +551,14 @@ function printLeave(id){
   const fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
   const curDays = calcDays(leave.start_date, leave.end_date);
 
-  // แสดงผลวันที่แบบเต็ม
-  $('p_doc_date').textContent = formatThaiDateFull(leave.created_at);
+  // แสดงผลวันที่แบบ: 15 กันยายน 2569
+  $('p_doc_date').textContent = formatThaiDateCustom(leave.created_at);
   $('p_subject_type').textContent = leave.leave_type;
   $('p_name').textContent = fullName || '-';
   $('p_position').textContent = emp.position || 'ครู';
   $('p_reason').textContent = leave.reason || 'มีความจำเป็นส่วนตัว';
-  $('p_start_date').textContent = formatThaiDateFull(leave.start_date);
-  $('p_end_date').textContent = formatThaiDateFull(leave.end_date);
+  $('p_start_date').textContent = formatThaiDateCustom(leave.start_date);
+  $('p_end_date').textContent = formatThaiDateCustom(leave.end_date);
   $('p_days').textContent = curDays;
   $('p_sign_name').textContent = fullName || '...................................................';
   $('p_sign_pos').textContent = emp.position || 'ครู';
@@ -587,8 +585,8 @@ function printLeave(id){
     $('chk_last_sick').className = 'p-circle' + (lastLeave.leave_type.includes('ป่วย') ? ' checked' : '');
     $('chk_last_personal').className = 'p-circle' + (lastLeave.leave_type.includes('กิจ') ? ' checked' : '');
     $('chk_last_maternity').className = 'p-circle' + (lastLeave.leave_type.includes('คลอด') ? ' checked' : '');
-    $('p_last_start').textContent = formatThaiDateFull(lastLeave.start_date);
-    $('p_last_end').textContent = formatThaiDateFull(lastLeave.end_date);
+    $('p_last_start').textContent = formatThaiDateCustom(lastLeave.start_date);
+    $('p_last_end').textContent = formatThaiDateCustom(lastLeave.end_date);
     $('p_last_days').textContent = calcDays(lastLeave.start_date, lastLeave.end_date);
   } else {
     $('chk_last_sick').className = 'p-circle';
@@ -624,7 +622,7 @@ async function loadTrainings(){
    supabaseClient.from('trainings').select('*, employees(prefix, first_name, last_name)').order('start_date',{ascending:false}),
    supabaseClient.from('employees').select('id, prefix, first_name, last_name').order('employee_code',{ascending:true})
  ]);
- if(tRes.error){$('trainingTable').innerHTML=`<tr><td colspan="7" class="empty">โหลดข้อมูลไม่ได้: ${tRes.error.message}</td></tr>`;return}
+ if(tRes.error){$('trainingTable').innerHTML=`<tr><td colspan="6" class="empty">โหลดข้อมูลไม่ได้: ${tRes.error.message}</td></tr>`;return}
  trainings=tRes.data;
  if(!eRes.error) employees=eRes.data;
  renderTrainings();
@@ -645,7 +643,6 @@ function renderTrainings(){
     <td><b>${empName}</b></td>
     <td><b>${x.course_name}</b>${x.certificate_url?`<br><a href="${x.certificate_url}" target="_blank" style="color:var(--p);font-size:12px;font-weight:600">📎 ดูเกียรติบัตรแนบ</a>`:''}</td>
     <td>${x.organizer||'-'}</td>
-    <td><span class="badge working">${x.hours||0} ชม.</span></td>
     <td>${x.location||'-'}</td>
     <td style="white-space:nowrap">
       ${canManage ? `
@@ -654,7 +651,7 @@ function renderTrainings(){
       ` : '-'}
     </td>
    </tr>`;
- }).join(''):`<tr><td colspan="7" class="empty">ยังไม่มีประวัติการอบรม</td></tr>`;
+ }).join(''):`<tr><td colspan="6" class="empty">ยังไม่มีประวัติการอบรม</td></tr>`;
 }
 
 function openTrainingModal(id){
@@ -674,8 +671,7 @@ function openTrainingModal(id){
      $('organizer').value=t.organizer||'';
      $('training_start_date').value=t.start_date||'';
      $('training_end_date').value=t.end_date||'';
-     $('training_hours').value=t.hours||'';
-     $('training_location').value=t.location||'';
+     $('training_location').value=t.location||'สพป.เชียงใหม่ เขต 3';
      $('existing_cert_url').value=t.certificate_url||'';
      $('cert_preview').innerHTML=t.certificate_url?`<a href="${t.certificate_url}" target="_blank">📄 ไฟล์เดิมที่แนบไว้</a>`:'';
    }
@@ -685,8 +681,7 @@ function openTrainingModal(id){
    $('training_end_date').value = today;
    $('course_name').value='';
    $('organizer').value='';
-   $('training_hours').value='6';
-   $('training_location').value='ออนไลน์';
+   $('training_location').value='สพป.เชียงใหม่ เขต 3';
    $('existing_cert_url').value='';
    $('cert_preview').textContent='';
  }
@@ -707,7 +702,6 @@ async function saveTraining(){
  let certUrl = $('existing_cert_url').value || null;
  const fileInput = $('cert_file');
  
- // จัดการอัปโหลดไฟล์เกียรติบัตรขึ้น Supabase Storage
  if(fileInput.files.length > 0){
    const file = fileInput.files[0];
    const fileExt = file.name.split('.').pop();
@@ -732,7 +726,6 @@ async function saveTraining(){
    organizer: $('organizer').value.trim()||null,
    start_date: start,
    end_date: end,
-   hours: parseFloat($('training_hours').value)||0,
    location: $('training_location').value.trim()||null,
    certificate_url: certUrl
  };

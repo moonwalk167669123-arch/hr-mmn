@@ -37,7 +37,6 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
 
-/* จัดสไตล์เอกสารพิมพ์ใบลา */
 #printSection{display:none}
 @page {
   size: A4 portrait;
@@ -145,7 +144,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   <th>วันบรรจุ</th>
   <th>วันมา รร.นี้</th>
   <th>วันได้วิทยฐานะ</th>
-  <th>วันครบประเมิน </th>
+  <th>วันครบประเมิน (+3ปี)</th>
   <th>สถานะ</th>
   <th>จัดการ</th>
 </tr></thead><tbody id="employeeTable"><tr><td colspan="10" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
@@ -165,7 +164,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </tr></thead><tbody id="leaveTable"><tr><td colspan="7" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
-<!-- Training Page (ไม่มีคอลัมน์ชั่วโมง) -->
+<!-- Training Page -->
 <section id="trainingPage" class="page">
 <div class="toolbar"><input class="search" id="trainingSearch" oninput="renderTrainings()" placeholder="🔎 ค้นหาหลักสูตร หน่วยงาน หรือชื่อผู้เข้ารับการอบรม"><button class="primary" onclick="openTrainingModal()">＋ บันทึกการอบรม</button></div>
 <div class="card"><div class="table-wrap"><table><thead><tr>
@@ -226,7 +225,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeLeaveModal()">ยกเลิก</button><button class="primary" onclick="saveLeaveRequest()">ยื่นใบลา</button></div>
 </div></div>
 
-<!-- Training Modal (วันเดียว + ช่วงเวลา + ค่าเริ่มต้น สพป.เชียงใหม่ เขต 3) -->
+<!-- Training Modal (ใช้ course_name เท่านั้น) -->
 <div class="modal" id="trainingModal"><div class="modal-card">
 <div class="modal-head"><h3 id="trainingModalTitle">บันทึกประวัติการอบรม</h3><button class="close" onclick="closeTrainingModal()">×</button></div>
 <div class="msg" id="trainingFormMsg"></div>
@@ -248,7 +247,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeTrainingModal()">ยกเลิก</button><button class="primary" id="saveTrainingBtn" onclick="saveTraining()">บันทึกข้อมูล</button></div>
 </div></div>
 
-<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (15 กันยายน 2569) -->
+<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ -->
 <div id="printSection">
   <div class="p-title">แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว</div>
   <div class="p-right">
@@ -625,18 +624,16 @@ function renderTrainings(){
  const q=($('trainingSearch').value||'').toLowerCase();
  const list=trainings.filter(x=>{
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : '';
-   const title = x.course_name || x.title || '';
-   return empName.toLowerCase().includes(q) || String(title).toLowerCase().includes(q) || String(x.organizer||'').toLowerCase().includes(q);
+   return empName.toLowerCase().includes(q) || String(x.course_name||'').toLowerCase().includes(q) || String(x.organizer||'').toLowerCase().includes(q);
  });
 
  $('trainingTable').innerHTML=list.length?list.map(x=>{
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'ไม่พบข้อมูล';
-   const courseTitle = x.course_name || x.title || '-';
    const canManage = currentProfile && ['admin','staff'].includes(currentProfile.role);
    return `<tr>
     <td>${formatThaiDate(x.start_date)}<br><small style="color:var(--muted)">${x.training_time||'08.30 - 16.30 น.'}</small></td>
     <td><b>${empName}</b></td>
-    <td><b>${courseTitle}</b>${x.certificate_url?`<br><a href="${x.certificate_url}" target="_blank" style="color:var(--p);font-size:12px;font-weight:600">📎 ดูเกียรติบัตรแนบ</a>`:''}</td>
+    <td><b>${x.course_name||'-'}</b>${x.certificate_url?`<br><a href="${x.certificate_url}" target="_blank" style="color:var(--p);font-size:12px;font-weight:600">📎 ดูเกียรติบัตรแนบ</a>`:''}</td>
     <td>${x.organizer||'-'}</td>
     <td>${x.location||'-'}</td>
     <td style="white-space:nowrap">
@@ -662,7 +659,7 @@ function openTrainingModal(id){
    const t = trainings.find(x=>x.id===id);
    if(t){
      select.value=t.employee_id||'';
-     $('course_name').value=t.course_name||t.title||'';
+     $('course_name').value=t.course_name||'';
      $('organizer').value=t.organizer||'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
      $('training_date').value=t.start_date||'';
      $('training_time').value=t.training_time||'08.30 - 16.30 น.';
@@ -717,7 +714,6 @@ async function saveTraining(){
  const payload={
    employee_id: empId,
    course_name: course,
-   title: course,
    organizer: $('organizer').value.trim()||null,
    start_date: tDate,
    training_time: tTime||null,

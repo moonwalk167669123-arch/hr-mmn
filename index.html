@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0f766e">
-<title>ระบบบริหารงานบุคคล | โรงเรียนศึกษานารีอนุสรณ์ 1</title>
+<title>ระบบบริหารงานบุคคล | โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย</title>
+<!-- นำเข้าฟอนต์ Sarabun เพื่อให้หน้าพิมพ์ใช้ฟอนต์สารบรรณได้แน่นอน 100% -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}:root{--p:#0f766e;--p2:#115e59;--bg:#f4f7f8;--card:#fff;--text:#18323a;--muted:#6b7d83;--border:#e5eaec;--danger:#c84a4a;--ok:#17734f}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text)}
@@ -34,7 +38,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
 
-/* จัดสไตล์เอกสารสำหรับพิมพ์ใบลา (คุมให้อยู่ในหน้า A4 หน้าเดียวพอดี) */
+/* จัดสไตล์เอกสารสำหรับพิมพ์ใบลา (บังคับใช้ฟอนต์ SarabunPSK / Sarabun 100%) */
 #printSection{display:none}
 @page {
   size: A4 portrait;
@@ -46,9 +50,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     padding: 0 !important;
     height: 100%;
     background: #fff !important;
+    font-family: "TH Sarabun PSK", "SarabunPSK", "Sarabun", sans-serif !important;
   }
   body *{visibility:hidden}
-  #printSection, #printSection *{visibility:visible}
+  #printSection, #printSection *{
+    visibility:visible;
+    font-family: "TH Sarabun PSK", "SarabunPSK", "Sarabun", sans-serif !important;
+  }
   #printSection{
     display:block !important;
     position:absolute;
@@ -56,15 +64,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     top:0;
     width:100%;
     max-width: 100%;
-    font-family:"SarabunPSK", "TH Sarabun PSK", "TH Sarabun New", "Sarabun", sans-serif;
-    font-size:15pt;
+    font-size:16pt;
     line-height:1.25;
     color:#000;
     background:#fff;
     page-break-inside: avoid;
     box-sizing: border-box;
   }
-  .p-title{text-align:center;font-weight:bold;font-size:17.5pt;margin:0 0 6px}
+  .p-title{text-align:center;font-weight:bold;font-size:18pt;margin:0 0 6px}
   .p-right{text-align:right;margin:0 0 6px}
   .p-dotted{border-bottom:1px dotted #000;display:inline-block;padding:0 4px;vertical-align:baseline}
   .p-indent{text-indent:2em;margin:3px 0}
@@ -72,8 +79,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   .p-circle{display:inline-block;width:11px;height:11px;border:1px solid #000;border-radius:50%;margin-right:3px;vertical-align:middle;text-align:center;line-height:9px;font-size:9pt}
   .p-circle.checked::after{content:"✓";font-weight:bold}
   .p-box-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;align-items:start}
-  .p-box{border:1px solid #000;padding:8px 12px;border-radius:4px;font-size:13.5pt;line-height:1.3}
-  .p-stat-table{width:100%;border-collapse:collapse;margin:4px 0 8px;font-size:13pt;text-align:center}
+  .p-box{border:1px solid #000;padding:8px 12px;border-radius:4px;font-size:14pt;line-height:1.3}
+  .p-stat-table{width:100%;border-collapse:collapse;margin:4px 0 8px;font-size:13.5pt;text-align:center}
   .p-stat-table th, .p-stat-table td{border:1px solid #000;padding:3px 2px}
 }
 
@@ -92,7 +99,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="app" id="app">
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 <aside class="sidebar" id="sidebar">
-<div class="brand"><div class="logo">🏫</div><div><h1>ระบบบริหารงานบุคคล</h1><p>โรงเรียนศึกษานารีอนุสรณ์ 1</p></div></div>
+<div class="brand"><div class="logo">🏫</div><div><h1>ระบบบริหารงานบุคคล</h1><p>โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย</p></div></div>
 <nav class="nav">
 <button class="active" onclick="selectMenu(this,'Dashboard')"><span class="icon">🏠</span>Dashboard</button>
 <button onclick="selectMenu(this,'บุคลากร')"><span class="icon">👥</span>บุคลากร</button>
@@ -184,7 +191,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeEmployeeModal()">ยกเลิก</button><button class="primary" onclick="saveEmployee()">บันทึก</button></div>
 </div></div>
 
-<!-- Leave Modal -->
+<!-- Leave Modal (ช่องระบุวันที่เป็น dd/mm/yyyy ชัดเจน) -->
 <div class="modal" id="leaveModal"><div class="modal-card">
 <div class="modal-head"><h3>บันทึกการขอลา</h3><button class="close" onclick="closeLeaveModal()">×</button></div>
 <div class="msg" id="leaveFormMsg"></div>
@@ -192,8 +199,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="form-grid">
 <div class="field"><label>ประเภทการลา *</label><select id="leave_type"><option value="ป่วย">ลาป่วย</option><option value="กิจส่วนตัว">ลากิจส่วนตัว</option><option value="คลอดบุตร">ลาคลอดบุตร</option><option value="พักผ่อน">ลาพักผ่อน</option></select></div>
 <div></div>
-<div class="field"><label>ตั้งแต่วันที่ *</label><input id="leave_start_date" type="date"></div>
-<div class="field"><label>ถึงวันที่ *</label><input id="leave_end_date" type="date"></div>
+<div class="field"><label>ตั้งแต่วันที่ (วัน/เดือน/ปี ค.ศ. เช่น 15/09/2026) *</label><input id="leave_start_date_text" placeholder="วว/ดด/ปปปป"></div>
+<div class="field"><label>ถึงวันที่ (วัน/เดือน/ปี ค.ศ. เช่น 17/09/2026) *</label><input id="leave_end_date_text" placeholder="วว/ดด/ปปปป"></div>
 </div>
 <div class="field"><label>เหตุผลการลา</label><textarea id="leave_reason" rows="2" placeholder="ระบุเหตุผลการลา"></textarea></div>
 <div class="form-grid">
@@ -203,7 +210,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeLeaveModal()">ยกเลิก</button><button class="primary" onclick="saveLeaveRequest()">ยื่นใบลา</button></div>
 </div></div>
 
-<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (ปรับปรุงรูปแบบช่องลงนามและวันที่ dd/mm/yyyy) -->
+<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (สังกัดเขต 3 ฟอนต์สารบรรณแท้) -->
 <div id="printSection">
   <div class="p-title">แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว</div>
   <div class="p-right">
@@ -212,14 +219,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   </div>
   <div style="margin-bottom:4px">
     <b>เรื่อง</b> ขออนุญาตลา<span id="p_subject_type"></span><br>
-    <b>เรียน</b> ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1
+    <b>เรียน</b> ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย
   </div>
   <div class="p-indent">
     ข้าพเจ้า <span class="p-dotted" id="p_name" style="min-width:210px"></span>
     ตำแหน่ง <span class="p-dotted" id="p_position" style="min-width:180px"></span>
   </div>
   <div class="p-line">
-    สังกัดโรงเรียนศึกษานารีอนุสรณ์ 1 สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3
+    สังกัด สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3
   </div>
   <div class="p-line">
     ขอลา &nbsp;&nbsp;&nbsp;&nbsp;
@@ -243,11 +250,11 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     มีกำหนด <span class="p-dotted" id="p_last_days" style="min-width:30px;text-align:center">-</span> วัน
   </div>
   <div class="p-line">
-    ในระหว่างลาติดต่อข้าพเจ้าได้ที่ <span class="p-dotted" id="p_contact" style="min-width:270px">โรงเรียนศึกษานารีอนุสรณ์ 1</span>
+    ในระหว่างลาติดต่อข้าพเจ้าได้ที่ <span class="p-dotted" id="p_contact" style="min-width:270px">โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย</span>
     เบอร์โทรศัพท์ <span class="p-dotted" id="p_phone" style="min-width:130px">-</span>
   </div>
   
-  <!-- ช่องลงชื่อผู้ขอลา (นำคำว่า "ลงชื่อ" ออกเพื่อให้มีพื้นที่เซ็นกว้างขึ้น) -->
+  <!-- ช่องลงชื่อผู้ขอลา -->
   <div style="display:flex;justify-content:flex-end;margin:10px 0 12px">
     <div style="text-align:center;width:280px">
       ขอแสดงความนับถือ<br><br><br>
@@ -280,7 +287,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
       </div>
     </div>
 
-    <!-- กล่องขวา: คำสั่ง ผอ.ประเสริฐ พอนา จุดเดียวโดยตรง -->
+    <!-- กล่องขวา: คำสั่ง ผอ.ประเสริฐ พอนา -->
     <div class="p-box" style="text-align:center">
       <b style="display:block;margin-bottom:8px">คำสั่ง / การพิจารณา</b>
       <div style="text-align:left;display:inline-block;margin-bottom:14px">
@@ -288,7 +295,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
       </div><br><br><br>
       ...........................................................<br>
       ( นายประเสริฐ พอนา )<br>
-      ตำแหน่ง ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1<br>
+      ตำแหน่ง ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>
       วันที่ ....../....../......
     </div>
   </div>
@@ -302,7 +309,7 @@ const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 let currentProfile=null, employees=[], leaveRequests=[];
 
-// จัดรูปแบบวันที่ dd/mm/yyyy (พ.ศ.)
+// จัดรูปแบบวันที่แสดงผลเป็น วัน/เดือน/ปีพ.ศ. (dd/mm/yyyy)
 function formatThaiDate(dStr){
   if(!dStr) return '-';
   const d=new Date(dStr);
@@ -311,6 +318,23 @@ function formatThaiDate(dStr){
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const year = d.getFullYear() + 543;
   return `${day}/${month}/${year}`;
+}
+
+// แปลงวันที่ dd/mm/yyyy เป็น ISO yyyy-mm-dd สำหรับเก็บลงฐานข้อมูล
+function parseDateInput(str){
+  if(!str) return null;
+  str = str.trim();
+  if(str.includes('/')){
+    const p = str.split('/');
+    if(p.length === 3){
+      let day = p[0].padStart(2,'0');
+      let month = p[1].padStart(2,'0');
+      let year = parseInt(p[2]);
+      if(year > 2400) year -= 543; // แปลงพ.ศ. เป็น ค.ศ.
+      return `${year}-${month}-${day}`;
+    }
+  }
+  return str;
 }
 
 function autoCalculateNextEval(){
@@ -423,8 +447,12 @@ function renderLeaveRequests(){
 
 function openLeaveModal(){
  $('leaveFormMsg').textContent='';
- $('leave_start_date').value='';
- $('leave_end_date').value='';
+ const today = new Date();
+ const d = String(today.getDate()).padStart(2, '0');
+ const m = String(today.getMonth() + 1).padStart(2, '0');
+ const y = today.getFullYear();
+ $('leave_start_date_text').value = `${d}/${m}/${y}`;
+ $('leave_end_date_text').value = `${d}/${m}/${y}`;
  $('leave_reason').value='';
  $('leave_contact').value='โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย';
  $('leave_phone').value='';
@@ -439,9 +467,15 @@ function openLeaveModal(){
 function closeLeaveModal(){$('leaveModal').classList.remove('show')}
 
 async function saveLeaveRequest(){
- const empId=$('leave_employee_id').value, start=$('leave_start_date').value, end=$('leave_end_date').value;
+ const empId=$('leave_employee_id').value;
+ const startRaw=$('leave_start_date_text').value.trim();
+ const endRaw=$('leave_end_date_text').value.trim();
  $('leaveFormMsg').textContent='';
- if(!empId||!start||!end){$('leaveFormMsg').textContent='กรุณาระบุบุคลากรและช่วงวันที่ลาให้ครบถ้วน';return}
+ 
+ const start = parseDateInput(startRaw);
+ const end = parseDateInput(endRaw);
+
+ if(!empId||!start||!end){$('leaveFormMsg').textContent='กรุณาระบุบุคลากรและช่วงวันที่ลาให้ถูกต้อง (วัน/เดือน/ปี)';return}
  if(new Date(start) > new Date(end)){$('leaveFormMsg').textContent='วันที่เริ่มลาต้องไม่เกินวันที่สิ้นสุดการลา';return}
 
  const payload={

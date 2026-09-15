@@ -165,11 +165,11 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </tr></thead><tbody id="leaveTable"><tr><td colspan="7" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
-<!-- Training Page (ไม่มีคอลัมน์ชั่วโมง) -->
+<!-- Training Page -->
 <section id="trainingPage" class="page">
 <div class="toolbar"><input class="search" id="trainingSearch" oninput="renderTrainings()" placeholder="🔎 ค้นหาหลักสูตร หน่วยงาน หรือชื่อผู้เข้ารับการอบรม"><button class="primary" onclick="openTrainingModal()">＋ บันทึกการอบรม</button></div>
 <div class="card"><div class="table-wrap"><table><thead><tr>
-  <th>วันที่อบรม</th>
+  <th>วันที่และเวลาที่อบรม</th>
   <th>ผู้เข้ารับการอบรม</th>
   <th>หลักสูตร / หัวข้อการอบรม</th>
   <th>หน่วยงานที่จัด</th>
@@ -226,19 +226,19 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeLeaveModal()">ยกเลิก</button><button class="primary" onclick="saveLeaveRequest()">ยื่นใบลา</button></div>
 </div></div>
 
-<!-- Training Modal (ตัดช่องชั่วโมงออก, Default สพป.เชียงใหม่ เขต 3) -->
+<!-- Training Modal (วันเดียว + ช่วงเวลา + ค่าเริ่มต้น สพป.เชียงใหม่ เขต 3) -->
 <div class="modal" id="trainingModal"><div class="modal-card">
 <div class="modal-head"><h3 id="trainingModalTitle">บันทึกประวัติการอบรม</h3><button class="close" onclick="closeTrainingModal()">×</button></div>
 <div class="msg" id="trainingFormMsg"></div>
 <input type="hidden" id="trainingEditId">
 <div class="field"><label>ผู้เข้ารับการอบรม *</label><select id="training_employee_id"><option value="">-- เลือกบุคลากร --</option></select></div>
 <div class="field"><label>ชื่อหลักสูตร / หัวข้อการอบรม *</label><input id="course_name" placeholder="เช่น การจัดการเรียนรู้เชิงรุก (Active Learning)"></div>
-<div class="field"><label>หน่วยงานที่จัดอบรม</label><input id="organizer" placeholder="เช่น สพป.เชียงใหม่ เขต 3, สพฐ."></div>
+<div class="field"><label>หน่วยงานที่จัดอบรม</label><input id="organizer" value="สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3"></div>
 <div class="form-grid">
-<div class="field"><label>เริ่มวันที่ *</label><input id="training_start_date" type="date"></div>
-<div class="field"><label>ถึงวันที่ *</label><input id="training_end_date" type="date"></div>
+<div class="field"><label>วันที่อบรม *</label><input id="training_date" type="date"></div>
+<div class="field"><label>ช่วงเวลาที่อบรม</label><input id="training_time" value="08.30 - 16.30 น."></div>
 </div>
-<div class="field"><label>สถานที่ / ช่องทางการอบรม</label><input id="training_location" placeholder="เช่น ออนไลน์ผ่าน Zoom, สพป.เชียงใหม่ เขต 3"></div>
+<div class="field"><label>สถานที่ / ช่องทางการอบรม</label><input id="training_location" value="สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3"></div>
 <div class="field">
   <label>แนบไฟล์เกียรติบัตร (PDF หรือ รูปภาพ)</label>
   <input type="file" id="cert_file" accept=".pdf,image/*">
@@ -248,7 +248,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeTrainingModal()">ยกเลิก</button><button class="primary" id="saveTrainingBtn" onclick="saveTraining()">บันทึกข้อมูล</button></div>
 </div></div>
 
-<!-- แบบฟอร์มใบลา (วันที่แสดงผลแบบ: 15 กันยายน 2569) -->
+<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (15 กันยายน 2569) -->
 <div id="printSection">
   <div class="p-title">แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว</div>
   <div class="p-right">
@@ -345,7 +345,7 @@ let currentProfile=null, employees=[], leaveRequests=[], trainings=[];
 
 const THAI_FULL_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 
-// แสดงผลแบบ: 15 กันยายน 2569 (ไม่มีคำว่า พ.ศ.)
+// แสดงผลแบบ: 15 กันยายน 2569 (ไม่มี พ.ศ.)
 function formatThaiDateCustom(dStr){
   if(!dStr) return '-';
   const d=new Date(dStr);
@@ -551,7 +551,6 @@ function printLeave(id){
   const fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
   const curDays = calcDays(leave.start_date, leave.end_date);
 
-  // แสดงผลวันที่แบบ: 15 กันยายน 2569
   $('p_doc_date').textContent = formatThaiDateCustom(leave.created_at);
   $('p_subject_type').textContent = leave.leave_type;
   $('p_name').textContent = fullName || '-';
@@ -639,7 +638,7 @@ function renderTrainings(){
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'ไม่พบข้อมูล';
    const canManage = currentProfile && ['admin','staff'].includes(currentProfile.role);
    return `<tr>
-    <td>${formatThaiDate(x.start_date)}${x.start_date !== x.end_date ? ' - ' + formatThaiDate(x.end_date) : ''}</td>
+    <td>${formatThaiDate(x.start_date)}<br><small style="color:var(--muted)">${x.training_time||'08.30 - 16.30 น.'}</small></td>
     <td><b>${empName}</b></td>
     <td><b>${x.course_name}</b>${x.certificate_url?`<br><a href="${x.certificate_url}" target="_blank" style="color:var(--p);font-size:12px;font-weight:600">📎 ดูเกียรติบัตรแนบ</a>`:''}</td>
     <td>${x.organizer||'-'}</td>
@@ -668,20 +667,20 @@ function openTrainingModal(id){
    if(t){
      select.value=t.employee_id||'';
      $('course_name').value=t.course_name||'';
-     $('organizer').value=t.organizer||'';
-     $('training_start_date').value=t.start_date||'';
-     $('training_end_date').value=t.end_date||'';
-     $('training_location').value=t.location||'สพป.เชียงใหม่ เขต 3';
+     $('organizer').value=t.organizer||'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
+     $('training_date').value=t.start_date||'';
+     $('training_time').value=t.training_time||'08.30 - 16.30 น.';
+     $('training_location').value=t.location||'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
      $('existing_cert_url').value=t.certificate_url||'';
      $('cert_preview').innerHTML=t.certificate_url?`<a href="${t.certificate_url}" target="_blank">📄 ไฟล์เดิมที่แนบไว้</a>`:'';
    }
  } else {
    const today = new Date().toISOString().split('T')[0];
-   $('training_start_date').value = today;
-   $('training_end_date').value = today;
+   $('training_date').value = today;
+   $('training_time').value = '08.30 - 16.30 น.';
    $('course_name').value='';
-   $('organizer').value='';
-   $('training_location').value='สพป.เชียงใหม่ เขต 3';
+   $('organizer').value='สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
+   $('training_location').value='สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
    $('existing_cert_url').value='';
    $('cert_preview').textContent='';
  }
@@ -692,12 +691,10 @@ function closeTrainingModal(){$('trainingModal').classList.remove('show')}
 async function saveTraining(){
  const empId=$('training_employee_id').value;
  const course=$('course_name').value.trim();
- const start=$('training_start_date').value;
- const end=$('training_end_date').value;
+ const tDate=$('training_date').value;
  $('trainingFormMsg').textContent='';
 
- if(!empId||!course||!start||!end){$('trainingFormMsg').textContent='กรุณาระบุผู้เข้ารับการอบรม หัวข้อ และวันที่ให้ถูกต้อง';return}
- if(new Date(start) > new Date(end)){$('trainingFormMsg').textContent='วันที่เริ่มอบรมต้องไม่เกินวันที่สิ้นสุด';return}
+ if(!empId||!course||!tDate){$('trainingFormMsg').textContent='กรุณาระบุผู้เข้ารับการอบรม หัวข้อ และวันที่อบรมให้ครบถ้วน';return}
 
  let certUrl = $('existing_cert_url').value || null;
  const fileInput = $('cert_file');
@@ -713,7 +710,7 @@ async function saveTraining(){
    if(uploadErr){
      $('saveTrainingBtn').textContent = 'บันทึกข้อมูล';
      $('saveTrainingBtn').disabled = false;
-     $('trainingFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ (โปรดตรวจสอบการสร้าง Bucket certificates): ' + uploadErr.message;
+     $('trainingFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ (โปรดตรวจสอบการสร้าง Bucket certificates ใน Supabase Storage): ' + uploadErr.message;
      return;
    }
    const {data:{publicUrl}} = supabaseClient.storage.from('certificates').getPublicUrl(fileName);
@@ -724,8 +721,8 @@ async function saveTraining(){
    employee_id: empId,
    course_name: course,
    organizer: $('organizer').value.trim()||null,
-   start_date: start,
-   end_date: end,
+   start_date: tDate,
+   end_date: tDate,
    location: $('training_location').value.trim()||null,
    certificate_url: certUrl
  };

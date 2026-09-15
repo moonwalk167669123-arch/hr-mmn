@@ -34,22 +34,47 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
 
-/* จัดสไตล์เอกสารสำหรับพิมพ์ใบลาตามแบบราชการ */
+/* จัดสไตล์เอกสารสำหรับพิมพ์ใบลา (คุมให้อยู่ในหน้า A4 หน้าเดียวพอดี) */
 #printSection{display:none}
+@page {
+  size: A4 portrait;
+  margin: 10mm 15mm;
+}
 @media print{
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100%;
+    background: #fff !important;
+  }
   body *{visibility:hidden}
   #printSection, #printSection *{visibility:visible}
-  #printSection{display:block;position:absolute;left:0;top:0;width:100%;padding:10mm 15mm;font-family:"TH Sarabun New","Sarabun",sans-serif;font-size:15pt;line-height:1.45;color:#000;background:#fff}
-  .p-title{text-align:center;font-weight:bold;font-size:18pt;margin-bottom:12px}
-  .p-right{text-align:right;margin-bottom:10px}
+  #printSection{
+    display:block !important;
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    max-width: 100%;
+    font-family:"SarabunPSK", "TH Sarabun PSK", "TH Sarabun New", "Sarabun", sans-serif;
+    font-size:15pt;
+    line-height:1.25;
+    color:#000;
+    background:#fff;
+    page-break-inside: avoid;
+    box-sizing: border-box;
+  }
+  .p-title{text-align:center;font-weight:bold;font-size:17pt;margin:0 0 6px}
+  .p-right{text-align:right;margin:0 0 6px}
   .p-dotted{border-bottom:1px dotted #000;display:inline-block;padding:0 4px;vertical-align:baseline}
-  .p-indent{text-indent:2.5em;margin:5px 0}
-  .p-circle{display:inline-block;width:12px;height:12px;border:1px solid #000;border-radius:50%;margin-right:4px;vertical-align:middle;text-align:center;line-height:10px;font-size:10pt}
+  .p-indent{text-indent:2em;margin:3px 0}
+  .p-line{margin:3px 0}
+  .p-circle{display:inline-block;width:11px;height:11px;border:1px solid #000;border-radius:50%;margin-right:3px;vertical-align:middle;text-align:center;line-height:9px;font-size:9pt}
   .p-circle.checked::after{content:"✓";font-weight:bold}
-  .p-box-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:15px;margin-top:15px;align-items:start}
-  .p-box{border:1px solid #000;padding:8px 12px;border-radius:4px;font-size:13.5pt;line-height:1.4}
-  .p-stat-table{width:100%;border-collapse:collapse;margin:6px 0;font-size:13pt;text-align:center}
-  .p-stat-table th, .p-stat-table td{border:1px solid #000;padding:4px 2px}
+  .p-box-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:12px;margin-top:10px;align-items:start}
+  .p-box{border:1px solid #000;padding:6px 10px;border-radius:3px;font-size:13.5pt;line-height:1.25}
+  .p-stat-table{width:100%;border-collapse:collapse;margin:4px 0;font-size:13pt;text-align:center}
+  .p-stat-table th, .p-stat-table td{border:1px solid #000;padding:2px 2px}
 }
 
 @media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}.main{margin-left:0;width:100%;padding:16px}.mobile-menu{display:block}.stats{grid-template-columns:repeat(2,1fr)}.content{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}.overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:10}.topbar{align-items:flex-start}.actions .btn:not(.primary){display:none}.toolbar{align-items:stretch;flex-direction:column}.search{max-width:none}}
@@ -178,54 +203,54 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeLeaveModal()">ยกเลิก</button><button class="primary" onclick="saveLeaveRequest()">ยื่นใบลา</button></div>
 </div></div>
 
-<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (สำหรับสั่งพิมพ์ / บันทึก PDF) -->
+<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (จัดหน้าลงกระดาษ A4 หน้าเดียว) -->
 <div id="printSection">
   <div class="p-title">แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว</div>
   <div class="p-right">
     เขียนที่ โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>
-    วันที่ <span class="p-dotted" id="p_day" style="min-width:30px;text-align:center"></span>
-    เดือน <span class="p-dotted" id="p_month" style="min-width:90px;text-align:center"></span>
-    พ.ศ. <span class="p-dotted" id="p_year" style="min-width:50px;text-align:center"></span>
+    วันที่ <span class="p-dotted" id="p_day" style="min-width:25px;text-align:center"></span>
+    เดือน <span class="p-dotted" id="p_month" style="min-width:80px;text-align:center"></span>
+    พ.ศ. <span class="p-dotted" id="p_year" style="min-width:45px;text-align:center"></span>
   </div>
-  <div style="margin-bottom:6px">
+  <div style="margin-bottom:4px">
     <b>เรื่อง</b> ขออนุญาตลา<span id="p_subject_type"></span><br>
     <b>เรียน</b> ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1
   </div>
   <div class="p-indent">
-    ข้าพเจ้า <span class="p-dotted" id="p_name" style="min-width:230px"></span>
-    ตำแหน่ง <span class="p-dotted" id="p_position" style="min-width:200px"></span>
+    ข้าพเจ้า <span class="p-dotted" id="p_name" style="min-width:210px"></span>
+    ตำแหน่ง <span class="p-dotted" id="p_position" style="min-width:180px"></span>
   </div>
-  <div style="margin:4px 0">
+  <div class="p-line">
     สังกัดโรงเรียนศึกษานารีอนุสรณ์ 1 สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3
   </div>
-  <div style="margin:6px 0">
+  <div class="p-line">
     ขอลา &nbsp;&nbsp;&nbsp;&nbsp;
     <span class="p-circle" id="chk_sick"></span> ป่วย &nbsp;&nbsp;&nbsp;&nbsp;
     <span class="p-circle" id="chk_maternity"></span> คลอดบุตร &nbsp;&nbsp;&nbsp;&nbsp;
     <span class="p-circle" id="chk_personal"></span> กิจส่วนตัว &nbsp;&nbsp;&nbsp;&nbsp;
-    เนื่องจาก <span class="p-dotted" id="p_reason" style="min-width:320px"></span>
+    เนื่องจาก <span class="p-dotted" id="p_reason" style="min-width:300px"></span>
   </div>
-  <div style="margin:6px 0">
-    ตั้งแต่วันที่ <span class="p-dotted" id="p_start_date" style="min-width:130px;text-align:center"></span>
-    ถึงวันที่ <span class="p-dotted" id="p_end_date" style="min-width:130px;text-align:center"></span>
-    มีกำหนด <span class="p-dotted" id="p_days" style="min-width:40px;text-align:center"></span> วัน
+  <div class="p-line">
+    ตั้งแต่วันที่ <span class="p-dotted" id="p_start_date" style="min-width:120px;text-align:center"></span>
+    ถึงวันที่ <span class="p-dotted" id="p_end_date" style="min-width:120px;text-align:center"></span>
+    มีกำหนด <span class="p-dotted" id="p_days" style="min-width:35px;text-align:center"></span> วัน
   </div>
-  <div style="margin:6px 0">
+  <div class="p-line">
     ข้าพเจ้าได้ลา &nbsp;&nbsp;
     <span class="p-circle" id="chk_last_sick"></span> ป่วย &nbsp;&nbsp;
     <span class="p-circle" id="chk_last_personal"></span> กิจส่วนตัว &nbsp;&nbsp;
     <span class="p-circle" id="chk_last_maternity"></span> คลอดบุตร &nbsp;&nbsp;
-    ครั้งสุดท้ายตั้งแต่วันที่ <span class="p-dotted" id="p_last_start" style="min-width:110px;text-align:center">-</span>
-    ถึงวันที่ <span class="p-dotted" id="p_last_end" style="min-width:110px;text-align:center">-</span>
-    มีกำหนด <span class="p-dotted" id="p_last_days" style="min-width:35px;text-align:center">-</span> วัน
+    ครั้งสุดท้ายตั้งแต่วันที่ <span class="p-dotted" id="p_last_start" style="min-width:105px;text-align:center">-</span>
+    ถึงวันที่ <span class="p-dotted" id="p_last_end" style="min-width:105px;text-align:center">-</span>
+    มีกำหนด <span class="p-dotted" id="p_last_days" style="min-width:30px;text-align:center">-</span> วัน
   </div>
-  <div style="margin:6px 0">
-    ในระหว่างลาติดต่อข้าพเจ้าได้ที่ <span class="p-dotted" id="p_contact" style="min-width:280px">โรงเรียนศึกษานารีอนุสรณ์ 1</span>
-    เบอร์โทรศัพท์ <span class="p-dotted" id="p_phone" style="min-width:140px">-</span>
+  <div class="p-line">
+    ในระหว่างลาติดต่อข้าพเจ้าได้ที่ <span class="p-dotted" id="p_contact" style="min-width:270px">โรงเรียนศึกษานารีอนุสรณ์ 1</span>
+    เบอร์โทรศัพท์ <span class="p-dotted" id="p_phone" style="min-width:130px">-</span>
   </div>
-  <div style="display:flex;justify-content:flex-end;margin:12px 0 16px">
-    <div style="text-align:center;width:280px">
-      ขอแสดงความนับถือ<br><br><br>
+  <div style="display:flex;justify-content:flex-end;margin:8px 0 10px">
+    <div style="text-align:center;width:260px">
+      ขอแสดงความนับถือ<br><br>
       (ลงชื่อ) ...........................................................<br>
       ( <span id="p_sign_name">...................................................</span> )<br>
       ตำแหน่ง <span id="p_sign_pos">...................................................</span>
@@ -246,10 +271,10 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
           <tr><td>คลอดบุตร</td><td id="st_mat_prev">0</td><td id="st_mat_cur">0</td><td id="st_mat_total">0</td></tr>
         </tbody>
       </table>
-      <div style="margin-top:10px;font-size:13pt;line-height:1.4">
+      <div style="margin-top:6px;font-size:13pt;line-height:1.25">
         (ลงชื่อ) ........................................................... ผู้ตรวจสอบ<br>
-        <div style="text-indent:35px">( นายธีรภัทร์ มีนา )</div>
-        ตำแหน่ง ครู (หัวหน้าฝ่ายบริหารงานบุคคล)<br>
+        <div style="text-indent:30px">( นายธีรภัทร์ มีนา )</div>
+        ตำแหน่ง หัวหน้าฝ่ายบริหารงานบุคคล<br>
         วันที่ ...... เดือน ................... พ.ศ. ........
       </div>
     </div>
@@ -257,14 +282,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     <!-- กล่องขวา: ความเห็นผู้บังคับบัญชา และ คำสั่ง ผอ. -->
     <div class="p-box">
       <b>ความเห็นผู้บังคับบัญชา</b><br>
-      ................................................................................<br><br>
+      ................................................................................<br>
       (ลงชื่อ) ...........................................................<br>
       ( ........................................................... )<br>
       ตำแหน่ง ...........................................................<br>
       วันที่ ....../....../......
-      <hr style="border:0;border-top:1px dashed #999;margin:8px 0">
+      <hr style="border:0;border-top:1px dashed #999;margin:5px 0">
       <b>คำสั่ง</b><br>
-      &nbsp;&nbsp;&nbsp;&nbsp; ( &nbsp; ) อนุญาต &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( &nbsp; ) ไม่อนุญาต<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp; ( &nbsp; ) อนุญาต &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( &nbsp; ) ไม่อนุญาต<br>
       (ลงชื่อ) ...........................................................<br>
       ( นายประเสริฐ พอนา )<br>
       ตำแหน่ง ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1<br>
@@ -488,7 +513,7 @@ function printLeave(id){
   $('chk_maternity').className = 'p-circle' + (leave.leave_type.includes('คลอด') ? ' checked' : '');
   $('chk_personal').className = 'p-circle' + (leave.leave_type.includes('กิจ') ? ' checked' : '');
 
-  // คำนวณสถิติวันลาในรอบปีงบประมาณอัตโนมัติ (1 ต.ค. - 30 ก.ย.)
+  // คำนวณสถิติวันลาในรอบปีงบประมาณอัตโนมัติ
   let prevSick = 0, prevPersonal = 0, prevMaternity = 0;
   let lastLeave = null;
 
@@ -502,7 +527,7 @@ function printLeave(id){
   });
 
   if(empLeaves.length > 0){
-    lastLeave = empLeaves[0]; // การลาครั้งล่าสุดก่อนหน้านี้
+    lastLeave = empLeaves[0];
     $('chk_last_sick').className = 'p-circle' + (lastLeave.leave_type.includes('ป่วย') ? ' checked' : '');
     $('chk_last_personal').className = 'p-circle' + (lastLeave.leave_type.includes('กิจ') ? ' checked' : '');
     $('chk_last_maternity').className = 'p-circle' + (lastLeave.leave_type.includes('คลอด') ? ' checked' : '');
@@ -518,7 +543,7 @@ function printLeave(id){
     $('p_last_days').textContent = '-';
   }
 
-  // หยอดตัวเลขลงในตารางสถิติอัตโนมัติ
+  // ตัวเลขลงในตารางสถิติอัตโนมัติ
   const curSick = leave.leave_type.includes('ป่วย') ? curDays : 0;
   const curPersonal = leave.leave_type.includes('กิจ') ? curDays : 0;
   const curMaternity = leave.leave_type.includes('คลอด') ? curDays : 0;

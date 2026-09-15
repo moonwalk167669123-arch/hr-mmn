@@ -37,24 +37,28 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
 
-/* จัดสไตล์เอกสารสำหรับพิมพ์ใบลา */
+/* จัดสไตล์เอกสารพิมพ์ใบลา (บังคับฟอนต์ SarabunPSK / Sarabun 100%) */
 #printSection{display:none}
 @page {
   size: A4 portrait;
   margin: 10mm 15mm;
 }
 @media print{
+  @font-face {
+    font-family: 'SarabunPSK';
+    src: local('Sarabun'), local('TH Sarabun PSK'), local('TH Sarabun New');
+  }
   html, body {
     margin: 0 !important;
     padding: 0 !important;
     height: 100%;
     background: #fff !important;
-    font-family: "TH Sarabun PSK", "SarabunPSK", "Sarabun", sans-serif !important;
+    font-family: 'SarabunPSK', 'Sarabun', 'TH Sarabun PSK', sans-serif !important;
   }
   body *{visibility:hidden}
   #printSection, #printSection *{
     visibility:visible;
-    font-family: "TH Sarabun PSK", "SarabunPSK", "Sarabun", sans-serif !important;
+    font-family: 'SarabunPSK', 'Sarabun', 'TH Sarabun PSK', sans-serif !important;
   }
   #printSection{
     display:block !important;
@@ -63,8 +67,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     top:0;
     width:100%;
     max-width: 100%;
-    font-size:16pt;
-    line-height:1.25;
+    font-size:15.5pt;
+    line-height:1.28;
     color:#000;
     background:#fff;
     page-break-inside: avoid;
@@ -204,7 +208,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeEmployeeModal()">ยกเลิก</button><button class="primary" onclick="saveEmployee()">บันทึก</button></div>
 </div></div>
 
-<!-- Leave Modal -->
+<!-- Leave Modal (ช่องปฏิทินเลือกวันที่) -->
 <div class="modal" id="leaveModal"><div class="modal-card">
 <div class="modal-head"><h3>บันทึกการขอลา</h3><button class="close" onclick="closeLeaveModal()">×</button></div>
 <div class="msg" id="leaveFormMsg"></div>
@@ -212,8 +216,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="form-grid">
 <div class="field"><label>ประเภทการลา *</label><select id="leave_type"><option value="ป่วย">ลาป่วย</option><option value="กิจส่วนตัว">ลากิจส่วนตัว</option><option value="คลอดบุตร">ลาคลอดบุตร</option><option value="พักผ่อน">ลาพักผ่อน</option></select></div>
 <div></div>
-<div class="field"><label>ตั้งแต่วันที่ (วัน/เดือน/ปี เช่น 15/09/2026) *</label><input id="leave_start_date_text" placeholder="วว/ดด/ปปปป"></div>
-<div class="field"><label>ถึงวันที่ (วัน/เดือน/ปี เช่น 17/09/2026) *</label><input id="leave_end_date_text" placeholder="วว/ดด/ปปปป"></div>
+<div class="field"><label>ตั้งแต่วันที่ *</label><input id="leave_start_date" type="date"></div>
+<div class="field"><label>ถึงวันที่ *</label><input id="leave_end_date" type="date"></div>
 </div>
 <div class="field"><label>เหตุผลการลา</label><textarea id="leave_reason" rows="2" placeholder="ระบุเหตุผลการลา"></textarea></div>
 <div class="form-grid">
@@ -223,30 +227,35 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeLeaveModal()">ยกเลิก</button><button class="primary" onclick="saveLeaveRequest()">ยื่นใบลา</button></div>
 </div></div>
 
-<!-- Training Modal (โมดอลบันทึกการอบรม) -->
+<!-- Training Modal (อัปโหลดไฟล์เกียรติบัตร / PDF) -->
 <div class="modal" id="trainingModal"><div class="modal-card">
 <div class="modal-head"><h3 id="trainingModalTitle">บันทึกประวัติการอบรม</h3><button class="close" onclick="closeTrainingModal()">×</button></div>
 <div class="msg" id="trainingFormMsg"></div>
 <input type="hidden" id="trainingEditId">
 <div class="field"><label>ผู้เข้ารับการอบรม *</label><select id="training_employee_id"><option value="">-- เลือกบุคลากร --</option></select></div>
 <div class="field"><label>ชื่อหลักสูตร / หัวข้อการอบรม *</label><input id="course_name" placeholder="เช่น การจัดการเรียนรู้เชิงรุก (Active Learning)"></div>
-<div class="field"><label>หน่วยงานที่จัดอบรม</label><input id="organizer" placeholder="เช่น สพป.เชียงใหม่ เขต 3, สพฐ., มหาวิทยาลัยเชียงใหม่"></div>
+<div class="field"><label>หน่วยงานที่จัดอบรม</label><input id="organizer" placeholder="เช่น สพป.เชียงใหม่ เขต 3, สพฐ."></div>
 <div class="form-grid">
-<div class="field"><label>เริ่มวันที่ (วัน/เดือน/ปี เช่น 15/09/2026) *</label><input id="t_start_date_text" placeholder="วว/ดด/ปปปป"></div>
-<div class="field"><label>ถึงวันที่ (วัน/เดือน/ปี เช่น 16/09/2026) *</label><input id="t_end_date_text" placeholder="วว/ดด/ปปปป"></div>
+<div class="field"><label>เริ่มวันที่ *</label><input id="training_start_date" type="date"></div>
+<div class="field"><label>ถึงวันที่ *</label><input id="training_end_date" type="date"></div>
 <div class="field"><label>จำนวนชั่วโมง (ชั่วโมง)</label><input id="training_hours" type="number" step="0.5" placeholder="เช่น 6 หรือ 12"></div>
 <div class="field"><label>สถานที่ / ช่องทางการอบรม</label><input id="training_location" placeholder="เช่น ออนไลน์ผ่าน Zoom, โรงแรม..."></div>
 </div>
-<div class="field"><label>ลิงก์เกียรติบัตร / เอกสารแนบ (Google Drive)</label><input id="certificate_url" placeholder="https://drive.google.com/..."></div>
-<div class="modal-actions"><button class="secondary" onclick="closeTrainingModal()">ยกเลิก</button><button class="primary" onclick="saveTraining()">บันทึกข้อมูล</button></div>
+<div class="field">
+  <label>แนบไฟล์เกียรติบัตร (PDF หรือ รูปภาพ)</label>
+  <input type="file" id="cert_file" accept=".pdf,image/*">
+  <input type="hidden" id="existing_cert_url">
+  <div id="cert_preview" style="font-size:12px;margin-top:4px;color:var(--p)"></div>
+</div>
+<div class="modal-actions"><button class="secondary" onclick="closeTrainingModal()">ยกเลิก</button><button class="primary" id="saveTrainingBtn" onclick="saveTraining()">บันทึกข้อมูล</button></div>
 </div></div>
 
-<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (สังกัดเขต 3 ฟอนต์สารบรรณแท้) -->
+<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ (วันที่แสดงผลแบบเต็ม) -->
 <div id="printSection">
   <div class="p-title">แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว</div>
   <div class="p-right">
     เขียนที่ โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>
-    วันที่ <span class="p-dotted" id="p_doc_date" style="min-width:110px;text-align:center"></span>
+    วันที่ <span class="p-dotted" id="p_doc_date" style="min-width:180px;text-align:center"></span>
   </div>
   <div style="margin-bottom:4px">
     <b>เรื่อง</b> ขออนุญาตลา<span id="p_subject_type"></span><br>
@@ -267,8 +276,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     เนื่องจาก <span class="p-dotted" id="p_reason" style="min-width:300px"></span>
   </div>
   <div class="p-line">
-    ตั้งแต่วันที่ <span class="p-dotted" id="p_start_date" style="min-width:110px;text-align:center"></span>
-    ถึงวันที่ <span class="p-dotted" id="p_end_date" style="min-width:110px;text-align:center"></span>
+    ตั้งแต่วันที่ <span class="p-dotted" id="p_start_date" style="min-width:160px;text-align:center"></span>
+    ถึงวันที่ <span class="p-dotted" id="p_end_date" style="min-width:160px;text-align:center"></span>
     มีกำหนด <span class="p-dotted" id="p_days" style="min-width:35px;text-align:center"></span> วัน
   </div>
   <div class="p-line">
@@ -276,8 +285,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     <span class="p-circle" id="chk_last_sick"></span> ป่วย &nbsp;&nbsp;
     <span class="p-circle" id="chk_last_personal"></span> กิจส่วนตัว &nbsp;&nbsp;
     <span class="p-circle" id="chk_last_maternity"></span> คลอดบุตร &nbsp;&nbsp;
-    ครั้งสุดท้ายตั้งแต่วันที่ <span class="p-dotted" id="p_last_start" style="min-width:95px;text-align:center">-</span>
-    ถึงวันที่ <span class="p-dotted" id="p_last_end" style="min-width:95px;text-align:center">-</span>
+    ครั้งสุดท้ายตั้งแต่วันที่ <span class="p-dotted" id="p_last_start" style="min-width:140px;text-align:center">-</span>
+    ถึงวันที่ <span class="p-dotted" id="p_last_end" style="min-width:140px;text-align:center">-</span>
     มีกำหนด <span class="p-dotted" id="p_last_days" style="min-width:30px;text-align:center">-</span> วัน
   </div>
   <div class="p-line">
@@ -336,6 +345,17 @@ const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 let currentProfile=null, employees=[], leaveRequests=[], trainings=[];
 
+const THAI_FULL_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+
+// วันที่แบบเต็ม เช่น 15 กันยายน พ.ศ. 2569
+function formatThaiDateFull(dStr){
+  if(!dStr) return '-';
+  const d=new Date(dStr);
+  if(isNaN(d.getTime())) return '-';
+  return `${d.getDate()} ${THAI_FULL_MONTHS[d.getMonth()]} พ.ศ. ${d.getFullYear()+543}`;
+}
+
+// วันที่แบบสั้นในตารางทั่วไป dd/mm/yyyy
 function formatThaiDate(dStr){
   if(!dStr) return '-';
   const d=new Date(dStr);
@@ -344,22 +364,6 @@ function formatThaiDate(dStr){
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const year = d.getFullYear() + 543;
   return `${day}/${month}/${year}`;
-}
-
-function parseDateInput(str){
-  if(!str) return null;
-  str = str.trim();
-  if(str.includes('/')){
-    const p = str.split('/');
-    if(p.length === 3){
-      let day = p[0].padStart(2,'0');
-      let month = p[1].padStart(2,'0');
-      let year = parseInt(p[2]);
-      if(year > 2400) year -= 543;
-      return `${year}-${month}-${day}`;
-    }
-  }
-  return str;
 }
 
 function autoCalculateNextEval(){
@@ -480,12 +484,9 @@ function renderLeaveRequests(){
 
 function openLeaveModal(){
  $('leaveFormMsg').textContent='';
- const today = new Date();
- const d = String(today.getDate()).padStart(2, '0');
- const m = String(today.getMonth() + 1).padStart(2, '0');
- const y = today.getFullYear();
- $('leave_start_date_text').value = `${d}/${m}/${y}`;
- $('leave_end_date_text').value = `${d}/${m}/${y}`;
+ const today = new Date().toISOString().split('T')[0];
+ $('leave_start_date').value = today;
+ $('leave_end_date').value = today;
  $('leave_reason').value='';
  $('leave_contact').value='โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย';
  $('leave_phone').value='';
@@ -501,14 +502,11 @@ function closeLeaveModal(){$('leaveModal').classList.remove('show')}
 
 async function saveLeaveRequest(){
  const empId=$('leave_employee_id').value;
- const startRaw=$('leave_start_date_text').value.trim();
- const endRaw=$('leave_end_date_text').value.trim();
+ const start=$('leave_start_date').value;
+ const end=$('leave_end_date').value;
  $('leaveFormMsg').textContent='';
- 
- const start = parseDateInput(startRaw);
- const end = parseDateInput(endRaw);
 
- if(!empId||!start||!end){$('leaveFormMsg').textContent='กรุณาระบุบุคลากรและช่วงวันที่ลาให้ถูกต้อง (วัน/เดือน/ปี)';return}
+ if(!empId||!start||!end){$('leaveFormMsg').textContent='กรุณาระบุบุคลากรและช่วงวันที่ลาให้ครบถ้วน';return}
  if(new Date(start) > new Date(end)){$('leaveFormMsg').textContent='วันที่เริ่มลาต้องไม่เกินวันที่สิ้นสุดการลา';return}
 
  const payload={
@@ -555,13 +553,14 @@ function printLeave(id){
   const fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
   const curDays = calcDays(leave.start_date, leave.end_date);
 
-  $('p_doc_date').textContent = formatThaiDate(leave.created_at);
+  // แสดงผลวันที่แบบเต็ม
+  $('p_doc_date').textContent = formatThaiDateFull(leave.created_at);
   $('p_subject_type').textContent = leave.leave_type;
   $('p_name').textContent = fullName || '-';
   $('p_position').textContent = emp.position || 'ครู';
   $('p_reason').textContent = leave.reason || 'มีความจำเป็นส่วนตัว';
-  $('p_start_date').textContent = formatThaiDate(leave.start_date);
-  $('p_end_date').textContent = formatThaiDate(leave.end_date);
+  $('p_start_date').textContent = formatThaiDateFull(leave.start_date);
+  $('p_end_date').textContent = formatThaiDateFull(leave.end_date);
   $('p_days').textContent = curDays;
   $('p_sign_name').textContent = fullName || '...................................................';
   $('p_sign_pos').textContent = emp.position || 'ครู';
@@ -588,8 +587,8 @@ function printLeave(id){
     $('chk_last_sick').className = 'p-circle' + (lastLeave.leave_type.includes('ป่วย') ? ' checked' : '');
     $('chk_last_personal').className = 'p-circle' + (lastLeave.leave_type.includes('กิจ') ? ' checked' : '');
     $('chk_last_maternity').className = 'p-circle' + (lastLeave.leave_type.includes('คลอด') ? ' checked' : '');
-    $('p_last_start').textContent = formatThaiDate(lastLeave.start_date);
-    $('p_last_end').textContent = formatThaiDate(lastLeave.end_date);
+    $('p_last_start').textContent = formatThaiDateFull(lastLeave.start_date);
+    $('p_last_end').textContent = formatThaiDateFull(lastLeave.end_date);
     $('p_last_days').textContent = calcDays(lastLeave.start_date, lastLeave.end_date);
   } else {
     $('chk_last_sick').className = 'p-circle';
@@ -644,7 +643,7 @@ function renderTrainings(){
    return `<tr>
     <td>${formatThaiDate(x.start_date)}${x.start_date !== x.end_date ? ' - ' + formatThaiDate(x.end_date) : ''}</td>
     <td><b>${empName}</b></td>
-    <td><b>${x.course_name}</b>${x.certificate_url?`<br><a href="${x.certificate_url}" target="_blank" style="color:var(--p);font-size:12px">📎 ดูเกียรติบัตร</a>`:''}</td>
+    <td><b>${x.course_name}</b>${x.certificate_url?`<br><a href="${x.certificate_url}" target="_blank" style="color:var(--p);font-size:12px;font-weight:600">📎 ดูเกียรติบัตรแนบ</a>`:''}</td>
     <td>${x.organizer||'-'}</td>
     <td><span class="badge working">${x.hours||0} ชม.</span></td>
     <td>${x.location||'-'}</td>
@@ -662,6 +661,7 @@ function openTrainingModal(id){
  $('trainingFormMsg').textContent='';
  $('trainingEditId').value=id||'';
  $('trainingModalTitle').textContent=id?'แก้ไขประวัติการอบรม':'บันทึกประวัติการอบรม';
+ $('cert_file').value='';
  
  const select=$('training_employee_id');
  select.innerHTML='<option value="">-- เลือกบุคลากร --</option>'+employees.map(e=>`<option value="${e.id}">${e.prefix||''}${e.first_name} ${e.last_name}</option>`).join('');
@@ -672,24 +672,23 @@ function openTrainingModal(id){
      select.value=t.employee_id||'';
      $('course_name').value=t.course_name||'';
      $('organizer').value=t.organizer||'';
-     $('t_start_date_text').value=formatThaiDate(t.start_date);
-     $('t_end_date_text').value=formatThaiDate(t.end_date);
+     $('training_start_date').value=t.start_date||'';
+     $('training_end_date').value=t.end_date||'';
      $('training_hours').value=t.hours||'';
      $('training_location').value=t.location||'';
-     $('certificate_url').value=t.certificate_url||'';
+     $('existing_cert_url').value=t.certificate_url||'';
+     $('cert_preview').innerHTML=t.certificate_url?`<a href="${t.certificate_url}" target="_blank">📄 ไฟล์เดิมที่แนบไว้</a>`:'';
    }
  } else {
-   const today = new Date();
-   const d = String(today.getDate()).padStart(2, '0');
-   const m = String(today.getMonth() + 1).padStart(2, '0');
-   const y = today.getFullYear();
-   $('t_start_date_text').value = `${d}/${m}/${y}`;
-   $('t_end_date_text').value = `${d}/${m}/${y}`;
+   const today = new Date().toISOString().split('T')[0];
+   $('training_start_date').value = today;
+   $('training_end_date').value = today;
    $('course_name').value='';
    $('organizer').value='';
    $('training_hours').value='6';
    $('training_location').value='ออนไลน์';
-   $('certificate_url').value='';
+   $('existing_cert_url').value='';
+   $('cert_preview').textContent='';
  }
  $('trainingModal').classList.add('show');
 }
@@ -698,15 +697,34 @@ function closeTrainingModal(){$('trainingModal').classList.remove('show')}
 async function saveTraining(){
  const empId=$('training_employee_id').value;
  const course=$('course_name').value.trim();
- const startRaw=$('t_start_date_text').value.trim();
- const endRaw=$('t_end_date_text').value.trim();
+ const start=$('training_start_date').value;
+ const end=$('training_end_date').value;
  $('trainingFormMsg').textContent='';
-
- const start=parseDateInput(startRaw);
- const end=parseDateInput(endRaw);
 
  if(!empId||!course||!start||!end){$('trainingFormMsg').textContent='กรุณาระบุผู้เข้ารับการอบรม หัวข้อ และวันที่ให้ถูกต้อง';return}
  if(new Date(start) > new Date(end)){$('trainingFormMsg').textContent='วันที่เริ่มอบรมต้องไม่เกินวันที่สิ้นสุด';return}
+
+ let certUrl = $('existing_cert_url').value || null;
+ const fileInput = $('cert_file');
+ 
+ // จัดการอัปโหลดไฟล์เกียรติบัตรขึ้น Supabase Storage
+ if(fileInput.files.length > 0){
+   const file = fileInput.files[0];
+   const fileExt = file.name.split('.').pop();
+   const fileName = `cert_${Date.now()}_${Math.random().toString(36).substring(2,7)}.${fileExt}`;
+   $('saveTrainingBtn').textContent = 'กำลังอัปโหลดไฟล์...';
+   $('saveTrainingBtn').disabled = true;
+
+   const {data:uploadData, error:uploadErr} = await supabaseClient.storage.from('certificates').upload(fileName, file);
+   if(uploadErr){
+     $('saveTrainingBtn').textContent = 'บันทึกข้อมูล';
+     $('saveTrainingBtn').disabled = false;
+     $('trainingFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ (โปรดตรวจสอบการสร้าง Bucket certificates): ' + uploadErr.message;
+     return;
+   }
+   const {data:{publicUrl}} = supabaseClient.storage.from('certificates').getPublicUrl(fileName);
+   certUrl = publicUrl;
+ }
 
  const payload={
    employee_id: empId,
@@ -716,11 +734,15 @@ async function saveTraining(){
    end_date: end,
    hours: parseFloat($('training_hours').value)||0,
    location: $('training_location').value.trim()||null,
-   certificate_url: $('certificate_url').value.trim()||null
+   certificate_url: certUrl
  };
 
  const editId=$('trainingEditId').value;
  const res = editId ? await supabaseClient.from('trainings').update(payload).eq('id',editId) : await supabaseClient.from('trainings').insert(payload);
+ 
+ $('saveTrainingBtn').textContent = 'บันทึกข้อมูล';
+ $('saveTrainingBtn').disabled = false;
+
  if(res.error){$('trainingFormMsg').textContent='บันทึกไม่สำเร็จ: '+res.error.message;return}
  
  closeTrainingModal();

@@ -17,6 +17,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 .login-logo,.logo{background:var(--p);color:#fff;display:grid;place-items:center}.login-logo{width:58px;height:58px;border-radius:16px;font-size:28px;margin:auto auto 14px}
 .login h1{text-align:center;font-size:21px;margin:0 0 5px}.login p{text-align:center;color:var(--muted);font-size:13px;margin:0 0 22px}
 .field{margin:12px 0}.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;outline:0;background:#fff}.field input:focus,.field select:focus,.field textarea:focus{border-color:#75bdb6}
+.field input:disabled{background:#f1f5f9;color:#475569;cursor:not-allowed}
 .login-btn{width:100%;padding:12px;border:0;border-radius:10px;background:var(--p);color:#fff;font-weight:700;margin-top:8px}.error{color:var(--danger);font-size:12px;margin-top:10px;text-align:center;min-height:18px}
 .app{display:none;min-height:100vh}.sidebar{width:250px;background:#fff;border-right:1px solid var(--border);padding:20px 14px;position:fixed;inset:0 auto 0 0;z-index:20}
 .brand{display:flex;gap:12px;align-items:center;padding:8px 10px 22px}.logo{width:46px;height:46px;border-radius:14px;font-size:24px}.brand h1{font-size:17px;margin:0 0 2px}.brand p{font-size:11px;color:var(--muted);margin:0}
@@ -133,7 +134,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <section class="grid quick"><button onclick="selectMenu(null,'บุคลากร')">👥<b>จัดการบุคลากร</b><small>ดูและแก้ไขข้อมูล</small></button><button onclick="selectMenu(null,'การลา')">📅<b>จัดการการลา</b><small>ตรวจสอบและอนุมัติ</small></button><button onclick="selectMenu(null,'การอบรม')">🎓<b>บันทึกการอบรม</b><small>ประวัติการพัฒนา</small></button><button onclick="selectMenu(null,'เอกสาร')">📄<b>เอกสารบุคลากร</b><small>จัดเก็บและค้นหา</small></button></section>
 </section>
 
-<!-- Employees Page -->
+<!-- Employees Page (ทุกคนดูข้อมูลได้) -->
 <section id="employeesPage" class="page">
 <div class="toolbar"><input class="search" id="employeeSearch" oninput="renderEmployees()" placeholder="🔎 ค้นหาชื่อ นามสกุล รหัส หรือ ตำแหน่ง"><button class="primary" id="addEmployeeBtn" onclick="openEmployeeModal()">＋ เพิ่มบุคลากร</button></div>
 <div class="card"><div class="table-wrap"><table><thead><tr>
@@ -206,11 +207,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeEmployeeModal()">ยกเลิก</button><button class="primary" onclick="saveEmployee()">บันทึก</button></div>
 </div></div>
 
-<!-- Leave Modal -->
+<!-- Leave Modal (สิทธิ์ครูจะแสดงเป็นชื่อตัวเองทันที) -->
 <div class="modal" id="leaveModal"><div class="modal-card">
 <div class="modal-head"><h3>บันทึกการขอลา</h3><button class="close" onclick="closeLeaveModal()">×</button></div>
 <div class="msg" id="leaveFormMsg"></div>
-<div class="field"><label>ผู้ขอลา *</label><select id="leave_employee_id"><option value="">-- เลือกบุคลากร --</option></select></div>
+<input type="hidden" id="leave_employee_id">
+<div class="field" id="leave_emp_container">
+  <label>ผู้ขอลา *</label>
+  <input id="leave_employee_name" disabled style="display:none">
+  <select id="leave_employee_select"></select>
+</div>
 <div class="form-grid">
 <div class="field"><label>ประเภทการลา *</label><select id="leave_type"><option value="ป่วย">ลาป่วย</option><option value="กิจส่วนตัว">ลากิจส่วนตัว</option><option value="คลอดบุตร">ลาคลอดบุตร</option><option value="พักผ่อน">ลาพักผ่อน</option></select></div>
 <div></div>
@@ -225,12 +231,17 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeLeaveModal()">ยกเลิก</button><button class="primary" onclick="saveLeaveRequest()">ยื่นใบลา</button></div>
 </div></div>
 
-<!-- Training Modal (ใช้ course_name เท่านั้น) -->
+<!-- Training Modal (สิทธิ์ครูจะแสดงเป็นชื่อตัวเองทันที) -->
 <div class="modal" id="trainingModal"><div class="modal-card">
 <div class="modal-head"><h3 id="trainingModalTitle">บันทึกประวัติการอบรม</h3><button class="close" onclick="closeTrainingModal()">×</button></div>
 <div class="msg" id="trainingFormMsg"></div>
 <input type="hidden" id="trainingEditId">
-<div class="field"><label>ผู้เข้ารับการอบรม *</label><select id="training_employee_id"><option value="">-- เลือกบุคลากร --</option></select></div>
+<input type="hidden" id="training_employee_id">
+<div class="field" id="training_emp_container">
+  <label>ผู้เข้ารับการอบรม *</label>
+  <input id="training_employee_name" disabled style="display:none">
+  <select id="training_employee_select"></select>
+</div>
 <div class="field"><label>ชื่อหลักสูตร / หัวข้อการอบรม *</label><input id="course_name" placeholder="เช่น การจัดการเรียนรู้เชิงรุก (Active Learning)"></div>
 <div class="field"><label>หน่วยงานที่จัดอบรม</label><input id="organizer" value="สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3"></div>
 <div class="form-grid">
@@ -247,7 +258,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeTrainingModal()">ยกเลิก</button><button class="primary" id="saveTrainingBtn" onclick="saveTraining()">บันทึกข้อมูล</button></div>
 </div></div>
 
-<!-- แบบฟอร์มใบลาตามภาพเอกสารราชการ -->
+<!-- แบบฟอร์มใบลาพิมพ์ A4 -->
 <div id="printSection">
   <div class="p-title">แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว</div>
   <div class="p-right">
@@ -380,45 +391,84 @@ async function login(){
 async function logout(){await supabaseClient.auth.signOut();showLogin()}
 function showLogin(){$('app').style.display='none';$('loginScreen').style.display='grid'}
 function showApp(){$('loginScreen').style.display='none';$('app').style.display='flex'}
+
 async function checkSession(){
- const {data:{session}}=await supabaseClient.auth.getSession();if(!session){showLogin();return}
- const {data:profile,error}=await supabaseClient.from('profiles').select('full_name,role').eq('id',session.user.id).maybeSingle();
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){showLogin();return}
+ 
+ // อ่านข้อมูลโปรไฟล์ของผู้ใช้
+ const {data:profile, error}=await supabaseClient.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
  if(error){showLogin();$('loginError').textContent='อ่านสิทธิ์ผู้ใช้ไม่สำเร็จ: '+error.message;return}
- if(!profile||!['admin','staff','teacher'].includes(profile.role)){await supabaseClient.auth.signOut();showLogin();$('loginError').textContent=profile?'บัญชีนี้ไม่มีสิทธิ์ใช้งานระบบ':'ยังไม่มีข้อมูลสิทธิ์ของผู้ใช้นี้';return}
- currentProfile=profile;showApp();$('userName').textContent=profile.full_name||session.user.email;$('userRole').textContent='สิทธิ์: '+profile.role;$('topUser').textContent='👤 '+(profile.full_name||'ผู้ใช้งาน');$('roleStatus').textContent='เข้าสู่ระบบในสิทธิ์ '+profile.role;
- if(profile.role==='teacher')$('addEmployeeBtn').style.display='none';loadDashboard();
+ if(!profile||!['admin','staff','teacher'].includes(profile.role)){
+   await supabaseClient.auth.signOut();showLogin();
+   $('loginError').textContent='บัญชีนี้ไม่มีสิทธิ์ใช้งานระบบ';return
+ }
+ 
+ currentProfile = profile;
+ 
+ // ดึงข้อมูลบุคลากรทั้งหมดมาเก็บไว้ในตัวแปร employees ทันที
+ const {data:empData}=await supabaseClient.from('employees').select('*').order('employee_code',{ascending:true});
+ if(empData) {
+   employees = empData;
+   // ผูก employee_id ให้ถูกต้องหากยังว่าง
+   if(!currentProfile.employee_id && session.user.email){
+     const myEmp = employees.find(e => (e.email && e.email.toLowerCase() === session.user.email.toLowerCase()) || (profile.full_name && `${e.prefix||''}${e.first_name} ${e.last_name}`.includes(profile.full_name)));
+     if(myEmp) {
+       currentProfile.employee_id = myEmp.id;
+       await supabaseClient.from('profiles').update({employee_id: myEmp.id}).eq('id', profile.id);
+     }
+   }
+ }
+
+ showApp();
+ $('userName').textContent = profile.full_name || session.user.email;
+ $('userRole').textContent = 'สิทธิ์: ' + profile.role;
+ $('topUser').textContent = '👤 ' + (profile.full_name || 'ผู้ใช้งาน');
+ $('roleStatus').textContent = 'เข้าสู่ระบบในสิทธิ์ ' + profile.role;
+ 
+ // ซ่อนปุ่มเพิ่มบุคลากรสำหรับครูทั่วไป
+ if(profile.role === 'teacher') $('addEmployeeBtn').style.display = 'none';
+ else $('addEmployeeBtn').style.display = 'inline-block';
+
+ loadDashboard();
 }
 
 async function loadDashboard(){
- const year=new Date().getFullYear();
- const [e,l,t]=await Promise.all([
+ const year = new Date().getFullYear();
+ const [e, l, t] = await Promise.all([
    supabaseClient.from('employees').select('*'),
    supabaseClient.from('leave_requests').select('*'),
    supabaseClient.from('trainings').select('*')
  ]);
- if(e.error||l.error||t.error)$('dbStatus').textContent='มีบางตารางอ่านข้อมูลไม่ได้';else $('dbStatus').textContent='เชื่อมต่อและอ่านข้อมูลได้';
- $('employeeCount').textContent=e.error?'!':e.data.length;
- $('workingCount').textContent=e.error?'!':e.data.filter(x=>String(x.status||'').toLowerCase()==='active').length;
- $('pendingLeave').textContent=l.error?'!':l.data.filter(x=>{let s=String(x.status||x.leave_status||'').toLowerCase();return s.includes('รอ')||s.includes('pending')}).length;
- $('trainingCount').textContent=t.error?'0':t.data.filter(x=>{let d=x.start_date||x.created_at;return d&&new Date(d).getFullYear()===year}).length;
- if(!e.error){employees=e.data;renderLatestEmployees()}
+ if(e.error||l.error||t.error) $('dbStatus').textContent='มีบางตารางอ่านข้อมูลไม่ได้'; 
+ else $('dbStatus').textContent='เชื่อมต่อและอ่านข้อมูลได้';
+ 
+ $('employeeCount').textContent = e.error ? '!' : e.data.length;
+ $('workingCount').textContent = e.error ? '!' : e.data.filter(x=>String(x.status||'').toLowerCase()==='active').length;
+ $('pendingLeave').textContent = l.error ? '!' : l.data.filter(x=>{let s=String(x.status||'').toLowerCase();return s.includes('รอ')||s.includes('pending')}).length;
+ $('trainingCount').textContent = t.error ? '0' : t.data.filter(x=>{let d=x.start_date||x.created_at;return d&&new Date(d).getFullYear()===year}).length;
+ 
+ if(!e.error){ employees = e.data; renderLatestEmployees(); }
 }
 
 function renderLatestEmployees(){
- const list=employees.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,5);
- $('latestEmployees').innerHTML=list.length?`<table><thead><tr><th>ชื่อ</th><th>ตำแหน่ง</th><th>สถานะ</th></tr></thead><tbody>${list.map(x=>`<tr><td>${x.prefix||''}${x.first_name} ${x.last_name}</td><td>${x.position||'-'}</td><td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td></tr>`).join('')}</tbody></table>`:'ยังไม่มีข้อมูลบุคลากร';
+ const list = employees.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,5);
+ $('latestEmployees').innerHTML = list.length ? `<table><thead><tr><th>ชื่อ</th><th>ตำแหน่ง</th><th>สถานะ</th></tr></thead><tbody>${list.map(x=>`<tr><td>${x.prefix||''}${x.first_name} ${x.last_name}</td><td>${x.position||'-'}</td><td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td></tr>`).join('')}</tbody></table>` : 'ยังไม่มีข้อมูลบุคลากร';
 }
 
 async function loadEmployees(){
- const {data,error}=await supabaseClient.from('employees').select('*').order('employee_code',{ascending:true});
- if(error){$('employeeTable').innerHTML=`<tr><td colspan="10" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`;return}
- employees=data;renderEmployees();
+ const {data, error} = await supabaseClient.from('employees').select('*').order('employee_code', {ascending:true});
+ if(error){ $('employeeTable').innerHTML = `<tr><td colspan="10" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`; return; }
+ employees = data;
+ renderEmployees();
 }
 
 function renderEmployees(){
- const q=($('employeeSearch').value||'').toLowerCase();
- const list=employees.filter(x=>[x.employee_code,x.first_name,x.last_name,x.position,x.academic_position,x.major].some(v=>String(v||'').toLowerCase().includes(q)));
- $('employeeTable').innerHTML=list.length?list.map(x=>`<tr>
+ const q = ($('employeeSearch').value || '').toLowerCase();
+ const list = employees.filter(x => [x.employee_code, x.first_name, x.last_name, x.position, x.academic_position, x.major].some(v => String(v||'').toLowerCase().includes(q)));
+ const canManage = currentProfile && ['admin','staff'].includes(currentProfile.role);
+
+ $('employeeTable').innerHTML = list.length ? list.map(x => `<tr>
   <td>${x.employee_code||'-'}</td>
   <td><b>${x.prefix||''}${x.first_name} ${x.last_name}</b></td>
   <td>${x.position||'-'}${x.academic_position?'<br><small style="color:var(--p)">'+x.academic_position+'</small>':''}</td>
@@ -428,32 +478,34 @@ function renderEmployees(){
   <td>${formatThaiDate(x.academic_date)}</td>
   <td><b>${formatThaiDate(x.next_evaluation_date)}</b></td>
   <td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td>
-  <td>${currentProfile&&['admin','staff'].includes(currentProfile.role)?`<button class="secondary" onclick="editEmployee('${x.id}')">แก้ไข</button> <button class="secondary danger" onclick="deleteEmployee('${x.id}')">ลบ</button>`:'ดูได้'}</td>
- </tr>`).join(''):`<tr><td colspan="10" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
+  <td>${canManage ? `<button class="secondary" onclick="editEmployee('${x.id}')">แก้ไข</button> <button class="secondary danger" onclick="deleteEmployee('${x.id}')">ลบ</button>` : '<span style="color:var(--muted)">ดูได้อย่างเดียว</span>'}</td>
+ </tr>`).join('') : `<tr><td colspan="10" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
 }
 
 // ---------------- ระบบจัดการการลา ----------------
 async function loadLeaveRequests(){
- const [lRes, eRes]=await Promise.all([
+ const [lRes, eRes] = await Promise.all([
    supabaseClient.from('leave_requests').select('*, employees(prefix, first_name, last_name, position, phone)').order('created_at',{ascending:false}),
    supabaseClient.from('employees').select('id, prefix, first_name, last_name, position, phone').order('employee_code',{ascending:true})
  ]);
- if(lRes.error){$('leaveTable').innerHTML=`<tr><td colspan="7" class="empty">โหลดข้อมูลไม่ได้: ${lRes.error.message}</td></tr>`;return}
- leaveRequests=lRes.data;
- if(!eRes.error) employees=eRes.data;
+ if(lRes.error){ $('leaveTable').innerHTML = `<tr><td colspan="7" class="empty">โหลดข้อมูลไม่ได้: ${lRes.error.message}</td></tr>`; return; }
+ leaveRequests = lRes.data;
+ if(!eRes.error) employees = eRes.data;
  renderLeaveRequests();
 }
 
 function renderLeaveRequests(){
- const q=($('leaveSearch').value||'').toLowerCase();
- const list=leaveRequests.filter(x=>{
+ const q = ($('leaveSearch').value || '').toLowerCase();
+ const list = leaveRequests.filter(x => {
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : '';
    return empName.toLowerCase().includes(q) || String(x.leave_type||'').toLowerCase().includes(q);
  });
 
- $('leaveTable').innerHTML=list.length?list.map(x=>{
+ $('leaveTable').innerHTML = list.length ? list.map(x => {
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'ไม่พบข้อมูล';
-   const canApprove = currentProfile && ['admin','staff'].includes(currentProfile.role);
+   const isAdminOrStaff = currentProfile && ['admin','staff'].includes(currentProfile.role);
+   const isMyRecord = currentProfile && currentProfile.employee_id === x.employee_id;
+
    return `<tr>
     <td>${formatThaiDate(x.created_at)}</td>
     <td><b>${empName}</b></td>
@@ -463,69 +515,91 @@ function renderLeaveRequests(){
     <td><span class="badge ${x.status==='approved'?'approved':(x.status==='rejected'?'rejected':'pending')}">${x.status==='approved'?'อนุมัติแล้ว':(x.status==='rejected'?'ไม่อนุมัติ':'รออนุมัติ')}</span></td>
     <td style="white-space:nowrap">
       <button class="secondary" title="พิมพ์ใบลา" onclick="printLeave('${x.id}')">🖨️ พิมพ์</button>
-      ${canApprove && x.status==='pending'?`
+      ${isAdminOrStaff && x.status==='pending' ? `
         <button class="secondary" style="color:var(--ok)" onclick="updateLeaveStatus('${x.id}','approved')">อนุมัติ</button> 
         <button class="secondary danger" onclick="updateLeaveStatus('${x.id}','rejected')">ไม่อนุมัติ</button>
-      `:''}
-      ${canApprove?`<button class="secondary danger" onclick="deleteLeaveRequest('${x.id}')">ลบ</button>`:''}
+      ` : ''}
+      ${(isAdminOrStaff || (isMyRecord && x.status==='pending')) ? `<button class="secondary danger" onclick="deleteLeaveRequest('${x.id}')">ลบ</button>` : ''}
     </td>
    </tr>`;
- }).join(''):`<tr><td colspan="7" class="empty">ยังไม่มีประวัติการขอลา</td></tr>`;
+ }).join('') : `<tr><td colspan="7" class="empty">ยังไม่มีประวัติการขอลา</td></tr>`;
 }
 
 function openLeaveModal(){
- $('leaveFormMsg').textContent='';
+ $('leaveFormMsg').textContent = '';
  const today = new Date().toISOString().split('T')[0];
  $('leave_start_date').value = today;
  $('leave_end_date').value = today;
- $('leave_reason').value='';
- $('leave_contact').value='โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย';
- $('leave_phone').value='';
- const select=$('leave_employee_id');
- select.innerHTML='<option value="">-- เลือกบุคลากร --</option>'+employees.map(e=>`<option value="${e.id}">${e.prefix||''}${e.first_name} ${e.last_name}</option>`).join('');
- select.onchange=()=>{
-   const emp=employees.find(e=>e.id===select.value);
-   if(emp&&emp.phone)$('leave_phone').value=emp.phone;
- };
+ $('leave_reason').value = '';
+ $('leave_contact').value = 'โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย';
+ $('leave_phone').value = '';
+ 
+ const isTeacher = currentProfile && currentProfile.role === 'teacher';
+ const nameInput = $('leave_employee_name');
+ const select = $('leave_employee_select');
+
+ if(isTeacher){
+   // ล็อกชื่อตัวเองทันทีสำหรับครู
+   const me = employees.find(e => e.id === currentProfile.employee_id);
+   const myName = me ? `${me.prefix||''}${me.first_name} ${me.last_name}` : (currentProfile.full_name || 'ชื่อผู้ใช้ปัจจุบัน');
+   $('leave_employee_id').value = currentProfile.employee_id || '';
+   nameInput.value = myName;
+   nameInput.style.display = 'block';
+   select.style.display = 'none';
+   if(me && me.phone) $('leave_phone').value = me.phone;
+ } else {
+   // Admin / Staff สามารถเลือกชื่อทุกคนได้
+   nameInput.style.display = 'none';
+   select.style.display = 'block';
+   select.innerHTML = '<option value="">-- เลือกบุคลากร --</option>' + employees.map(e => `<option value="${e.id}">${e.prefix||''}${e.first_name} ${e.last_name}</option>`).join('');
+   if(currentProfile && currentProfile.employee_id) select.value = currentProfile.employee_id;
+   $('leave_employee_id').value = select.value;
+   select.onchange = () => {
+     $('leave_employee_id').value = select.value;
+     const emp = employees.find(e => e.id === select.value);
+     if(emp && emp.phone) $('leave_phone').value = emp.phone;
+   };
+ }
+
  $('leaveModal').classList.add('show');
 }
-function closeLeaveModal(){$('leaveModal').classList.remove('show')}
+function closeLeaveModal(){ $('leaveModal').classList.remove('show'); }
 
 async function saveLeaveRequest(){
- const empId=$('leave_employee_id').value;
- const start=$('leave_start_date').value;
- const end=$('leave_end_date').value;
- $('leaveFormMsg').textContent='';
+ const empId = $('leave_employee_id').value;
+ const start = $('leave_start_date').value;
+ const end = $('leave_end_date').value;
+ $('leaveFormMsg').textContent = '';
 
- if(!empId||!start||!end){$('leaveFormMsg').textContent='กรุณาระบุบุคลากรและช่วงวันที่ลาให้ครบถ้วน';return}
- if(new Date(start) > new Date(end)){$('leaveFormMsg').textContent='วันที่เริ่มลาต้องไม่เกินวันที่สิ้นสุดการลา';return}
+ if(!empId || !start || !end){ $('leaveFormMsg').textContent = 'กรุณาระบุข้อมูลให้ครบถ้วน'; return; }
+ if(new Date(start) > new Date(end)){ $('leaveFormMsg').textContent = 'วันที่เริ่มลาต้องไม่เกินวันที่สิ้นสุดการลา'; return; }
 
- const payload={
+ const payload = {
    employee_id: empId,
    leave_type: $('leave_type').value,
    start_date: start,
    end_date: end,
-   reason: $('leave_reason').value.trim()||null,
+   reason: $('leave_reason').value.trim() || null,
    status: 'pending'
  };
- const {error}=await supabaseClient.from('leave_requests').insert(payload);
- if(error){$('leaveFormMsg').textContent='บันทึกไม่สำเร็จ: '+error.message;return}
+ const {error} = await supabaseClient.from('leave_requests').insert(payload);
+ if(error){ $('leaveFormMsg').textContent = 'บันทึกไม่สำเร็จ: ' + error.message; return; }
  closeLeaveModal();
  await loadLeaveRequests();
  await loadDashboard();
 }
 
 async function updateLeaveStatus(id, status){
- const {error}=await supabaseClient.from('leave_requests').update({status}).eq('id',id);
- if(error){alert('อัปเดตไม่สำเร็จ: '+error.message);return}
+ const {error} = await supabaseClient.from('leave_requests').update({status}).eq('id', id);
+ if(error){ alert('อัปเดตไม่สำเร็จ: ' + error.message); return; }
  await loadLeaveRequests();
  await loadDashboard();
 }
 
 async function deleteLeaveRequest(id){
- if(!confirm('ต้องการลบรายการขอลานี้ใช่หรือไม่?'))return;
- const {error}=await supabaseClient.from('leave_requests').delete().eq('id',id);
- if(error){alert('ลบไม่สำเร็จ: '+error.message);return}
+ if(!confirm('ต้องการลบรายการขอลานี้ใช่หรือไม่?')) return;
+ const {error} = await supabaseClient.from('leave_requests').delete().eq('id', id);
+ if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
  await loadLeaveRequests();
  await loadDashboard();
 }
@@ -610,26 +684,28 @@ function printLeave(id){
 
 // ---------------- ระบบบันทึกการอบรม (Trainings) ----------------
 async function loadTrainings(){
- const [tRes, eRes]=await Promise.all([
+ const [tRes, eRes] = await Promise.all([
    supabaseClient.from('trainings').select('*, employees(prefix, first_name, last_name)').order('start_date',{ascending:false}),
    supabaseClient.from('employees').select('id, prefix, first_name, last_name').order('employee_code',{ascending:true})
  ]);
- if(tRes.error){$('trainingTable').innerHTML=`<tr><td colspan="6" class="empty">โหลดข้อมูลไม่ได้: ${tRes.error.message}</td></tr>`;return}
- trainings=tRes.data;
- if(!eRes.error) employees=eRes.data;
+ if(tRes.error){ $('trainingTable').innerHTML = `<tr><td colspan="6" class="empty">โหลดข้อมูลไม่ได้: ${tRes.error.message}</td></tr>`; return; }
+ trainings = tRes.data;
+ if(!eRes.error) employees = eRes.data;
  renderTrainings();
 }
 
 function renderTrainings(){
- const q=($('trainingSearch').value||'').toLowerCase();
- const list=trainings.filter(x=>{
+ const q = ($('trainingSearch').value || '').toLowerCase();
+ const list = trainings.filter(x => {
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : '';
    return empName.toLowerCase().includes(q) || String(x.course_name||'').toLowerCase().includes(q) || String(x.organizer||'').toLowerCase().includes(q);
  });
 
- $('trainingTable').innerHTML=list.length?list.map(x=>{
+ $('trainingTable').innerHTML = list.length ? list.map(x => {
    const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'ไม่พบข้อมูล';
-   const canManage = currentProfile && ['admin','staff'].includes(currentProfile.role);
+   const isAdminOrStaff = currentProfile && ['admin','staff'].includes(currentProfile.role);
+   const isMyRecord = currentProfile && currentProfile.employee_id === x.employee_id;
+
    return `<tr>
     <td>${formatThaiDate(x.start_date)}<br><small style="color:var(--muted)">${x.training_time||'08.30 - 16.30 น.'}</small></td>
     <td><b>${empName}</b></td>
@@ -637,58 +713,78 @@ function renderTrainings(){
     <td>${x.organizer||'-'}</td>
     <td>${x.location||'-'}</td>
     <td style="white-space:nowrap">
-      ${canManage ? `
+      ${(isAdminOrStaff || isMyRecord) ? `
         <button class="secondary" onclick="editTraining('${x.id}')">แก้ไข</button>
         <button class="secondary danger" onclick="deleteTraining('${x.id}')">ลบ</button>
       ` : '-'}
     </td>
    </tr>`;
- }).join(''):`<tr><td colspan="6" class="empty">ยังไม่มีประวัติการอบรม</td></tr>`;
+ }).join('') : `<tr><td colspan="6" class="empty">ยังไม่มีประวัติการอบรม</td></tr>`;
 }
 
 function openTrainingModal(id){
- $('trainingFormMsg').textContent='';
- $('trainingEditId').value=id||'';
- $('trainingModalTitle').textContent=id?'แก้ไขประวัติการอบรม':'บันทึกประวัติการอบรม';
- $('cert_file').value='';
+ $('trainingFormMsg').textContent = '';
+ $('trainingEditId').value = id || '';
+ $('trainingModalTitle').textContent = id ? 'แก้ไขประวัติการอบรม' : 'บันทึกประวัติการอบรม';
+ $('cert_file').value = '';
  
- const select=$('training_employee_id');
- select.innerHTML='<option value="">-- เลือกบุคลากร --</option>'+employees.map(e=>`<option value="${e.id}">${e.prefix||''}${e.first_name} ${e.last_name}</option>`).join('');
+ const isTeacher = currentProfile && currentProfile.role === 'teacher';
+ const nameInput = $('training_employee_name');
+ const select = $('training_employee_select');
+
+ if(isTeacher){
+   // ล็อกชื่อตัวเองทันทีสำหรับครู
+   const me = employees.find(e => e.id === currentProfile.employee_id);
+   const myName = me ? `${me.prefix||''}${me.first_name} ${me.last_name}` : (currentProfile.full_name || 'ชื่อผู้ใช้ปัจจุบัน');
+   $('training_employee_id').value = currentProfile.employee_id || '';
+   nameInput.value = myName;
+   nameInput.style.display = 'block';
+   select.style.display = 'none';
+ } else {
+   // Admin / Staff เลือกชื่อได้ทุกคน
+   nameInput.style.display = 'none';
+   select.style.display = 'block';
+   select.innerHTML = '<option value="">-- เลือกบุคลากร --</option>' + employees.map(e => `<option value="${e.id}">${e.prefix||''}${e.first_name} ${e.last_name}</option>`).join('');
+ }
 
  if(id){
-   const t = trainings.find(x=>x.id===id);
+   const t = trainings.find(x => x.id === id);
    if(t){
-     select.value=t.employee_id||'';
-     $('course_name').value=t.course_name||'';
-     $('organizer').value=t.organizer||'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
-     $('training_date').value=t.start_date||'';
-     $('training_time').value=t.training_time||'08.30 - 16.30 น.';
-     $('training_location').value=t.location||'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
-     $('existing_cert_url').value=t.certificate_url||'';
-     $('cert_preview').innerHTML=t.certificate_url?`<a href="${t.certificate_url}" target="_blank">📄 ไฟล์เดิมที่แนบไว้</a>`:'';
+     if(!isTeacher) { select.value = t.employee_id || ''; $('training_employee_id').value = t.employee_id || ''; }
+     $('course_name').value = t.course_name || '';
+     $('organizer').value = t.organizer || 'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
+     $('training_date').value = t.start_date || '';
+     $('training_time').value = t.training_time || '08.30 - 16.30 น.';
+     $('training_location').value = t.location || 'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
+     $('existing_cert_url').value = t.certificate_url || '';
+     $('cert_preview').innerHTML = t.certificate_url ? `<a href="${t.certificate_url}" target="_blank">📄 ไฟล์เดิมที่แนบไว้</a>` : '';
    }
  } else {
    const today = new Date().toISOString().split('T')[0];
+   if(!isTeacher && currentProfile && currentProfile.employee_id) {
+     select.value = currentProfile.employee_id;
+     $('training_employee_id').value = currentProfile.employee_id;
+   }
    $('training_date').value = today;
    $('training_time').value = '08.30 - 16.30 น.';
-   $('course_name').value='';
-   $('organizer').value='สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
-   $('training_location').value='สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
-   $('existing_cert_url').value='';
-   $('cert_preview').textContent='';
+   $('course_name').value = '';
+   $('organizer').value = 'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
+   $('training_location').value = 'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3';
+   $('existing_cert_url').value = '';
+   $('cert_preview').textContent = '';
  }
  $('trainingModal').classList.add('show');
 }
-function closeTrainingModal(){$('trainingModal').classList.remove('show')}
+function closeTrainingModal(){ $('trainingModal').classList.remove('show'); }
 
 async function saveTraining(){
- const empId=$('training_employee_id').value;
- const course=$('course_name').value.trim();
- const tDate=$('training_date').value;
- const tTime=$('training_time').value.trim();
- $('trainingFormMsg').textContent='';
+ const empId = $('training_employee_id').value || (currentProfile && currentProfile.employee_id);
+ const course = $('course_name').value.trim();
+ const tDate = $('training_date').value;
+ const tTime = $('training_time').value.trim();
+ $('trainingFormMsg').textContent = '';
 
- if(!empId||!course||!tDate){$('trainingFormMsg').textContent='กรุณาระบุผู้เข้ารับการอบรม หัวข้อ และวันที่อบรมให้ครบถ้วน';return}
+ if(!empId || !course || !tDate){ $('trainingFormMsg').textContent = 'กรุณาระบุข้อมูลให้ครบถ้วน'; return; }
 
  let certUrl = $('existing_cert_url').value || null;
  const fileInput = $('cert_file');
@@ -704,114 +800,132 @@ async function saveTraining(){
    if(uploadErr){
      $('saveTrainingBtn').textContent = 'บันทึกข้อมูล';
      $('saveTrainingBtn').disabled = false;
-     $('trainingFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ (โปรดตรวจสอบการสร้าง Bucket certificates ใน Supabase Storage): ' + uploadErr.message;
+     $('trainingFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ: ' + uploadErr.message;
      return;
    }
    const {data:{publicUrl}} = supabaseClient.storage.from('certificates').getPublicUrl(fileName);
    certUrl = publicUrl;
  }
 
- const payload={
+ const payload = {
    employee_id: empId,
    course_name: course,
-   organizer: $('organizer').value.trim()||null,
+   organizer: $('organizer').value.trim() || null,
    start_date: tDate,
-   training_time: tTime||null,
-   location: $('training_location').value.trim()||null,
+   training_time: tTime || null,
+   location: $('training_location').value.trim() || null,
    certificate_url: certUrl
  };
 
- const editId=$('trainingEditId').value;
- const res = editId ? await supabaseClient.from('trainings').update(payload).eq('id',editId) : await supabaseClient.from('trainings').insert(payload);
+ const editId = $('trainingEditId').value;
+ const res = editId ? await supabaseClient.from('trainings').update(payload).eq('id', editId) : await supabaseClient.from('trainings').insert(payload);
  
  $('saveTrainingBtn').textContent = 'บันทึกข้อมูล';
  $('saveTrainingBtn').disabled = false;
 
- if(res.error){$('trainingFormMsg').textContent='บันทึกไม่สำเร็จ: '+res.error.message;return}
+ if(res.error){ $('trainingFormMsg').textContent = 'บันทึกไม่สำเร็จ: ' + res.error.message; return; }
  
  closeTrainingModal();
  await loadTrainings();
  await loadDashboard();
 }
 
-function editTraining(id){openTrainingModal(id)}
+function editTraining(id){ openTrainingModal(id); }
 
 async function deleteTraining(id){
- if(!confirm('ต้องการลบประวัติการอบรมนี้ใช่หรือไม่?'))return;
- const {error}=await supabaseClient.from('trainings').delete().eq('id',id);
- if(error){alert('ลบไม่สำเร็จ: '+error.message);return}
+ if(!confirm('ต้องการลบประวัติการอบรมนี้ใช่หรือไม่?')) return;
+ const {error} = await supabaseClient.from('trainings').delete().eq('id', id);
+ if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
  await loadTrainings();
  await loadDashboard();
 }
 
 // ---------------- เมนูและการควบคุมทั่วไป ----------------
-function selectMenu(btn,name){
- document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');
- $('pageTitle').textContent=name;
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- if(name==='Dashboard'){$('dashboardPage').classList.add('active');loadDashboard()}
- else if(name==='บุคลากร'){$('employeesPage').classList.add('active');loadEmployees()}
- else if(name==='การลา'){$('leavePage').classList.add('active');loadLeaveRequests()}
- else if(name==='การอบรม'){$('trainingPage').classList.add('active');loadTrainings()}
- else{$('placeholderPage').classList.add('active')}
- if(window.innerWidth<=900)toggleMenu();
+function selectMenu(btn, name){
+ document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+ if(btn) btn.classList.add('active');
+ $('pageTitle').textContent = name;
+ document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+ if(name==='Dashboard'){ $('dashboardPage').classList.add('active'); loadDashboard(); }
+ else if(name==='บุคลากร'){ $('employeesPage').classList.add('active'); loadEmployees(); }
+ else if(name==='การลา'){ $('leavePage').classList.add('active'); loadLeaveRequests(); }
+ else if(name==='การอบรม'){ $('trainingPage').classList.add('active'); loadTrainings(); }
+ else{ $('placeholderPage').classList.add('active'); }
+ if(window.innerWidth <= 900) toggleMenu();
 }
-function toggleMenu(){$('sidebar').classList.toggle('open');$('overlay').classList.toggle('show')}
+function toggleMenu(){ $('sidebar').classList.toggle('open'); $('overlay').classList.toggle('show'); }
 
 function openEmployeeModal(id){
- if(currentProfile&&!['admin','staff'].includes(currentProfile.role))return;
- $('editId').value=id||'';$('modalTitle').textContent=id?'แก้ไขข้อมูลบุคลากร':'เพิ่มบุคลากร';$('formMsg').textContent='';
- ['prefix','employee_code','first_name','last_name','position','academic_position','education_level','major','entry_date','school_entry_date','academic_date','next_evaluation_date','phone','employee_email'].forEach(id=>$(id).value='');$('status').value='active';
+ if(currentProfile && !['admin','staff'].includes(currentProfile.role)) return;
+ $('editId').value = id || '';
+ $('modalTitle').textContent = id ? 'แก้ไขข้อมูลบุคลากร' : 'เพิ่มบุคลากร';
+ $('formMsg').textContent = '';
+ ['prefix','employee_code','first_name','last_name','position','academic_position','education_level','major','entry_date','school_entry_date','academic_date','next_evaluation_date','phone','employee_email'].forEach(id => $(id).value = '');
+ $('status').value = 'active';
+ 
  if(id){
-   const x=employees.find(e=>e.id===id);
+   const x = employees.find(e => e.id === id);
    if(x){
-     $('prefix').value=x.prefix||'';$('employee_code').value=x.employee_code||'';
-     $('first_name').value=x.first_name||'';$('last_name').value=x.last_name||'';
-     $('position').value=x.position||'';$('academic_position').value=x.academic_position||'';
-     $('education_level').value=x.education_level||'';$('major').value=x.major||'';
-     $('entry_date').value=x.entry_date||'';$('school_entry_date').value=x.school_entry_date||'';
-     $('academic_date').value=x.academic_date||'';$('next_evaluation_date').value=x.next_evaluation_date||'';
-     $('phone').value=x.phone||'';$('employee_email').value=x.email||'';$('status').value=x.status||'active';
+     $('prefix').value = x.prefix || '';
+     $('employee_code').value = x.employee_code || '';
+     $('first_name').value = x.first_name || '';
+     $('last_name').value = x.last_name || '';
+     $('position').value = x.position || '';
+     $('academic_position').value = x.academic_position || '';
+     $('education_level').value = x.education_level || '';
+     $('major').value = x.major || '';
+     $('entry_date').value = x.entry_date || '';
+     $('school_entry_date').value = x.school_entry_date || '';
+     $('academic_date').value = x.academic_date || '';
+     $('next_evaluation_date').value = x.next_evaluation_date || '';
+     $('phone').value = x.phone || '';
+     $('employee_email').value = x.email || '';
+     $('status').value = x.status || 'active';
    }
  }
  $('employeeModal').classList.add('show');
 }
-function closeEmployeeModal(){$('employeeModal').classList.remove('show')}
+function closeEmployeeModal(){ $('employeeModal').classList.remove('show'); }
 
 async function saveEmployee(){
- const first=$('first_name').value.trim(),last=$('last_name').value.trim();$('formMsg').textContent='';
- if(!first||!last){$('formMsg').textContent='กรุณากรอกชื่อและนามสกุล';return}
- const payload={
-   prefix:$('prefix').value||null,
-   employee_code:$('employee_code').value.trim()||null,
-   first_name:first,
-   last_name:last,
-   position:$('position').value.trim()||null,
-   academic_position:$('academic_position').value.trim()||null,
-   education_level:$('education_level').value.trim()||null,
-   major:$('major').value.trim()||null,
-   entry_date:$('entry_date').value||null,
-   school_entry_date:$('school_entry_date').value||null,
-   academic_date:$('academic_date').value||null,
-   next_evaluation_date:$('next_evaluation_date').value||null,
-   phone:$('phone').value.trim()||null,
-   email:$('employee_email').value.trim()||null,
-   status:$('status').value
+ const first = $('first_name').value.trim(), last = $('last_name').value.trim();
+ $('formMsg').textContent = '';
+ if(!first || !last){ $('formMsg').textContent = 'กรุณากรอกชื่อและนามสกุล'; return; }
+ 
+ const payload = {
+   prefix: $('prefix').value || null,
+   employee_code: $('employee_code').value.trim() || null,
+   first_name: first,
+   last_name: last,
+   position: $('position').value.trim() || null,
+   academic_position: $('academic_position').value.trim() || null,
+   education_level: $('education_level').value.trim() || null,
+   major: $('major').value.trim() || null,
+   entry_date: $('entry_date').value || null,
+   school_entry_date: $('school_entry_date').value || null,
+   academic_date: $('academic_date').value || null,
+   next_evaluation_date: $('next_evaluation_date').value || null,
+   phone: $('phone').value.trim() || null,
+   email: $('employee_email').value.trim() || null,
+   status: $('status').value
  };
- const id=$('editId').value;
- const result=id?await supabaseClient.from('employees').update(payload).eq('id',id):await supabaseClient.from('employees').insert(payload);
- if(result.error){$('formMsg').textContent='บันทึกไม่สำเร็จ: '+result.error.message;return}
- closeEmployeeModal();await loadEmployees();await loadDashboard();
+ const id = $('editId').value;
+ const result = id ? await supabaseClient.from('employees').update(payload).eq('id', id) : await supabaseClient.from('employees').insert(payload);
+ if(result.error){ $('formMsg').textContent = 'บันทึกไม่สำเร็จ: ' + result.error.message; return; }
+ closeEmployeeModal();
+ await loadEmployees();
+ await loadDashboard();
 }
-async function editEmployee(id){openEmployeeModal(id)}
+async function editEmployee(id){ openEmployeeModal(id); }
 async function deleteEmployee(id){
- if(!confirm('ยืนยันการลบบุคลากรคนนี้?'))return;
- const {error}=await supabaseClient.from('employees').delete().eq('id',id);
- if(error){alert('ลบไม่สำเร็จ: '+error.message);return}
- await loadEmployees();await loadDashboard();
+ if(!confirm('ยืนยันการลบบุคลากรคนนี้?')) return;
+ const {error} = await supabaseClient.from('employees').delete().eq('id', id);
+ if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
+ await loadEmployees();
+ await loadDashboard();
 }
 
-supabaseClient.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')showLogin()});
+supabaseClient.auth.onAuthStateChange((event) => { if(event === 'SIGNED_OUT') showLogin(); });
 checkSession();
 </script>
 </body>

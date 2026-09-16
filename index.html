@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}:root{--p:#0f766e;--p2:#115e59;--bg:#f4f7f8;--card:#fff;--text:#18323a;--muted:#6b7d83;--border:#e5eaec;--danger:#c84a4a;--ok:#17734f}
+*{box-sizing:border-box}:root{--p:#0f766e;--p2:#115e59;--bg:#f4f7f8;--card:#fff;--text:#18323a;--muted:#6b7d83;--border:#e5eaec;--danger:#c84a4a;--ok:#17734f;--warn:#d97706}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text)}
 button,input,select,textarea{font:inherit}button{cursor:pointer}
 .login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#e8f5f3,#f7fafb)}
@@ -38,7 +38,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
 
-/* ดีไซน์แท็บและ Grid เอกสาร */
+/* แจ้งเตือนใน Dashboard */
+.alert-box{padding:14px 16px;border-radius:12px;margin-bottom:10px;display:flex;align-items:center;gap:12px;font-size:13px}
+.alert-warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.alert-danger{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+.alert-ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+
+/* ดีไซน์เอกสาร */
 .doc-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:16px;border-bottom:1px solid var(--border)}
 .doc-tab{padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
 .doc-tab:hover,.doc-tab.active{background:var(--p);color:#fff;border-color:var(--p)}
@@ -46,7 +52,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .doc-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,.02);transition:.15s}
 .doc-card:hover{border-color:#b4d7d3;transform:translateY(-2px)}
 .doc-header{display:flex;gap:12px;align-items:flex-start}
-.doc-icon{width:42px;height:42px;border-radius:10px;background:#e8f5f3;color:var(--p);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.doc-icon{width:42px;height:42px;border-radius:10px;background:#e8f5f3;color:var(--p);display:grid;place-items:center;flex-shrink:0}
 .doc-info{flex:1;overflow:hidden}
 .doc-info h4{margin:0 0 4px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .doc-info p{margin:0;font-size:12px;color:var(--muted)}
@@ -82,7 +88,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <section class="login" id="loginScreen"><div class="login-card">
 <div class="login-logo">🏫</div><h1>ระบบบริหารงานบุคคล</h1><p>โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย</p>
 <div class="field"><label>อีเมล</label><input id="email" type="email" autocomplete="username" placeholder="กรอกอีเมล"></div>
-<div class="field"><label>รหัสผ่าน</label><input id="password" type="password" autocomplete="current-password" placeholder="กรอกรหัสผ่าน"></div>
+<div class="field"><label>รหัสผ่าน</label><input id="password" type="password" autocomplete="current-password" placeholder="รหัสผ่านเริ่มต้น mmn1234"></div>
 <button class="login-btn" onclick="login()">เข้าสู่ระบบ</button><div class="error" id="loginError"></div>
 </div></section>
 
@@ -106,22 +112,36 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 
 <!-- Dashboard -->
 <section id="dashboardPage" class="page active">
-<section class="grid stats">
-<div class="card stat"><div><div class="label">บุคลากรทั้งหมด</div><div class="value" id="employeeCount">—</div></div><div class="stat-icon">👥</div></div>
-<div class="card stat"><div><div class="label">กำลังปฏิบัติงาน</div><div class="value" id="workingCount">—</div></div><div class="stat-icon">✅</div></div>
-<div class="card stat"><div><div class="label">รออนุมัติการลา</div><div class="value" id="pendingLeave">—</div></div><div class="stat-icon">📅</div></div>
-<div class="card stat"><div><div class="label">อบรมปีนี้ (เรื่อง)</div><div class="value" id="trainingCount">—</div></div><div class="stat-icon">🎓</div></div>
-</section>
-<section class="grid content"><div class="card"><div class="card-head"><h3>บุคลากรล่าสุด</h3></div><div id="latestEmployees" class="loading">กำลังโหลดข้อมูล...</div></div>
-<div class="card"><div class="card-head"><h3>สถานะระบบ</h3></div><div class="notice">
-<div class="notice-item"><strong>🔐 ระบบเข้าสู่ระบบ</strong><span>เชื่อมต่อ Supabase แล้ว</span></div>
-<div class="notice-item"><strong>🗄️ ฐานข้อมูล</strong><span id="dbStatus">กำลังตรวจสอบ...</span></div>
-<div class="notice-item"><strong>👤 สิทธิ์ผู้ใช้</strong><span id="roleStatus">กำลังตรวจสอบ...</span></div>
-</div></div></section>
-<section class="grid quick"><button onclick="selectMenu(null,'บุคลากร')">👥<b>จัดการบุคลากร</b><small>ดูและแก้ไขข้อมูล</small></button><button onclick="selectMenu(null,'การลา')">📅<b>จัดการการลา</b><small>ตรวจสอบและอนุมัติ</small></button><button onclick="selectMenu(null,'การอบรม')">🎓<b>บันทึกการอบรม</b><small>ประวัติการพัฒนา</small></button><button onclick="selectMenu(null,'เอกสาร')">📄<b>เอกสารบุคลากร</b><small>จัดเก็บและค้นหา</small></button></section>
+  <div id="teacherAlerts" style="display:none;margin-bottom:18px"></div>
+
+  <!-- สถิติ Dashboard -->
+  <section class="grid stats" id="statsGrid"></section>
+
+  <!-- เนื้อหา Dashboard -->
+  <section class="grid content">
+    <div class="card">
+      <div class="card-head"><h3 id="tableHeadTitle">บุคลากรล่าสุด</h3></div>
+      <div id="latestContent" class="loading">กำลังโหลดข้อมูล...</div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>สถานะระบบและการแจ้งเตือน</h3></div>
+      <div class="notice">
+        <div class="notice-item"><strong>🔐 ระบบเข้าสู่ระบบ</strong><span>เชื่อมต่อ Supabase แล้ว</span></div>
+        <div class="notice-item"><strong>🗄️ ฐานข้อมูล</strong><span id="dbStatus">กำลังตรวจสอบ...</span></div>
+        <div class="notice-item"><strong>👤 ข้อมูลผู้ใช้</strong><span id="roleStatus">กำลังตรวจสอบ...</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid quick">
+    <button onclick="selectMenu(null,'บุคลากร')">👥<b>จัดการบุคลากร</b><small>ดูข้อมูลบุคลากร</small></button>
+    <button onclick="selectMenu(null,'การลา')">📅<b>จัดการการลา</b><small>ยื่นและตรวจสอบใบลา</small></button>
+    <button onclick="selectMenu(null,'การอบรม')">🎓<b>บันทึกการอบรม</b><small>ประวัติการพัฒนาตนเอง</small></button>
+    <button onclick="selectMenu(null,'เอกสาร')">📄<b>เอกสารบุคลากร</b><small>แฟ้มสะสมงานดิจิทัล</small></button>
+  </section>
 </section>
 
-<!-- Employees Page -->
+<!-- Employees Page (ซ่อนวันครบรอบประเมินตามที่สั่ง) -->
 <section id="employeesPage" class="page">
 <div class="toolbar"><input class="search" id="employeeSearch" oninput="renderEmployees()" placeholder="🔎 ค้นหาชื่อ นามสกุล รหัส หรือ ตำแหน่ง"><button class="primary" id="addEmployeeBtn" onclick="openEmployeeModal()">＋ เพิ่มบุคลากร</button></div>
 <div class="card"><div class="table-wrap"><table><thead><tr>
@@ -132,10 +152,9 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   <th>วันบรรจุ</th>
   <th>วันมา รร.นี้</th>
   <th>วันได้วิทยฐานะ</th>
-  <th>วันครบประเมิน (+3ปี)</th>
   <th>สถานะ</th>
   <th>จัดการ</th>
-</tr></thead><tbody id="employeeTable"><tr><td colspan="10" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
+</tr></thead><tbody id="employeeTable"><tr><td colspan="9" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
 <!-- Leave Page -->
@@ -165,17 +184,20 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </tr></thead><tbody id="trainingTable"><tr><td colspan="6" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
-<!-- Documents Page (ดีไซน์ใหม่: แยกหมวดหมู่ + เห็นเฉพาะของตนเอง) -->
+<!-- Documents Page (ดีไซน์แยกหมวดหมู่) -->
 <section id="documentsPage" class="page">
   <div class="toolbar">
     <input class="search" id="documentSearch" oninput="renderDocuments()" placeholder="🔎 ค้นหาชื่อเอกสาร หรือเลขที่เอกสาร">
     <button class="primary" onclick="openDocumentModal()">＋ อัปโหลดเอกสารใหม่</button>
   </div>
 
-  <!-- แถบเลือกหมวดหมู่เอกสาร -->
   <div class="doc-tabs">
     <button class="doc-tab active" onclick="filterDocCategory('all', this)">🗂️ ทั้งหมด</button>
-    <button class="doc-tab" onclick="filterDocCategory('ใบอนุญาตประกอบวิชาชีพครู', this)">🪪 ใบประกอบวิชาชีพ</button>
+    <button class="doc-tab" onclick="filterDocCategory('ใบอนุญาตประกอบวิชาชีพครู', this)">
+      <span style="display:inline-block;vertical-align:middle;margin-right:4px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>
+      </span>ใบประกอบวิชาชีพ
+    </button>
     <button class="doc-tab" onclick="filterDocCategory('ก.พ.7 / ก.ค.ศ.16', this)">📑 ก.พ.7 / ก.ค.ศ.16</button>
     <button class="doc-tab" onclick="filterDocCategory('วุฒิการศึกษา / ปริญญาบัตร', this)">🎓 วุฒิการศึกษา</button>
     <button class="doc-tab" onclick="filterDocCategory('คำสั่งโรงเรียน / สพฐ.', this)">📜 คำสั่งราชการ</button>
@@ -185,6 +207,28 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 
   <div id="documentContainer" class="doc-grid">
     <div class="loading" style="grid-column:1/-1">กำลังโหลดเอกสาร...</div>
+  </div>
+</section>
+
+<!-- Settings Page (ตั้งค่าระบบส่วนตัว) -->
+<section id="settingsPage" class="page">
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:20px">
+    <div class="card">
+      <div class="card-head"><h3>🔐 เปลี่ยนรหัสผ่านเข้าใช้งาน</h3></div>
+      <div class="msg" id="pwdMsg"></div>
+      <div class="field"><label>รหัสผ่านใหม่ *</label><input id="newPassword" type="password" placeholder="อย่างน้อย 6 ตัวอักษร"></div>
+      <div class="field"><label>ยืนยันรหัสผ่านใหม่ *</label><input id="confirmPassword" type="password" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง"></div>
+      <button class="primary" style="margin-top:10px" onclick="updatePassword()">บันทึกรหัสผ่านใหม่</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>📞 ข้อมูลติดต่อส่วนบุคคล</h3></div>
+      <div class="msg" id="profileMsg"></div>
+      <div class="field"><label>ชื่อ-นามสกุล</label><input id="set_fullname" disabled></div>
+      <div class="field"><label>อีเมลใช้งาน</label><input id="set_email" disabled></div>
+      <div class="field"><label>เบอร์โทรศัพท์ติดต่อ (ใช้ในใบลา)</label><input id="set_phone" placeholder="เช่น 081-234-5678"></div>
+      <button class="primary" style="margin-top:10px" onclick="updatePhone()">บันทึกข้อมูลติดต่อ</button>
+    </div>
   </div>
 </section>
 
@@ -208,8 +252,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="field"><label>สาขาวิชาเอก</label><input id="major" placeholder="เช่น บริหารการศึกษา, คณิตศาสตร์"></div>
 <div class="field"><label>วันที่บรรจุราชการ</label><input id="entry_date" type="date"></div>
 <div class="field"><label>วันที่ปฏิบัติงาน รร.นี้</label><input id="school_entry_date" type="date"></div>
-<div class="field"><label>วันที่ได้รับวิทยฐานะ</label><input id="academic_date" type="date" onchange="autoCalculateNextEval()"></div>
-<div class="field"><label>วันครบรอบส่งประเมิน (+3 ปี)</label><input id="next_evaluation_date" type="date"></div>
+<div class="field"><label>วันที่ได้รับวิทยฐานะ</label><input id="academic_date" type="date"></div>
 <div class="field"><label>เบอร์โทรศัพท์</label><input id="phone"></div>
 <div class="field"><label>อีเมล</label><input id="employee_email" type="email"></div>
 <div class="field"><label>สถานะ *</label><select id="status"><option value="active">ปฏิบัติงาน</option><option value="inactive">ไม่ปฏิบัติงาน</option></select></div>
@@ -268,7 +311,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeTrainingModal()">ยกเลิก</button><button class="primary" id="saveTrainingBtn" onclick="saveTraining()">บันทึกข้อมูล</button></div>
 </div></div>
 
-<!-- Document Modal (เลือกประเภท + อัปโหลดง่ายๆ) -->
+<!-- Document Modal -->
 <div class="modal" id="documentModal"><div class="modal-card">
 <div class="modal-head"><h3 id="documentModalTitle">อัปโหลดเอกสารประจำตัว</h3><button class="close" onclick="closeDocumentModal()">×</button></div>
 <div class="msg" id="docFormMsg"></div>
@@ -425,15 +468,6 @@ function formatThaiDate(dStr){
   return `${day}/${month}/${year}`;
 }
 
-function autoCalculateNextEval(){
-  const acad=$('academic_date').value;
-  if(acad){
-    const d=new Date(acad);
-    d.setFullYear(d.getFullYear()+3);
-    $('next_evaluation_date').value=d.toISOString().split('T')[0];
-  }
-}
-
 async function login(){
  const email=$('email').value.trim(),password=$('password').value;$('loginError').textContent='';
  if(!email||!password){$('loginError').textContent='กรุณากรอกอีเมลและรหัสผ่าน';return}
@@ -479,35 +513,133 @@ async function checkSession(){
  if(profile.role === 'teacher') $('addEmployeeBtn').style.display = 'none';
  else $('addEmployeeBtn').style.display = 'inline-block';
 
+ // เติมข้อมูลในหน้าตั้งค่า
+ $('set_fullname').value = profile.full_name || '-';
+ $('set_email').value = session.user.email || '-';
+ const me = employees.find(e => e.id === currentProfile.employee_id);
+ if(me && me.phone) $('set_phone').value = me.phone;
+
  loadDashboard();
 }
 
 async function loadDashboard(){
  const year = new Date().getFullYear();
- const [e, l, t] = await Promise.all([
+ const isTeacher = currentProfile && currentProfile.role === 'teacher';
+
+ const [e, l, t, d] = await Promise.all([
    supabaseClient.from('employees').select('*'),
    supabaseClient.from('leave_requests').select('*'),
-   supabaseClient.from('trainings').select('*')
+   supabaseClient.from('trainings').select('*'),
+   supabaseClient.from('documents').select('*')
  ]);
- if(e.error||l.error||t.error) $('dbStatus').textContent='มีบางตารางอ่านข้อมูลไม่ได้'; 
+ 
+ if(e.error||l.error||t.error||d.error) $('dbStatus').textContent='มีบางตารางอ่านข้อมูลไม่ได้'; 
  else $('dbStatus').textContent='เชื่อมต่อและอ่านข้อมูลได้';
  
- $('employeeCount').textContent = e.error ? '!' : e.data.length;
- $('workingCount').textContent = e.error ? '!' : e.data.filter(x=>String(x.status||'').toLowerCase()==='active').length;
- $('pendingLeave').textContent = l.error ? '!' : l.data.filter(x=>{let s=String(x.status||x.leave_status||'').toLowerCase();return s.includes('รอ')||s.includes('pending')}).length;
- $('trainingCount').textContent = t.error ? '0' : t.data.filter(x=>{let d=x.start_date||x.created_at;return d&&new Date(d).getFullYear()===year}).length;
- 
- if(!e.error){ employees = e.data; renderLatestEmployees(); }
+ if(!e.error) employees = e.data;
+ if(!l.error) leaveRequests = l.data;
+ if(!t.error) trainings = t.data;
+ if(!d.error) documents = d.data;
+
+ const me = employees.find(x => x.id === currentProfile.employee_id) || {};
+ const statsContainer = $('statsGrid');
+
+ if(isTeacher){
+   // Dashboard สำหรับครู (แสดงเฉพาะของตนเอง)
+   const myLeaves = leaveRequests.filter(x => x.employee_id === currentProfile.employee_id);
+   let mySickDays = 0, myPersonalDays = 0;
+   myLeaves.forEach(x => {
+     const days = Math.ceil(Math.abs(new Date(x.end_date) - new Date(x.start_date)) / (1000 * 60 * 60 * 24)) + 1;
+     if(x.leave_type.includes('ป่วย')) mySickDays += days;
+     if(x.leave_type.includes('กิจ')) myPersonalDays += days;
+   });
+
+   const myTrainings = trainings.filter(x => x.employee_id === currentProfile.employee_id && (x.start_date && new Date(x.start_date).getFullYear() === year));
+   const myDocs = documents.filter(x => x.employee_id === currentProfile.employee_id);
+
+   statsContainer.innerHTML = `
+     <div class="card stat"><div><div class="label">ลาป่วยปีนี้ (วัน)</div><div class="value">${mySickDays}</div></div><div class="stat-icon">🏥</div></div>
+     <div class="card stat"><div><div class="label">ลากิจปีนี้ (วัน)</div><div class="value">${myPersonalDays}</div></div><div class="stat-icon">📅</div></div>
+     <div class="card stat"><div><div class="label">อบรมปีนี้ (เรื่อง)</div><div class="value">${myTrainings.length}</div></div><div class="stat-icon">🎓</div></div>
+     <div class="card stat"><div><div class="label">เอกสารของฉัน (ไฟล์)</div><div class="value">${myDocs.length}</div></div><div class="stat-icon">📁</div></div>
+   `;
+
+   // การแจ้งเตือนส่วนบุคคล (ใบประกอบวิชาชีพ + วิทยฐานะ +3 ปี)
+   renderTeacherAlerts(me);
+   $('tableHeadTitle').textContent = 'ประวัติการลาล่าสุดของฉัน';
+   renderTeacherLatestLeaves(myLeaves);
+
+ } else {
+   // Dashboard สำหรับ Admin / Staff (ภาพรวมโรงเรียน)
+   $('teacherAlerts').style.display = 'none';
+   $('tableHeadTitle').textContent = 'บุคลากรล่าสุด';
+   statsContainer.innerHTML = `
+     <div class="card stat"><div><div class="label">บุคลากรทั้งหมด</div><div class="value">${e.error ? '!' : employees.length}</div></div><div class="stat-icon">👥</div></div>
+     <div class="card stat"><div><div class="label">กำลังปฏิบัติงาน</div><div class="value">${e.error ? '!' : employees.filter(x=>String(x.status||'').toLowerCase()==='active').length}</div></div><div class="stat-icon">✅</div></div>
+     <div class="card stat"><div><div class="label">รออนุมัติการลา</div><div class="value">${l.error ? '!' : leaveRequests.filter(x=>{let s=String(x.status||x.leave_status||'').toLowerCase();return s.includes('รอ')||s.includes('pending')}).length}</div></div><div class="stat-icon">📅</div></div>
+     <div class="card stat"><div><div class="label">อบรมปีนี้ (เรื่อง)</div><div class="value">${t.error ? '0' : trainings.filter(x=>{let d=x.start_date||x.created_at;return d&&new Date(d).getFullYear()===year}).length}</div></div><div class="stat-icon">🎓</div></div>
+   `;
+   renderLatestEmployees();
+ }
+}
+
+// แจ้งเตือนวันหมดอายุใบประกอบ และรอบส่งวิทยฐานะ (+3 ปี)
+function renderTeacherAlerts(me){
+ const alertBox = $('teacherAlerts');
+ let alerts = [];
+
+ // 1. ตรวจสอบวันหมดอายุใบประกอบวิชาชีพครู
+ const licenseDoc = documents.find(x => x.employee_id === currentProfile.employee_id && x.doc_type === 'ใบอนุญาตประกอบวิชาชีพครู' && x.expire_date);
+ if(licenseDoc){
+   const diffDays = Math.ceil((new Date(licenseDoc.expire_date) - new Date()) / (1000 * 60 * 60 * 24));
+   if(diffDays < 0){
+     alerts.push(`<div class="alert-box alert-danger">⚠️ <b>ใบอนุญาตประกอบวิชาชีพครูของคุณหมดอายุแล้ว!</b> (หมดอายุเมื่อ ${formatThaiDate(licenseDoc.expire_date)}) โปรดติดต่อต่ออายุโดยด่วน</div>`);
+   } else if(diffDays <= 90){
+     alerts.push(`<div class="alert-box alert-warn">⏳ <b>ใบอนุญาตประกอบวิชาชีพครูใกล้หมดอายุ:</b> จะหมดอายุในอีก ${diffDays} วัน (${formatThaiDate(licenseDoc.expire_date)}) โปรดเตรียมเอกสารขอต่ออายุ</div>`);
+   } else {
+     alerts.push(`<div class="alert-box alert-ok">✅ <b>ใบอนุญาตประกอบวิชาชีพครู:</b> สถานะปกติ (หมดอายุวันที่ ${formatThaiDate(licenseDoc.expire_date)})</div>`);
+   }
+ } else {
+   alerts.push(`<div class="alert-box alert-warn">ℹ️ คุณยังไม่ได้อัปโหลดหรือระบุวันหมดอายุของ <b>ใบอนุญาตประกอบวิชาชีพครู</b> ในระบบเอกสาร</div>`);
+ }
+
+ // 2. ตรวจสอบรอบส่งประเมินวิทยฐานะ (+3 ปี จากวันที่ได้รับวิทยฐานะ)
+ if(me.academic_date){
+   const evalDate = new Date(me.academic_date);
+   evalDate.setFullYear(evalDate.getFullYear() + 3);
+   const diffDays = Math.ceil((evalDate - new Date()) / (1000 * 60 * 60 * 24));
+
+   if(diffDays < 0){
+     alerts.push(`<div class="alert-box alert-danger">⚠️ <b>ครบรอบกำหนดส่งประเมินวิทยฐานะแล้ว!</b> (ครบกำหนดเมื่อ ${formatThaiDate(evalDate)})</div>`);
+   } else if(diffDays <= 180){
+     alerts.push(`<div class="alert-box alert-warn">⏳ <b>ใกล้ครบรอบส่งประเมินวิทยฐานะ (+3 ปี):</b> เหลือเวลาอีก ${diffDays} วัน (ครบกำหนดวันที่ ${formatThaiDate(evalDate)})</div>`);
+   } else {
+     alerts.push(`<div class="alert-box alert-ok">✅ <b>รอบส่งประเมินวิทยฐานะ (+3 ปี):</b> วันที่ ${formatThaiDate(evalDate)} (สถานะปกติ)</div>`);
+   }
+ }
+
+ alertBox.innerHTML = alerts.join('');
+ alertBox.style.display = 'block';
+}
+
+function renderTeacherLatestLeaves(myLeaves){
+ const list = myLeaves.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,5);
+ $('latestContent').innerHTML = list.length ? `<table><thead><tr><th>วันที่ยื่น</th><th>ประเภทการลา</th><th>ช่วงวันที่</th><th>สถานะ</th></tr></thead><tbody>${list.map(x=>`<tr>
+   <td>${formatThaiDate(x.created_at)}</td>
+   <td>ลา${x.leave_type}</td>
+   <td>${formatThaiDate(x.start_date)} - ${formatThaiDate(x.end_date)}</td>
+   <td><span class="badge ${x.status==='approved'?'approved':(x.status==='rejected'?'rejected':'pending')}">${x.status==='approved'?'อนุมัติแล้ว':(x.status==='rejected'?'ไม่อนุมัติ':'รออนุมัติ')}</span></td>
+ </tr>`).join('')}</tbody></table>` : 'ยังไม่มีประวัติการขอลา';
 }
 
 function renderLatestEmployees(){
  const list = employees.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,5);
- $('latestEmployees').innerHTML = list.length ? `<table><thead><tr><th>ชื่อ</th><th>ตำแหน่ง</th><th>สถานะ</th></tr></thead><tbody>${list.map(x=>`<tr><td>${x.prefix||''}${x.first_name} ${x.last_name}</td><td>${x.position||'-'}</td><td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td></tr>`).join('')}</tbody></table>` : 'ยังไม่มีข้อมูลบุคลากร';
+ $('latestContent').innerHTML = list.length ? `<table><thead><tr><th>ชื่อ</th><th>ตำแหน่ง</th><th>สถานะ</th></tr></thead><tbody>${list.map(x=>`<tr><td>${x.prefix||''}${x.first_name} ${x.last_name}</td><td>${x.position||'-'}</td><td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td></tr>`).join('')}</tbody></table>` : 'ยังไม่มีข้อมูลบุคลากร';
 }
 
 async function loadEmployees(){
  const {data, error} = await supabaseClient.from('employees').select('*').order('employee_code', {ascending:true});
- if(error){ $('employeeTable').innerHTML = `<tr><td colspan="10" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`; return; }
+ if(error){ $('employeeTable').innerHTML = `<tr><td colspan="9" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`; return; }
  employees = data;
  renderEmployees();
 }
@@ -525,10 +657,9 @@ function renderEmployees(){
   <td>${formatThaiDate(x.entry_date)}</td>
   <td>${formatThaiDate(x.school_entry_date)}</td>
   <td>${formatThaiDate(x.academic_date)}</td>
-  <td><b>${formatThaiDate(x.next_evaluation_date)}</b></td>
   <td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td>
   <td>${canManage ? `<button class="secondary" onclick="editEmployee('${x.id}')">แก้ไข</button> <button class="secondary danger" onclick="deleteEmployee('${x.id}')">ลบ</button>` : '<span style="color:var(--muted)">ดูได้อย่างเดียว</span>'}</td>
- </tr>`).join('') : `<tr><td colspan="10" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
+ </tr>`).join('') : `<tr><td colspan="9" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
 }
 
 // ---------------- ระบบจัดการการลา ----------------
@@ -885,7 +1016,7 @@ async function deleteTraining(id){
  await loadDashboard();
 }
 
-// ---------------- ระบบจัดเก็บเอกสาร (Documents แบบแยกหมวดหมู่) ----------------
+// ---------------- ระบบจัดเก็บเอกสาร (Documents) ----------------
 async function loadDocuments(){
  const [dRes, eRes] = await Promise.all([
    supabaseClient.from('documents').select('*, employees(prefix, first_name, last_name)').order('created_at',{ascending:false}),
@@ -908,7 +1039,6 @@ function renderDocuments(){
  const q = ($('documentSearch').value || '').toLowerCase();
  const isTeacher = currentProfile && currentProfile.role === 'teacher';
 
- // สิทธิ์ครู: เห็นเฉพาะเอกสารของตนเอง
  let filtered = documents.filter(x => {
    if(isTeacher && x.employee_id !== currentProfile.employee_id) return false;
    if(activeDocCategory !== 'all' && x.doc_type !== activeDocCategory) return false;
@@ -930,8 +1060,9 @@ function renderDocuments(){
    const isMyDoc = currentProfile && currentProfile.employee_id === x.employee_id;
 
    let icon = '📄';
-   if(x.doc_type && x.doc_type.includes('วิชาชีพ')) icon = '🪪';
-   else if(x.doc_type && x.doc_type.includes('ก.พ.7')) icon = '📑';
+   if(x.doc_type && x.doc_type.includes('วิชาชีพ')){
+     icon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>`;
+   } else if(x.doc_type && x.doc_type.includes('ก.พ.7')) icon = '📑';
    else if(x.doc_type && x.doc_type.includes('วุฒิ')) icon = '🎓';
    else if(x.doc_type && x.doc_type.includes('คำสั่ง')) icon = '📜';
 
@@ -939,7 +1070,7 @@ function renderDocuments(){
    if(x.expire_date){
      const diffDays = Math.ceil((new Date(x.expire_date) - new Date()) / (1000 * 60 * 60 * 24));
      if(diffDays < 0) expireTag = `<span style="color:var(--danger);font-weight:bold"> (หมดอายุแล้ว)</span>`;
-     else if(diffDays <= 90) expireTag = `<span style="color:#d97706;font-weight:bold"> (หมดอายุใน ${diffDays} วัน)</span>`;
+     else if(diffDays <= 90) expireTag = `<span style="color:var(--warn);font-weight:bold"> (หมดอายุใน ${diffDays} วัน)</span>`;
    }
 
    return `
@@ -1029,14 +1160,14 @@ async function saveDocument(){
  const fileExt = file.name.split('.').pop();
  const fileName = `doc_${Date.now()}_${Math.random().toString(36).substring(2,7)}.${fileExt}`;
  
- $('saveDocBtn').textContent = 'กำลังอัปโหลดไฟล์...';
+ $('saveDocBtn').textContent = 'กำลังอัปโหลดเอกสาร...';
  $('saveDocBtn').disabled = true;
 
  const {data:uploadData, error:uploadErr} = await supabaseClient.storage.from('documents').upload(fileName, file);
  if(uploadErr){
    $('saveDocBtn').textContent = 'อัปโหลดเอกสาร';
    $('saveDocBtn').disabled = false;
-   $('docFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ (โปรดตรวจสอบการสร้าง Bucket documents): ' + uploadErr.message;
+   $('docFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ: ' + uploadErr.message;
    return;
  }
 
@@ -1046,7 +1177,6 @@ async function saveDocument(){
    employee_id: empId,
    doc_type: docType,
    document_name: docTitle,
-   doc_title: docTitle,
    doc_number: docNumber || null,
    expire_date: expireDate,
    file_url: publicUrl,
@@ -1065,6 +1195,7 @@ async function saveDocument(){
 
  closeDocumentModal();
  await loadDocuments();
+ await loadDashboard();
 }
 
 async function deleteDocument(id){
@@ -1072,6 +1203,39 @@ async function deleteDocument(id){
  const {error} = await supabaseClient.from('documents').delete().eq('id', id);
  if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
  await loadDocuments();
+ await loadDashboard();
+}
+
+// ---------------- เมนูตั้งค่าระบบ (Settings) ----------------
+async function updatePassword(){
+  const p1 = $('newPassword').value;
+  const p2 = $('confirmPassword').value;
+  const msg = $('pwdMsg');
+  msg.textContent = '';
+  
+  if(!p1 || p1.length < 6){ msg.textContent = 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 6 ตัวอักษร'; return; }
+  if(p1 !== p2){ msg.textContent = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน'; return; }
+
+  const {error} = await supabaseClient.auth.updateUser({ password: p1 });
+  if(error){ msg.textContent = 'เปลี่ยนรหัสผ่านไม่สำเร็จ: ' + error.message; return; }
+  
+  $('newPassword').value = '';
+  $('confirmPassword').value = '';
+  alert('เปลี่ยนรหัสผ่านสำเร็จ! กรุณาใช้รหัสผ่านใหม่ในการเข้าสู่ระบบครั้งต่อไป');
+}
+
+async function updatePhone(){
+  const phone = $('set_phone').value.trim();
+  const msg = $('profileMsg');
+  msg.textContent = '';
+  
+  if(!currentProfile.employee_id){ msg.textContent = 'ไม่พบบัญชีบุคลากรที่เชื่อมโยง'; return; }
+
+  const {error} = await supabaseClient.from('employees').update({ phone: phone }).eq('id', currentProfile.employee_id);
+  if(error){ msg.textContent = 'บันทึกเบอร์โทรไม่สำเร็จ: ' + error.message; return; }
+
+  alert('บันทึกข้อมูลติดต่อเรียบร้อยแล้ว');
+  await checkSession();
 }
 
 // ---------------- เมนูและการควบคุมทั่วไป ----------------
@@ -1085,6 +1249,7 @@ function selectMenu(btn, name){
  else if(name==='การลา'){ $('leavePage').classList.add('active'); loadLeaveRequests(); }
  else if(name==='การอบรม'){ $('trainingPage').classList.add('active'); loadTrainings(); }
  else if(name==='เอกสาร'){ $('documentsPage').classList.add('active'); loadDocuments(); }
+ else if(name==='ตั้งค่าระบบ'){ $('settingsPage').classList.add('active'); }
  else{ $('placeholderPage').classList.add('active'); }
  if(window.innerWidth <= 900) toggleMenu();
 }
@@ -1095,7 +1260,7 @@ function openEmployeeModal(id){
  $('editId').value = id || '';
  $('modalTitle').textContent = id ? 'แก้ไขข้อมูลบุคลากร' : 'เพิ่มบุคลากร';
  $('formMsg').textContent = '';
- ['prefix','employee_code','first_name','last_name','position','academic_position','education_level','major','entry_date','school_entry_date','academic_date','next_evaluation_date','phone','employee_email'].forEach(id => $(id).value = '');
+ ['prefix','employee_code','first_name','last_name','position','academic_position','education_level','major','entry_date','school_entry_date','academic_date','phone','employee_email'].forEach(id => $(id).value = '');
  $('status').value = 'active';
  
  if(id){
@@ -1112,7 +1277,6 @@ function openEmployeeModal(id){
      $('entry_date').value = x.entry_date || '';
      $('school_entry_date').value = x.school_entry_date || '';
      $('academic_date').value = x.academic_date || '';
-     $('next_evaluation_date').value = x.next_evaluation_date || '';
      $('phone').value = x.phone || '';
      $('employee_email').value = x.email || '';
      $('status').value = x.status || 'active';
@@ -1139,7 +1303,6 @@ async function saveEmployee(){
    entry_date: $('entry_date').value || null,
    school_entry_date: $('school_entry_date').value || null,
    academic_date: $('academic_date').value || null,
-   next_evaluation_date: $('next_evaluation_date').value || null,
    phone: $('phone').value.trim() || null,
    email: $('employee_email').value.trim() || null,
    status: $('status').value

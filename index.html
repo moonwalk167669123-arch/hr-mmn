@@ -59,19 +59,39 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .doc-meta{margin:12px 0 8px;font-size:12px;color:#53666c;display:grid;gap:3px;background:#f9fbfb;padding:8px;border-radius:8px}
 .doc-actions{display:flex;gap:8px;margin-top:10px;border-top:1px solid #f0f3f4;padding-top:10px;justify-content:space-between;align-items:center}
 
-#printSection{display:none}
-@page { size: A4 portrait; margin: 10mm 15mm; }
+/* ส่วนงานพิมพ์เอกสาร A4 (ใบลา & รายงานอบรม) */
+#printSection, #printTrainingSection{display:none}
+@page { size: A4 portrait; margin: 12mm 15mm; }
 @media print{
   @font-face { font-family: 'SarabunPSK'; src: local('Sarabun'), local('TH Sarabun PSK'), local('TH Sarabun New'); }
   html, body { margin: 0 !important; padding: 0 !important; height: 100%; background: #fff !important; font-family: 'SarabunPSK', 'Sarabun', 'TH Sarabun PSK', sans-serif !important; }
   body *{visibility:hidden}
-  #printSection, #printSection *{ visibility:visible; font-family: 'SarabunPSK', 'Sarabun', 'TH Sarabun PSK', sans-serif !important; }
-  #printSection{ display:block !important; position:absolute; left:0; top:0; width:100%; max-width: 100%; font-size:15.5pt; line-height:1.28; color:#000; background:#fff; page-break-inside: avoid; box-sizing: border-box; }
+  
+  /* พิมพ์ใบลา */
+  body.printing-leave #printSection, body.printing-leave #printSection *{
+    visibility:visible;
+    font-family: 'SarabunPSK', 'Sarabun', 'TH Sarabun PSK', sans-serif !important;
+  }
+  body.printing-leave #printSection{
+    display:block !important; position:absolute; left:0; top:0; width:100%; max-width: 100%;
+    font-size:15.5pt; line-height:1.28; color:#000; background:#fff; page-break-inside: avoid; box-sizing: border-box;
+  }
+
+  /* พิมพ์รายงานการอบรม */
+  body.printing-training #printTrainingSection, body.printing-training #printTrainingSection *{
+    visibility:visible;
+    font-family: 'SarabunPSK', 'Sarabun', 'TH Sarabun PSK', sans-serif !important;
+  }
+  body.printing-training #printTrainingSection{
+    display:block !important; position:absolute; left:0; top:0; width:100%; max-width: 100%;
+    font-size:15.5pt; line-height:1.35; color:#000; background:#fff; page-break-inside: avoid; box-sizing: border-box;
+  }
+
   .p-title{text-align:center;font-weight:bold;font-size:18pt;margin:0 0 6px}
   .p-right{text-align:right;margin:0 0 6px}
   .p-dotted{border-bottom:1px dotted #000;display:inline-block;padding:0 4px;vertical-align:baseline}
-  .p-indent{text-indent:2em;margin:3px 0}
-  .p-line{margin:3px 0}
+  .p-indent{text-indent:2.2em;margin:4px 0}
+  .p-line{margin:4px 0}
   .p-circle{display:inline-block;width:11px;height:11px;border:1px solid #000;border-radius:50%;margin-right:3px;vertical-align:middle;text-align:center;line-height:9px;font-size:9pt}
   .p-circle.checked::after{content:"✓";font-weight:bold}
   .p-box-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;align-items:start}
@@ -114,10 +134,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <section id="dashboardPage" class="page active">
   <div id="teacherAlerts" style="display:none;margin-bottom:18px"></div>
 
-  <!-- สถิติ Dashboard -->
   <section class="grid stats" id="statsGrid"></section>
 
-  <!-- เนื้อหา Dashboard -->
   <section class="grid content">
     <div class="card">
       <div class="card-head"><h3 id="tableHeadTitle">บุคลากรล่าสุด</h3></div>
@@ -141,7 +159,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   </section>
 </section>
 
-<!-- Employees Page (ซ่อนวันครบรอบประเมินตามที่สั่ง) -->
+<!-- Employees Page (ซ่อนวันครบประเมิน และซ่อนวันมา รร.นี้) -->
 <section id="employeesPage" class="page">
 <div class="toolbar"><input class="search" id="employeeSearch" oninput="renderEmployees()" placeholder="🔎 ค้นหาชื่อ นามสกุล รหัส หรือ ตำแหน่ง"><button class="primary" id="addEmployeeBtn" onclick="openEmployeeModal()">＋ เพิ่มบุคลากร</button></div>
 <div class="card"><div class="table-wrap"><table><thead><tr>
@@ -149,12 +167,11 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   <th>ชื่อ-นามสกุล</th>
   <th>ตำแหน่ง / วิทยฐานะ</th>
   <th>วุฒิ / วิชาเอก</th>
-  <th>วันบรรจุ</th>
-  <th>วันมา รร.นี้</th>
+  <th>วันบรรจุราชการ</th>
   <th>วันได้วิทยฐานะ</th>
   <th>สถานะ</th>
   <th>จัดการ</th>
-</tr></thead><tbody id="employeeTable"><tr><td colspan="9" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
+</tr></thead><tbody id="employeeTable"><tr><td colspan="8" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
 <!-- Leave Page -->
@@ -171,7 +188,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </tr></thead><tbody id="leaveTable"><tr><td colspan="7" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
-<!-- Training Page -->
+<!-- Training Page (มีปุ่มพิมพ์รายงานการอบรม) -->
 <section id="trainingPage" class="page">
 <div class="toolbar"><input class="search" id="trainingSearch" oninput="renderTrainings()" placeholder="🔎 ค้นหาหลักสูตร หน่วยงาน หรือชื่อผู้เข้ารับการอบรม"><button class="primary" onclick="openTrainingModal()">＋ บันทึกการอบรม</button></div>
 <div class="card"><div class="table-wrap"><table><thead><tr>
@@ -184,7 +201,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </tr></thead><tbody id="trainingTable"><tr><td colspan="6" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
-<!-- Documents Page (ดีไซน์แยกหมวดหมู่) -->
+<!-- Documents Page -->
 <section id="documentsPage" class="page">
   <div class="toolbar">
     <input class="search" id="documentSearch" oninput="renderDocuments()" placeholder="🔎 ค้นหาชื่อเอกสาร หรือเลขที่เอกสาร">
@@ -210,7 +227,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   </div>
 </section>
 
-<!-- Settings Page (ตั้งค่าระบบส่วนตัว) -->
+<!-- Settings Page -->
 <section id="settingsPage" class="page">
   <div class="grid" style="grid-template-columns:1fr 1fr;gap:20px">
     <div class="card">
@@ -251,7 +268,6 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="field"><label>วุฒิการศึกษา</label><input id="education_level" placeholder="เช่น ศษ.ม., คบ., วท.บ."></div>
 <div class="field"><label>สาขาวิชาเอก</label><input id="major" placeholder="เช่น บริหารการศึกษา, คณิตศาสตร์"></div>
 <div class="field"><label>วันที่บรรจุราชการ</label><input id="entry_date" type="date"></div>
-<div class="field"><label>วันที่ปฏิบัติงาน รร.นี้</label><input id="school_entry_date" type="date"></div>
 <div class="field"><label>วันที่ได้รับวิทยฐานะ</label><input id="academic_date" type="date"></div>
 <div class="field"><label>เบอร์โทรศัพท์</label><input id="phone"></div>
 <div class="field"><label>อีเมล</label><input id="employee_email" type="email"></div>
@@ -353,7 +369,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeDocumentModal()">ยกเลิก</button><button class="primary" id="saveDocBtn" onclick="saveDocument()">อัปโหลดเอกสาร</button></div>
 </div></div>
 
-<!-- แบบฟอร์มใบลาพิมพ์ A4 -->
+<!-- 1. แบบฟอร์มใบลาพิมพ์ A4 -->
 <div id="printSection">
   <div class="p-title">แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว</div>
   <div class="p-right">
@@ -440,6 +456,81 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   </div>
 </div>
 
+<!-- 2. แบบฟอร์มพิมพ์รายงานผลการอบรมพัฒนาตนเอง A4 -->
+<div id="printTrainingSection">
+  <div style="text-align:center;font-weight:bold;font-size:20pt;margin-bottom:12px">แบบรายงานผลการอบรม / สัมมนา / พัฒนาตนเอง</div>
+  <div class="p-right">
+    โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>
+    วันที่ <span class="p-dotted" id="pt_doc_date" style="min-width:180px;text-align:center"></span>
+  </div>
+  <div style="margin-bottom:8px">
+    <b>เรื่อง</b> รายงานผลการเข้ารับการอบรมพัฒนาตนเอง<br>
+    <b>เรียน</b> ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย
+  </div>
+  <div class="p-indent">
+    ตามที่ข้าพเจ้า <span class="p-dotted" id="pt_name" style="min-width:220px;font-weight:bold"></span>
+    ตำแหน่ง <span class="p-dotted" id="pt_pos" style="min-width:180px"></span>
+    โรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย สังกัดสำนักงานเขตพื้นที่การศึกษาประถมศึกษาเชียงใหม่ เขต 3
+    ได้เข้าร่วมการอบรม/พัฒนาตนเอง ในหลักสูตร/หัวข้อ:
+  </div>
+  <div class="p-line" style="margin:8px 0;padding-left:1.5em">
+    <b>หลักสูตร:</b> <span class="p-dotted" id="pt_course" style="width:calc(100% - 75px);font-weight:bold"></span>
+  </div>
+  <div class="p-line" style="padding-left:1.5em">
+    <b>หน่วยงานที่จัด:</b> <span class="p-dotted" id="pt_organizer" style="width:calc(100% - 110px)"></span>
+  </div>
+  <div class="p-line" style="padding-left:1.5em">
+    <b>วันที่จัดอบรม:</b> <span class="p-dotted" id="pt_date" style="min-width:180px;text-align:center"></span>
+    <b>ช่วงเวลา:</b> <span class="p-dotted" id="pt_time" style="min-width:150px;text-align:center"></span>
+  </div>
+  <div class="p-line" style="padding-left:1.5em">
+    <b>สถานที่/ช่องทาง:</b> <span class="p-dotted" id="pt_location" style="width:calc(100% - 125px)"></span>
+  </div>
+
+  <div class="p-indent" style="margin-top:14px">
+    บัดนี้ การเข้ารับการอบรมดังกล่าวได้เสร็จสิ้นเรียบร้อยแล้ว ข้าพเจ้าขอรายงานผลการเข้ารับการอบรม เพื่อนำความรู้ ทักษะ และประสบการณ์ที่ได้รับมาประยุกต์ใช้ในการจัดการเรียนรู้ การปฏิบัติหน้าที่ราชการ และพัฒนาคุณภาพผู้เรียนให้เกิดประสิทธิภาพสูงสุดตามวัตถุประสงค์ของหลักสูตรต่อไป พร้อมนี้ได้แนบเอกสาร/เกียรติบัตรผ่านการอบรมมาพร้อมหนังสือนี้ด้วยแล้ว
+  </div>
+
+  <div class="p-indent" style="margin-top:8px">
+    จึงเรียนมาเพื่อโปรดทราบและพิจารณา
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;margin:18px 0 16px">
+    <div style="text-align:center;width:280px">
+      (ลงชื่อ)...........................................................<br>
+      ( <span id="pt_sign_name">...................................................</span> )<br>
+      ตำแหน่ง <span id="pt_sign_pos">...................................................</span><br>
+      ผู้รายงาน
+    </div>
+  </div>
+
+  <div class="p-box-grid">
+    <div class="p-box">
+      <b>ความเห็นของหัวหน้าฝ่ายบริหารงานบุคคล</b><br>
+      ( &nbsp; ) ทราบ / บันทึกประวัติลงทะเบียนการพัฒนาตนเองเรียบร้อยแล้ว<br>
+      ( &nbsp; ) อื่นๆ ............................................................................<br><br>
+      <div style="text-align:center">
+        (ลงชื่อ)...........................................................<br>
+        ( นายธีรภัทร์ มีนา )<br>
+        หัวหน้าฝ่ายบริหารงานบุคคล<br>
+        วันที่ ....../....../......
+      </div>
+    </div>
+
+    <div class="p-box">
+      <b>ความเห็น / คำสั่งผู้อำนวยการโรงเรียน</b><br>
+      ( &nbsp; ) ทราบ และขอให้นำความรู้มาใช้พัฒนางานต่อไป<br>
+      ( &nbsp; ) อื่นๆ ............................................................................<br><br>
+      <div style="text-align:center">
+        (ลงชื่อ)...........................................................<br>
+        ( นายประเสริฐ พอนา )<br>
+        ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>
+        วันที่ ....../....../......
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL="https://mswtxisekyfmqvurlftg.supabase.co";
@@ -451,7 +542,8 @@ let activeDocCategory = 'all';
 
 const THAI_FULL_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 
-function formatThaiDateCustom(dStr){
+// แสดงวันที่แบบเต็ม เช่น 21 มกราคม 2564
+function formatThaiDateFull(dStr){
   if(!dStr) return '-';
   const d=new Date(dStr);
   if(isNaN(d.getTime())) return '-';
@@ -513,7 +605,6 @@ async function checkSession(){
  if(profile.role === 'teacher') $('addEmployeeBtn').style.display = 'none';
  else $('addEmployeeBtn').style.display = 'inline-block';
 
- // เติมข้อมูลในหน้าตั้งค่า
  $('set_fullname').value = profile.full_name || '-';
  $('set_email').value = session.user.email || '-';
  const me = employees.find(e => e.id === currentProfile.employee_id);
@@ -545,7 +636,6 @@ async function loadDashboard(){
  const statsContainer = $('statsGrid');
 
  if(isTeacher){
-   // Dashboard สำหรับครู (แสดงเฉพาะของตนเอง)
    const myLeaves = leaveRequests.filter(x => x.employee_id === currentProfile.employee_id);
    let mySickDays = 0, myPersonalDays = 0;
    myLeaves.forEach(x => {
@@ -564,13 +654,11 @@ async function loadDashboard(){
      <div class="card stat"><div><div class="label">เอกสารของฉัน (ไฟล์)</div><div class="value">${myDocs.length}</div></div><div class="stat-icon">📁</div></div>
    `;
 
-   // การแจ้งเตือนส่วนบุคคล (ใบประกอบวิชาชีพ + วิทยฐานะ +3 ปี)
    renderTeacherAlerts(me);
    $('tableHeadTitle').textContent = 'ประวัติการลาล่าสุดของฉัน';
    renderTeacherLatestLeaves(myLeaves);
 
  } else {
-   // Dashboard สำหรับ Admin / Staff (ภาพรวมโรงเรียน)
    $('teacherAlerts').style.display = 'none';
    $('tableHeadTitle').textContent = 'บุคลากรล่าสุด';
    statsContainer.innerHTML = `
@@ -583,38 +671,38 @@ async function loadDashboard(){
  }
 }
 
-// แจ้งเตือนวันหมดอายุใบประกอบ และรอบส่งวิทยฐานะ (+3 ปี)
+// แจ้งเตือนวันหมดอายุใบประกอบ และรอบส่งวิทยฐานะ (+3 ปี) แบบวันที่เต็ม (เช่น 21 มกราคม 2564)
 function renderTeacherAlerts(me){
  const alertBox = $('teacherAlerts');
  let alerts = [];
 
- // 1. ตรวจสอบวันหมดอายุใบประกอบวิชาชีพครู
  const licenseDoc = documents.find(x => x.employee_id === currentProfile.employee_id && x.doc_type === 'ใบอนุญาตประกอบวิชาชีพครู' && x.expire_date);
  if(licenseDoc){
    const diffDays = Math.ceil((new Date(licenseDoc.expire_date) - new Date()) / (1000 * 60 * 60 * 24));
+   const fullDateStr = formatThaiDateFull(licenseDoc.expire_date);
    if(diffDays < 0){
-     alerts.push(`<div class="alert-box alert-danger">⚠️ <b>ใบอนุญาตประกอบวิชาชีพครูของคุณหมดอายุแล้ว!</b> (หมดอายุเมื่อ ${formatThaiDate(licenseDoc.expire_date)}) โปรดติดต่อต่ออายุโดยด่วน</div>`);
+     alerts.push(`<div class="alert-box alert-danger">⚠️ <b>ใบอนุญาตประกอบวิชาชีพครูหมดอายุแล้ว!</b> (หมดอายุเมื่อวันที่ ${fullDateStr}) โปรดติดต่อขอต่ออายุโดยด่วน</div>`);
    } else if(diffDays <= 90){
-     alerts.push(`<div class="alert-box alert-warn">⏳ <b>ใบอนุญาตประกอบวิชาชีพครูใกล้หมดอายุ:</b> จะหมดอายุในอีก ${diffDays} วัน (${formatThaiDate(licenseDoc.expire_date)}) โปรดเตรียมเอกสารขอต่ออายุ</div>`);
+     alerts.push(`<div class="alert-box alert-warn">⏳ <b>ใบอนุญาตประกอบวิชาชีพครูใกล้หมดอายุ:</b> จะหมดอายุในอีก ${diffDays} วัน (ตรงกับวันที่ ${fullDateStr}) โปรดเตรียมเอกสารขอต่ออายุ</div>`);
    } else {
-     alerts.push(`<div class="alert-box alert-ok">✅ <b>ใบอนุญาตประกอบวิชาชีพครู:</b> สถานะปกติ (หมดอายุวันที่ ${formatThaiDate(licenseDoc.expire_date)})</div>`);
+     alerts.push(`<div class="alert-box alert-ok">✅ <b>ใบอนุญาตประกอบวิชาชีพครู:</b> สถานะปกติ (หมดอายุวันที่ ${fullDateStr})</div>`);
    }
  } else {
    alerts.push(`<div class="alert-box alert-warn">ℹ️ คุณยังไม่ได้อัปโหลดหรือระบุวันหมดอายุของ <b>ใบอนุญาตประกอบวิชาชีพครู</b> ในระบบเอกสาร</div>`);
  }
 
- // 2. ตรวจสอบรอบส่งประเมินวิทยฐานะ (+3 ปี จากวันที่ได้รับวิทยฐานะ)
  if(me.academic_date){
    const evalDate = new Date(me.academic_date);
    evalDate.setFullYear(evalDate.getFullYear() + 3);
    const diffDays = Math.ceil((evalDate - new Date()) / (1000 * 60 * 60 * 24));
+   const evalDateStr = formatThaiDateFull(evalDate.toISOString().split('T')[0]);
 
    if(diffDays < 0){
-     alerts.push(`<div class="alert-box alert-danger">⚠️ <b>ครบรอบกำหนดส่งประเมินวิทยฐานะแล้ว!</b> (ครบกำหนดเมื่อ ${formatThaiDate(evalDate)})</div>`);
+     alerts.push(`<div class="alert-box alert-danger">⚠️ <b>ครบรอบกำหนดส่งประเมินวิทยฐานะแล้ว!</b> (ครบกำหนดเมื่อวันที่ ${evalDateStr})</div>`);
    } else if(diffDays <= 180){
-     alerts.push(`<div class="alert-box alert-warn">⏳ <b>ใกล้ครบรอบส่งประเมินวิทยฐานะ (+3 ปี):</b> เหลือเวลาอีก ${diffDays} วัน (ครบกำหนดวันที่ ${formatThaiDate(evalDate)})</div>`);
+     alerts.push(`<div class="alert-box alert-warn">⏳ <b>ใกล้ครบรอบส่งประเมินวิทยฐานะ (+3 ปี):</b> เหลือเวลาอีก ${diffDays} วัน (ครบกำหนดวันที่ ${evalDateStr})</div>`);
    } else {
-     alerts.push(`<div class="alert-box alert-ok">✅ <b>รอบส่งประเมินวิทยฐานะ (+3 ปี):</b> วันที่ ${formatThaiDate(evalDate)} (สถานะปกติ)</div>`);
+     alerts.push(`<div class="alert-box alert-ok">✅ <b>รอบส่งประเมินวิทยฐานะ (+3 ปี):</b> วันที่ ${evalDateStr} (สถานะปกติ)</div>`);
    }
  }
 
@@ -639,11 +727,12 @@ function renderLatestEmployees(){
 
 async function loadEmployees(){
  const {data, error} = await supabaseClient.from('employees').select('*').order('employee_code', {ascending:true});
- if(error){ $('employeeTable').innerHTML = `<tr><td colspan="9" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`; return; }
+ if(error){ $('employeeTable').innerHTML = `<tr><td colspan="8" class="empty">โหลดข้อมูลไม่ได้: ${error.message}</td></tr>`; return; }
  employees = data;
  renderEmployees();
 }
 
+// ตารางบุคลากร (ซ่อนวันครบประเมิน และซ่อนวันมา รร.นี้ เรียบร้อย)
 function renderEmployees(){
  const q = ($('employeeSearch').value || '').toLowerCase();
  const list = employees.filter(x => [x.employee_code, x.first_name, x.last_name, x.position, x.academic_position, x.major].some(v => String(v||'').toLowerCase().includes(q)));
@@ -655,11 +744,10 @@ function renderEmployees(){
   <td>${x.position||'-'}${x.academic_position?'<br><small style="color:var(--p)">'+x.academic_position+'</small>':''}</td>
   <td>${x.education_level||'-'}${x.major?'<br><small>'+x.major+'</small>':''}</td>
   <td>${formatThaiDate(x.entry_date)}</td>
-  <td>${formatThaiDate(x.school_entry_date)}</td>
   <td>${formatThaiDate(x.academic_date)}</td>
   <td><span class="badge ${x.status==='active'?'working':'inactive'}">${x.status==='active'?'ปฏิบัติงาน':'ไม่ปฏิบัติงาน'}</span></td>
   <td>${canManage ? `<button class="secondary" onclick="editEmployee('${x.id}')">แก้ไข</button> <button class="secondary danger" onclick="deleteEmployee('${x.id}')">ลบ</button>` : '<span style="color:var(--muted)">ดูได้อย่างเดียว</span>'}</td>
- </tr>`).join('') : `<tr><td colspan="9" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
+ </tr>`).join('') : `<tr><td colspan="8" class="empty">ยังไม่มีข้อมูลบุคลากร</td></tr>`;
 }
 
 // ---------------- ระบบจัดการการลา ----------------
@@ -796,13 +884,13 @@ function printLeave(id){
   const fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
   const curDays = calcDays(leave.start_date, leave.end_date);
 
-  $('p_doc_date').textContent = formatThaiDateCustom(leave.created_at);
+  $('p_doc_date').textContent = formatThaiDateFull(leave.created_at);
   $('p_subject_type').textContent = leave.leave_type;
   $('p_name').textContent = fullName || '-';
   $('p_position').textContent = emp.position || 'ครู';
   $('p_reason').textContent = leave.reason || 'มีความจำเป็นส่วนตัว';
-  $('p_start_date').textContent = formatThaiDateCustom(leave.start_date);
-  $('p_end_date').textContent = formatThaiDateCustom(leave.end_date);
+  $('p_start_date').textContent = formatThaiDateFull(leave.start_date);
+  $('p_end_date').textContent = formatThaiDateFull(leave.end_date);
   $('p_days').textContent = curDays;
   $('p_sign_name').textContent = fullName || '...................................................';
   $('p_sign_pos').textContent = emp.position || 'ครู';
@@ -829,8 +917,8 @@ function printLeave(id){
     $('chk_last_sick').className = 'p-circle' + (lastLeave.leave_type.includes('ป่วย') ? ' checked' : '');
     $('chk_last_personal').className = 'p-circle' + (lastLeave.leave_type.includes('กิจ') ? ' checked' : '');
     $('chk_last_maternity').className = 'p-circle' + (lastLeave.leave_type.includes('คลอด') ? ' checked' : '');
-    $('p_last_start').textContent = formatThaiDateCustom(lastLeave.start_date);
-    $('p_last_end').textContent = formatThaiDateCustom(lastLeave.end_date);
+    $('p_last_start').textContent = formatThaiDateFull(lastLeave.start_date);
+    $('p_last_end').textContent = formatThaiDateFull(lastLeave.end_date);
     $('p_last_days').textContent = calcDays(lastLeave.start_date, lastLeave.end_date);
   } else {
     $('chk_last_sick').className = 'p-circle';
@@ -857,14 +945,16 @@ function printLeave(id){
   $('st_mat_cur').textContent = curMaternity || '-';
   $('st_mat_total').textContent = (prevMaternity + curMaternity) || '-';
 
+  document.body.className = 'printing-leave';
   window.print();
+  document.body.className = '';
 }
 
 // ---------------- ระบบบันทึกการอบรม (Trainings) ----------------
 async function loadTrainings(){
  const [tRes, eRes] = await Promise.all([
-   supabaseClient.from('trainings').select('*, employees(prefix, first_name, last_name)').order('start_date',{ascending:false}),
-   supabaseClient.from('employees').select('id, prefix, first_name, last_name').order('employee_code',{ascending:true})
+   supabaseClient.from('trainings').select('*, employees(prefix, first_name, last_name, position)').order('start_date',{ascending:false}),
+   supabaseClient.from('employees').select('id, prefix, first_name, last_name, position').order('employee_code',{ascending:true})
  ]);
  if(tRes.error){ $('trainingTable').innerHTML = `<tr><td colspan="6" class="empty">โหลดข้อมูลไม่ได้: ${tRes.error.message}</td></tr>`; return; }
  trainings = tRes.data;
@@ -891,13 +981,39 @@ function renderTrainings(){
     <td>${x.organizer||'-'}</td>
     <td>${x.location||'-'}</td>
     <td style="white-space:nowrap">
+      <button class="secondary" title="พิมพ์รายงานผลการอบรม" onclick="printTrainingReport('${x.id}')">🖨️ พิมพ์รายงาน</button>
       ${(isAdminOrStaff || isMyRecord) ? `
         <button class="secondary" onclick="editTraining('${x.id}')">แก้ไข</button>
         <button class="secondary danger" onclick="deleteTraining('${x.id}')">ลบ</button>
-      ` : '-'}
+      ` : ''}
     </td>
    </tr>`;
  }).join('') : `<tr><td colspan="6" class="empty">ยังไม่มีประวัติการอบรม</td></tr>`;
+}
+
+// ฟังก์ชันพิมพ์รายงานผลการอบรมพัฒนาตนเอง
+function printTrainingReport(id){
+  const t = trainings.find(x => x.id === id);
+  if(!t) return alert('ไม่พบข้อมูลการอบรม');
+
+  const emp = t.employees || {};
+  const fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
+
+  $('pt_doc_date').textContent = formatThaiDateFull(new Date().toISOString().split('T')[0]);
+  $('pt_name').textContent = fullName || '-';
+  $('pt_pos').textContent = emp.position || 'ครู';
+  $('pt_course').textContent = t.course_name || '-';
+  $('pt_organizer').textContent = t.organizer || '-';
+  $('pt_date').textContent = formatThaiDateFull(t.start_date);
+  $('pt_time').textContent = t.training_time || '08.30 - 16.30 น.';
+  $('pt_location').textContent = t.location || '-';
+
+  $('pt_sign_name').textContent = fullName || '...................................................';
+  $('pt_sign_pos').textContent = emp.position || 'ครู';
+
+  document.body.className = 'printing-training';
+  window.print();
+  document.body.className = '';
 }
 
 function openTrainingModal(id){
@@ -1167,7 +1283,7 @@ async function saveDocument(){
  if(uploadErr){
    $('saveDocBtn').textContent = 'อัปโหลดเอกสาร';
    $('saveDocBtn').disabled = false;
-   $('docFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ: ' + uploadErr.message;
+   $('docFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ (โปรดตรวจสอบการสร้าง Bucket documents): ' + uploadErr.message;
    return;
  }
 
@@ -1260,7 +1376,7 @@ function openEmployeeModal(id){
  $('editId').value = id || '';
  $('modalTitle').textContent = id ? 'แก้ไขข้อมูลบุคลากร' : 'เพิ่มบุคลากร';
  $('formMsg').textContent = '';
- ['prefix','employee_code','first_name','last_name','position','academic_position','education_level','major','entry_date','school_entry_date','academic_date','phone','employee_email'].forEach(id => $(id).value = '');
+ ['prefix','employee_code','first_name','last_name','position','academic_position','education_level','major','entry_date','academic_date','phone','employee_email'].forEach(id => $(id).value = '');
  $('status').value = 'active';
  
  if(id){
@@ -1275,7 +1391,6 @@ function openEmployeeModal(id){
      $('education_level').value = x.education_level || '';
      $('major').value = x.major || '';
      $('entry_date').value = x.entry_date || '';
-     $('school_entry_date').value = x.school_entry_date || '';
      $('academic_date').value = x.academic_date || '';
      $('phone').value = x.phone || '';
      $('employee_email').value = x.email || '';
@@ -1301,7 +1416,6 @@ async function saveEmployee(){
    education_level: $('education_level').value.trim() || null,
    major: $('major').value.trim() || null,
    entry_date: $('entry_date').value || null,
-   school_entry_date: $('school_entry_date').value || null,
    academic_date: $('academic_date').value || null,
    phone: $('phone').value.trim() || null,
    email: $('employee_email').value.trim() || null,

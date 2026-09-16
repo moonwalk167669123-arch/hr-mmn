@@ -38,6 +38,21 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;place-items:center;padding:15px}.modal.show{display:grid}.modal-card{width:min(800px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h3{margin:0}.close{border:0;background:#f2f4f4;border-radius:9px;width:35px;height:35px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.msg{font-size:12px;color:var(--danger);min-height:18px}
 .overlay{display:none}
 
+/* ดีไซน์แท็บและ Grid เอกสาร */
+.doc-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:16px;border-bottom:1px solid var(--border)}
+.doc-tab{padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.doc-tab:hover,.doc-tab.active{background:var(--p);color:#fff;border-color:var(--p)}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.doc-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,.02);transition:.15s}
+.doc-card:hover{border-color:#b4d7d3;transform:translateY(-2px)}
+.doc-header{display:flex;gap:12px;align-items:flex-start}
+.doc-icon{width:42px;height:42px;border-radius:10px;background:#e8f5f3;color:var(--p);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.doc-info{flex:1;overflow:hidden}
+.doc-info h4{margin:0 0 4px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-info p{margin:0;font-size:12px;color:var(--muted)}
+.doc-meta{margin:12px 0 8px;font-size:12px;color:#53666c;display:grid;gap:3px;background:#f9fbfb;padding:8px;border-radius:8px}
+.doc-actions{display:flex;gap:8px;margin-top:10px;border-top:1px solid #f0f3f4;padding-top:10px;justify-content:space-between;align-items:center}
+
 #printSection{display:none}
 @page { size: A4 portrait; margin: 10mm 15mm; }
 @media print{
@@ -150,20 +165,27 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </tr></thead><tbody id="trainingTable"><tr><td colspan="6" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 </section>
 
-<!-- Documents Page -->
+<!-- Documents Page (ดีไซน์ใหม่: แยกหมวดหมู่ + เห็นเฉพาะของตนเอง) -->
 <section id="documentsPage" class="page">
-<div class="toolbar">
-  <input class="search" id="documentSearch" oninput="renderDocuments()" placeholder="🔎 ค้นหาชื่อเอกสาร ประเภทเอกสาร หรือชื่อบุคลากร">
-  <button class="primary" onclick="openDocumentModal()">＋ อัปโหลดเอกสาร</button>
-</div>
-<div class="card"><div class="table-wrap"><table><thead><tr>
-  <th>วันที่อัปโหลด</th>
-  <th>เจ้าของเอกสาร</th>
-  <th>ประเภทเอกสาร</th>
-  <th>ชื่อเอกสาร / คำอธิบาย</th>
-  <th>ดาวน์โหลด / เปิดดู</th>
-  <th>จัดการ</th>
-</tr></thead><tbody id="documentTable"><tr><td colspan="6" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
+  <div class="toolbar">
+    <input class="search" id="documentSearch" oninput="renderDocuments()" placeholder="🔎 ค้นหาชื่อเอกสาร หรือเลขที่เอกสาร">
+    <button class="primary" onclick="openDocumentModal()">＋ อัปโหลดเอกสารใหม่</button>
+  </div>
+
+  <!-- แถบเลือกหมวดหมู่เอกสาร -->
+  <div class="doc-tabs">
+    <button class="doc-tab active" onclick="filterDocCategory('all', this)">🗂️ ทั้งหมด</button>
+    <button class="doc-tab" onclick="filterDocCategory('ใบอนุญาตประกอบวิชาชีพครู', this)">🪪 ใบประกอบวิชาชีพ</button>
+    <button class="doc-tab" onclick="filterDocCategory('ก.พ.7 / ก.ค.ศ.16', this)">📑 ก.พ.7 / ก.ค.ศ.16</button>
+    <button class="doc-tab" onclick="filterDocCategory('วุฒิการศึกษา / ปริญญาบัตร', this)">🎓 วุฒิการศึกษา</button>
+    <button class="doc-tab" onclick="filterDocCategory('คำสั่งโรงเรียน / สพฐ.', this)">📜 คำสั่งราชการ</button>
+    <button class="doc-tab" onclick="filterDocCategory('เอกสารประเมิน ว.PA', this)">📈 เอกสาร ว.PA</button>
+    <button class="doc-tab" onclick="filterDocCategory('เอกสารอื่นๆ', this)">📁 อื่นๆ</button>
+  </div>
+
+  <div id="documentContainer" class="doc-grid">
+    <div class="loading" style="grid-column:1/-1">กำลังโหลดเอกสาร...</div>
+  </div>
 </section>
 
 <section id="placeholderPage" class="page"><div class="card"><div class="empty">หน้านี้จะเชื่อมต่อฐานข้อมูลในขั้นถัดไปครับ</div></div></section>
@@ -246,7 +268,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="modal-actions"><button class="secondary" onclick="closeTrainingModal()">ยกเลิก</button><button class="primary" id="saveTrainingBtn" onclick="saveTraining()">บันทึกข้อมูล</button></div>
 </div></div>
 
-<!-- Document Modal -->
+<!-- Document Modal (เลือกประเภท + อัปโหลดง่ายๆ) -->
 <div class="modal" id="documentModal"><div class="modal-card">
 <div class="modal-head"><h3 id="documentModalTitle">อัปโหลดเอกสารประจำตัว</h3><button class="close" onclick="closeDocumentModal()">×</button></div>
 <div class="msg" id="docFormMsg"></div>
@@ -259,9 +281,9 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <div class="form-grid">
   <div class="field">
     <label>ประเภทเอกสาร *</label>
-    <select id="doc_type">
-      <option value="ก.พ.7 / ก.ค.ศ.16">ก.พ.7 / ก.ค.ศ.16</option>
+    <select id="doc_type" onchange="onDocTypeChange()">
       <option value="ใบอนุญาตประกอบวิชาชีพครู">ใบอนุญาตประกอบวิชาชีพครู</option>
+      <option value="ก.พ.7 / ก.ค.ศ.16">ก.พ.7 / ก.ค.ศ.16</option>
       <option value="วุฒิการศึกษา / ปริญญาบัตร">วุฒิการศึกษา / ปริญญาบัตร</option>
       <option value="คำสั่งโรงเรียน / สพฐ.">คำสั่งโรงเรียน / สพฐ.</option>
       <option value="เอกสารประเมิน ว.PA">เอกสารประเมิน ว.PA</option>
@@ -270,14 +292,22 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   </div>
   <div class="field">
     <label>ชื่อเอกสาร / รายละเอียด *</label>
-    <input id="doc_title" placeholder="เช่น ก.พ.7 ฉบับอัปเดต 2569">
+    <input id="doc_title" placeholder="เช่น ใบประกอบวิชาชีพครู">
+  </div>
+  <div class="field" id="doc_number_field">
+    <label>เลขที่เอกสาร / เลขที่ใบอนุญาต (ถ้ามี)</label>
+    <input id="doc_number" placeholder="เช่น 6410900012345">
+  </div>
+  <div class="field" id="doc_expire_field">
+    <label>วันหมดอายุ (ถ้ามี)</label>
+    <input id="doc_expire_date" type="date">
   </div>
 </div>
 <div class="field">
   <label>เลือกไฟล์เอกสาร (PDF หรือ รูปภาพ) *</label>
   <input type="file" id="doc_file" accept=".pdf,image/*">
 </div>
-<div class="modal-actions"><button class="secondary" onclick="closeDocumentModal()">ยกเลิก</button><button class="primary" id="saveDocBtn" onclick="saveDocument()">อัปโหลดไฟล์</button></div>
+<div class="modal-actions"><button class="secondary" onclick="closeDocumentModal()">ยกเลิก</button><button class="primary" id="saveDocBtn" onclick="saveDocument()">อัปโหลดเอกสาร</button></div>
 </div></div>
 
 <!-- แบบฟอร์มใบลาพิมพ์ A4 -->
@@ -374,6 +404,7 @@ const SUPABASE_KEY="sb_publishable_v1NGMnxOthQQXOK-oYzKYQ_jLKWgD0J";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 let currentProfile=null, employees=[], leaveRequests=[], trainings=[], documents=[];
+let activeDocCategory = 'all';
 
 const THAI_FULL_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 
@@ -854,48 +885,105 @@ async function deleteTraining(id){
  await loadDashboard();
 }
 
-// ---------------- ระบบจัดเก็บเอกสาร (Documents) ----------------
+// ---------------- ระบบจัดเก็บเอกสาร (Documents แบบแยกหมวดหมู่) ----------------
 async function loadDocuments(){
  const [dRes, eRes] = await Promise.all([
    supabaseClient.from('documents').select('*, employees(prefix, first_name, last_name)').order('created_at',{ascending:false}),
    supabaseClient.from('employees').select('id, prefix, first_name, last_name').order('employee_code',{ascending:true})
  ]);
- if(dRes.error){ $('documentTable').innerHTML = `<tr><td colspan="6" class="empty">โหลดข้อมูลไม่ได้: ${dRes.error.message}</td></tr>`; return; }
+ if(dRes.error){ $('documentContainer').innerHTML = `<div class="empty" style="grid-column:1/-1">โหลดข้อมูลไม่ได้: ${dRes.error.message}</div>`; return; }
  documents = dRes.data;
  if(!eRes.error) employees = eRes.data;
  renderDocuments();
 }
 
+function filterDocCategory(category, btn){
+ activeDocCategory = category;
+ document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+ if(btn) btn.classList.add('active');
+ renderDocuments();
+}
+
 function renderDocuments(){
  const q = ($('documentSearch').value || '').toLowerCase();
- const list = documents.filter(x => {
-   const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : '';
+ const isTeacher = currentProfile && currentProfile.role === 'teacher';
+
+ // สิทธิ์ครู: เห็นเฉพาะเอกสารของตนเอง
+ let filtered = documents.filter(x => {
+   if(isTeacher && x.employee_id !== currentProfile.employee_id) return false;
+   if(activeDocCategory !== 'all' && x.doc_type !== activeDocCategory) return false;
    const docTitle = x.document_name || x.doc_title || '';
-   return empName.toLowerCase().includes(q) || String(docTitle).toLowerCase().includes(q) || String(x.doc_type||'').toLowerCase().includes(q);
+   const docNum = x.doc_number || '';
+   return docTitle.toLowerCase().includes(q) || docNum.toLowerCase().includes(q);
  });
 
- $('documentTable').innerHTML = list.length ? list.map(x => {
-   const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'ไม่พบข้อมูล';
-   const docTitle = x.document_name || x.doc_title || '-';
+ const container = $('documentContainer');
+ if(filtered.length === 0){
+   container.innerHTML = `<div class="empty" style="grid-column:1/-1">ไม่พบเอกสารในหมวดหมู่นี้</div>`;
+   return;
+ }
+
+ container.innerHTML = filtered.map(x => {
+   const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'เอกสารส่วนตัว';
+   const docTitle = x.document_name || x.doc_title || 'เอกสาร';
    const isAdminOrStaff = currentProfile && ['admin','staff'].includes(currentProfile.role);
    const isMyDoc = currentProfile && currentProfile.employee_id === x.employee_id;
 
-   return `<tr>
-    <td>${formatThaiDate(x.created_at)}</td>
-    <td><b>${empName}</b></td>
-    <td><span class="badge working">${x.doc_type||'เอกสารทั่วไป'}</span></td>
-    <td><b>${docTitle}</b></td>
-    <td><a href="${x.file_url}" target="_blank" style="color:var(--p);font-weight:600">📥 ดาวน์โหลด / เปิดดู</a></td>
-    <td>
-      ${(isAdminOrStaff || isMyDoc) ? `<button class="secondary danger" onclick="deleteDocument('${x.id}')">ลบ</button>` : '-'}
-    </td>
-   </tr>`;
- }).join('') : `<tr><td colspan="6" class="empty">ยังไม่มีเอกสารในระบบ</td></tr>`;
+   let icon = '📄';
+   if(x.doc_type && x.doc_type.includes('วิชาชีพ')) icon = '🪪';
+   else if(x.doc_type && x.doc_type.includes('ก.พ.7')) icon = '📑';
+   else if(x.doc_type && x.doc_type.includes('วุฒิ')) icon = '🎓';
+   else if(x.doc_type && x.doc_type.includes('คำสั่ง')) icon = '📜';
+
+   let expireTag = '';
+   if(x.expire_date){
+     const diffDays = Math.ceil((new Date(x.expire_date) - new Date()) / (1000 * 60 * 60 * 24));
+     if(diffDays < 0) expireTag = `<span style="color:var(--danger);font-weight:bold"> (หมดอายุแล้ว)</span>`;
+     else if(diffDays <= 90) expireTag = `<span style="color:#d97706;font-weight:bold"> (หมดอายุใน ${diffDays} วัน)</span>`;
+   }
+
+   return `
+   <div class="doc-card">
+     <div>
+       <div class="doc-header">
+         <div class="doc-icon">${icon}</div>
+         <div class="doc-info">
+           <span class="badge working" style="font-size:10px;margin-bottom:4px">${x.doc_type||'ทั่วไป'}</span>
+           <h4 title="${docTitle}">${docTitle}</h4>
+           <p>👤 ${empName}</p>
+         </div>
+       </div>
+       <div class="doc-meta">
+         ${x.doc_number ? `<div>🔢 <b>เลขที่:</b> ${x.doc_number}</div>` : ''}
+         ${x.expire_date ? `<div>⏳ <b>หมดอายุ:</b> ${formatThaiDate(x.expire_date)}${expireTag}</div>` : ''}
+         <div>📅 <b>อัปโหลด:</b> ${formatThaiDate(x.created_at)}</div>
+       </div>
+     </div>
+     <div class="doc-actions">
+       <a href="${x.file_url}" target="_blank" class="btn secondary" style="font-size:12px;text-decoration:none;color:var(--p);font-weight:bold">👁️ เปิดดูไฟล์</a>
+       ${(isAdminOrStaff || isMyDoc) ? `<button class="secondary danger" style="padding:6px 10px;font-size:12px" onclick="deleteDocument('${x.id}')">ลบ</button>` : ''}
+     </div>
+   </div>
+   `;
+ }).join('');
+}
+
+function onDocTypeChange(){
+  const type = $('doc_type').value;
+  if(type === 'ใบอนุญาตประกอบวิชาชีพครู'){
+    $('doc_title').value = 'ใบอนุญาตประกอบวิชาชีพครู';
+    $('doc_number_field').style.display = 'block';
+    $('doc_expire_field').style.display = 'block';
+  } else {
+    $('doc_title').value = type;
+  }
 }
 
 function openDocumentModal(){
  $('docFormMsg').textContent = '';
  $('doc_title').value = '';
+ $('doc_number').value = '';
+ $('doc_expire_date').value = '';
  $('doc_file').value = '';
  
  const isTeacher = currentProfile && currentProfile.role === 'teacher';
@@ -918,6 +1006,7 @@ function openDocumentModal(){
    select.onchange = () => { $('doc_employee_id').value = select.value; };
  }
 
+ onDocTypeChange();
  $('documentModal').classList.add('show');
 }
 function closeDocumentModal(){ $('documentModal').classList.remove('show'); }
@@ -926,6 +1015,8 @@ async function saveDocument(){
  const empId = $('doc_employee_id').value || (currentProfile && currentProfile.employee_id);
  const docType = $('doc_type').value;
  const docTitle = $('doc_title').value.trim();
+ const docNumber = $('doc_number').value.trim();
+ const expireDate = $('doc_expire_date').value || null;
  const fileInput = $('doc_file');
  $('docFormMsg').textContent = '';
 
@@ -943,7 +1034,7 @@ async function saveDocument(){
 
  const {data:uploadData, error:uploadErr} = await supabaseClient.storage.from('documents').upload(fileName, file);
  if(uploadErr){
-   $('saveDocBtn').textContent = 'อัปโหลดไฟล์';
+   $('saveDocBtn').textContent = 'อัปโหลดเอกสาร';
    $('saveDocBtn').disabled = false;
    $('docFormMsg').textContent = 'อัปโหลดไฟล์ไม่สำเร็จ (โปรดตรวจสอบการสร้าง Bucket documents): ' + uploadErr.message;
    return;
@@ -955,13 +1046,16 @@ async function saveDocument(){
    employee_id: empId,
    doc_type: docType,
    document_name: docTitle,
+   doc_title: docTitle,
+   doc_number: docNumber || null,
+   expire_date: expireDate,
    file_url: publicUrl,
    file_name: file.name
  };
 
  const {error:insertErr} = await supabaseClient.from('documents').insert(payload);
  
- $('saveDocBtn').textContent = 'อัปโหลดไฟล์';
+ $('saveDocBtn').textContent = 'อัปโหลดเอกสาร';
  $('saveDocBtn').disabled = false;
 
  if(insertErr){

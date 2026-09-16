@@ -77,14 +77,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     font-size:15.5pt; line-height:1.28; color:#000; background:#fff; page-break-inside: avoid; box-sizing: border-box;
   }
 
-  /* พิมพ์บันทึกข้อความรายงานอบรม (ไม่มีกรอบสี่เหลี่ยม ตามแบบ 100%) */
+  /* พิมพ์บันทึกข้อความรายงานอบรม (ไม่มีกรอบสี่เหลี่ยม 100%) */
   body.printing-training #printTrainingSection, body.printing-training #printTrainingSection *{
     visibility:visible;
     font-family: 'SarabunPSK', 'Sarabun', 'TH Sarabun PSK', sans-serif !important;
   }
   body.printing-training #printTrainingSection{
     display:block !important; position:absolute; left:0; top:0; width:100%; max-width: 100%;
-    font-size:16pt; line-height:1.32; color:#000; background:#fff; page-break-inside: avoid; box-sizing: border-box;
+    font-size:16pt; line-height:1.35; color:#000; background:#fff; page-break-inside: avoid; box-sizing: border-box;
   }
 
   .p-title{text-align:center;font-weight:bold;font-size:18pt;margin:0 0 6px}
@@ -456,13 +456,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   </div>
 </div>
 
-<!-- 2. แบบฟอร์มบันทึกข้อความ รายงานอบรม (ตรงตามไฟล์ 2569.doc แบบ 100% ไม่มีกรอบสี่เหลี่ยม) -->
+<!-- 2. แบบฟอร์มบันทึกข้อความ รายงานอบรม (ตรงตามไฟล์ 2569.doc 100% ไม่มีกรอบสี่เหลี่ยม และตัดความเห็นฝ่ายบุคคลออก) -->
 <div id="printTrainingSection">
-  <!-- หัวหนังสือราชการ ครุฑ และ บันทึกข้อความ -->
+  <!-- ตราครุฑแบบ Inline SVG โหลดได้คมชัดทุกอุปกรณ์ ไม่พึ่งเน็ตภายนอก -->
   <div style="display:flex;align-items:flex-end;position:relative;margin-bottom:12px;min-height:75px">
-    <div style="position:absolute;left:0;top:0;width:80px">
-      <!-- ตราครุฑมาตรฐานหนังสือราชการ -->
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Garuda_Emblem_of_Thailand.svg" style="width:70px;height:auto" alt="ครุฑ">
+    <div style="position:absolute;left:0;top:0;width:75px">
+      <svg viewBox="0 0 450 450" width="70" height="70">
+        <path fill="#000" d="M225 30c-10 0-25 10-25 25 0 8 5 15 12 19-15 10-28 25-37 42-12-8-25-13-40-13-30 0-55 25-55 55 0 12 4 23 11 32-18 10-33 24-44 41-15-5-31-4-45 4-20 12-27 38-15 58 8 13 22 21 37 21 5 0 10-1 15-3 5 25 18 48 36 65-2 15 3 30 15 40 16 13 40 11 53-5 5-6 8-14 8-22 25 15 54 24 85 24s60-9 85-24c0 8 3 16 8 22 13 16 37 18 53 5 12-10 17-25 15-40 18-17 31-40 36-65 5 2 10 3 15 3 15 0 29-8 37-21 12-20 5-46-15-58-14-8-30-9-45-4-11-17-26-31-44-41 7-9 11-20 11-32 0-30-25-55-55-55-15 0-28 5-40 13-9-17-22-32-37-42 7-4 12-11 12-19 0-15-15-25-25-25zm0 30c3 0 5 2 5 5s-2 5-5 5-5-2-5-5 2-5 5-5zm-15 35c5-3 10-5 15-5s10 2 15 5c12 7 21 18 26 31-13-4-27-6-41-6s-28 2-41 6c5-13 14-24 26-31zm-75 35c17 0 30 13 30 30 0 7-2 13-6 18-10-7-22-11-34-11-7 0-14 1-20 4 0-1 0-2 0-3 0-21 13-38 30-38zm180 0c17 0 30 17 30 38 0 1 0 2 0 3-6-3-13-4-20-4-12 0-24 4-34 11-4-5-6-11-6-18 0-17 13-30 30-30zM225 170c25 0 45 20 45 45s-20 45-45 45-45-20-45-45 20-45 45-45zm0 110c45 0 83 25 102 62-28 17-62 28-102 28s-74-11-102-28c19-37 57-62 102-62z"/>
+      </svg>
     </div>
     <div style="width:100%;text-align:center">
       <span style="font-size:29pt;font-weight:bold;letter-spacing:1px">บันทึกข้อความ</span>
@@ -479,14 +480,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
         <b style="min-width:25px">ที่</b>
         <span class="p-dotted" style="flex:1">...........................................................................</span>
       </div>
-      <div style="min-width:260px;display:flex;align-items:baseline;margin-left:15px">
+      <div style="min-width:270px;display:flex;align-items:baseline;margin-left:15px">
         <b style="min-width:35px">วันที่</b>
         <span class="p-dotted" id="pt_doc_date" style="flex:1;text-align:center"></span>
       </div>
     </div>
     <div class="p-line" style="display:flex;align-items:baseline">
       <b style="min-width:45px">เรื่อง</b>
-      <span class="p-dotted" style="flex:1;font-weight:bold">รายงานผลการเข้ารับการอบรม / สัมมนา / พัฒนาตนเอง</span>
+      <span class="p-dotted" id="pt_subject_title" style="flex:1;font-weight:bold"></span>
     </div>
     <div class="p-line" style="display:flex;align-items:baseline;margin-bottom:8px">
       <b style="min-width:45px">เรียน</b>
@@ -501,7 +502,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     ได้เข้าร่วมการอบรม/สัมมนา/พัฒนาตนเอง ดังมีรายละเอียดต่อไปนี้
   </div>
 
-  <div style="margin:6px 0 6px 1.5em;line-height:1.4">
+  <div style="margin:8px 0 8px 1.5em;line-height:1.45">
     <div class="p-line">
       <b>๑. หลักสูตร / หัวข้อการอบรม:</b> <span class="p-dotted" id="pt_course" style="min-width:400px;font-weight:bold"></span>
     </div>
@@ -517,16 +518,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     </div>
   </div>
 
-  <div class="p-indent" style="margin-top:6px">
+  <div class="p-indent" style="margin-top:8px">
     บัดนี้ การเข้ารับการอบรมพัฒนาตนเองดังกล่าวได้เสร็จสิ้นเรียบร้อยแล้ว ข้าพเจ้าจึงขอรายงานสรุปผลการอบรมเพื่อนำองค์ความรู้ ทักษะ และประสบการณ์ที่ได้รับ มาประยุกต์ใช้ในการจัดการเรียนรู้ การปฏิบัติหน้าที่ราชการ และพัฒนาคุณภาพผู้เรียนให้มีประสิทธิภาพยิ่งขึ้น พร้อมนี้ได้แนบเอกสาร/เกียรติบัตรผ่านการอบรมมาพร้อมหนังสือนี้ด้วยแล้ว
   </div>
 
-  <div class="p-indent" style="margin-top:6px">
+  <div class="p-indent" style="margin-top:8px">
     จึงเรียนมาเพื่อโปรดทราบและพิจารณา
   </div>
 
-  <div style="display:flex;justify-content:flex-end;margin:12px 0 10px">
-    <div style="text-align:center;width:280px">
+  <div style="display:flex;justify-content:flex-end;margin:18px 0 20px">
+    <div style="text-align:center;width:290px">
       (ลงชื่อ)...........................................................<br>
       ( <span id="pt_sign_name">...................................................</span> )<br>
       ตำแหน่ง <span id="pt_sign_pos">...................................................</span><br>
@@ -534,30 +535,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     </div>
   </div>
 
-  <!-- ส่วนความเห็นด้านล่างแบบเปิดโล่ง (ไม่มีกรอบสี่เหลี่ยม ตามแบบบันทึกข้อความ) -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px;border-top:1px dotted #000;padding-top:12px">
-    <div>
-      <b>ความเห็นของหัวหน้าฝ่ายบริหารงานบุคคล</b><br>
-      ( &nbsp; ) ทราบ และได้บันทึกประวัติการพัฒนาตนเองเรียบร้อยแล้ว<br>
-      ( &nbsp; ) อื่นๆ ............................................................................<br><br>
-      <div style="text-align:center">
-        (ลงชื่อ)...........................................................<br>
-        ( นายธีรภัทร์ มีนา )<br>
-        ตำแหน่ง หัวหน้าฝ่ายบริหารงานบุคคล<br>
-        วันที่ ....../....../......
-      </div>
-    </div>
-
-    <div>
-      <b>ความเห็น / คำสั่งผู้อำนวยการโรงเรียน</b><br>
-      ( &nbsp; ) ทราบ และขอให้นำความรู้มาใช้พัฒนางานต่อไป<br>
-      ( &nbsp; ) อื่นๆ ............................................................................<br><br>
-      <div style="text-align:center">
-        (ลงชื่อ)...........................................................<br>
-        ( นายประเสริฐ พอนา )<br>
-        ตำแหน่ง ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>
-        วันที่ ....../....../......
-      </div>
+  <!-- ตัดความเห็นหัวหน้าฝ่ายบุคคลออก เหลือเฉพาะคำสั่ง/ความเห็น ผอ. ตามแบบราชการเปิดโล่งไม่มีกรอบ -->
+  <div style="margin-top:20px;border-top:1px dotted #000;padding-top:14px;width:60%;margin-left:auto">
+    <b>ความเห็น / คำสั่งผู้อำนวยการโรงเรียน</b><br>
+    ( &nbsp; ) ทราบ และขอให้นำความรู้มาใช้พัฒนางานต่อไป<br>
+    ( &nbsp; ) อื่นๆ ................................................................................................<br><br><br>
+    <div style="text-align:center">
+      (ลงชื่อ)...........................................................<br>
+      ( นายประเสริฐ พอนา )<br>
+      ตำแหน่ง ผู้อำนวยการโรงเรียนศึกษานารีอนุสรณ์ 1 บ้านแม่เมืองน้อย<br>
+      วันที่ ....../....../......
     </div>
   </div>
 </div>
@@ -908,7 +895,7 @@ function printLeave(id){
   const leave = leaveRequests.find(x => x.id === id);
   if(!leave) return alert('ไม่พบข้อมูลการลา');
   
-  const emp = leave.employees || {};
+  const emp = leave.employees || employees.find(e => e.id === leave.employee_id) || {};
   const fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
   const curDays = calcDays(leave.start_date, leave.end_date);
 
@@ -993,12 +980,14 @@ async function loadTrainings(){
 function renderTrainings(){
  const q = ($('trainingSearch').value || '').toLowerCase();
  const list = trainings.filter(x => {
-   const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : '';
+   const emp = x.employees || employees.find(e => e.id === x.employee_id);
+   const empName = emp ? `${emp.prefix||''}${emp.first_name} ${emp.last_name}` : '';
    return empName.toLowerCase().includes(q) || String(x.course_name||'').toLowerCase().includes(q) || String(x.organizer||'').toLowerCase().includes(q);
  });
 
  $('trainingTable').innerHTML = list.length ? list.map(x => {
-   const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'ไม่พบข้อมูล';
+   const emp = x.employees || employees.find(e => e.id === x.employee_id);
+   const empName = emp ? `${emp.prefix||''}${emp.first_name} ${emp.last_name}` : 'ไม่พบข้อมูล';
    const isAdminOrStaff = currentProfile && ['admin','staff'].includes(currentProfile.role);
    const isMyRecord = currentProfile && currentProfile.employee_id === x.employee_id;
 
@@ -1019,25 +1008,32 @@ function renderTrainings(){
  }).join('') : `<tr><td colspan="6" class="empty">ยังไม่มีประวัติการอบรม</td></tr>`;
 }
 
-// พิมพ์บันทึกข้อความรายงานอบรม (ตามแบบ 2569.doc 100%)
+// พิมพ์บันทึกข้อความรายงานอบรม (แก้ไขชื่อขึ้นแน่นอน 100% และหัวเรื่องถูกต้อง)
 function printTrainingReport(id){
   const t = trainings.find(x => x.id === id);
   if(!t) return alert('ไม่พบข้อมูลการอบรม');
 
-  const emp = t.employees || {};
-  const fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
+  // ดึงข้อมูลครูผู้เข้าอบรมอย่างแม่นยำ
+  const emp = t.employees || employees.find(e => e.id === t.employee_id) || (currentProfile && currentProfile.employee_id === t.employee_id ? currentProfile : {});
+  let fullName = `${emp.prefix||''}${emp.first_name||''} ${emp.last_name||''}`.trim();
+  if(!fullName && emp.full_name) fullName = emp.full_name;
+  if(!fullName) fullName = 'คุณครูผู้เข้ารับการอบรม';
+
+  const position = emp.position || 'ครู';
+  const courseName = t.course_name || '-';
 
   $('pt_doc_date').textContent = formatThaiDateFull(new Date().toISOString().split('T')[0]);
-  $('pt_name').textContent = fullName || '-';
-  $('pt_pos').textContent = emp.position || 'ครู';
-  $('pt_course').textContent = t.course_name || '-';
+  $('pt_subject_title').textContent = `รายงานการอบรมเรื่อง ${courseName}`;
+  $('pt_name').textContent = fullName;
+  $('pt_pos').textContent = position;
+  $('pt_course').textContent = courseName;
   $('pt_organizer').textContent = t.organizer || '-';
   $('pt_date').textContent = formatThaiDateFull(t.start_date);
   $('pt_time').textContent = t.training_time || '08.30 - 16.30 น.';
   $('pt_location').textContent = t.location || '-';
 
-  $('pt_sign_name').textContent = fullName || '...................................................';
-  $('pt_sign_pos').textContent = emp.position || 'ครู';
+  $('pt_sign_name').textContent = fullName;
+  $('pt_sign_pos').textContent = position;
 
   document.body.className = 'printing-training';
   window.print();
@@ -1198,7 +1194,8 @@ function renderDocuments(){
  }
 
  container.innerHTML = filtered.map(x => {
-   const empName = x.employees ? `${x.employees.prefix||''}${x.employees.first_name} ${x.employees.last_name}` : 'เอกสารส่วนตัว';
+   const emp = x.employees || employees.find(e => e.id === x.employee_id);
+   const empName = emp ? `${emp.prefix||''}${emp.first_name} ${emp.last_name}` : 'เอกสารส่วนตัว';
    const docTitle = x.document_name || x.doc_title || 'เอกสาร';
    const isAdminOrStaff = currentProfile && ['admin','staff'].includes(currentProfile.role);
    const isMyDoc = currentProfile && currentProfile.employee_id === x.employee_id;
@@ -1346,6 +1343,7 @@ async function deleteDocument(id){
  const {error} = await supabaseClient.from('documents').delete().eq('id', id);
  if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
  await loadDocuments();
+ await loadDashboard();
 }
 
 // ---------------- เมนูตั้งค่าระบบ (Settings) ----------------
